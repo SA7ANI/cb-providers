@@ -1,26 +1,116 @@
-[
-  {
-    "id": "template-provider",
-    "name": "Template Provider",
-    "description": "A starter template for creating Nuvio providers.",
-    "version": "1.0.0",
-    "author": "Your Name",
-    "supportedTypes": [
-      "movie",
-      "tv"
-    ],
-    "filename": "providers/template.js",
-    "enabled": false,
-    "logo": "",
-    "contentLanguage": [
-      "en"
-    ],
-    "formats": [
-      "mp4",
-      "mkv"
-    ],
-    "limited": false,
-    "disabledPlatforms": [],
-    "supportsExternalPlayer": true
-  }
-]
+{
+  "manifestVersion": 1,
+  "name": "CB Provider Repo",
+  "version": "1.0.0",
+  "description": "Auto-generated Nuvio provider plugin managed by Chole Bhature Ecosystem.",
+  "providers": [
+    {
+      "id": "vidnest",
+      "name": "Vidnest",
+      "filename": "providers/vidnest.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "hdhub4u",
+      "name": "HDHub4u",
+      "filename": "providers/hdhub4u.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "dooflix",
+      "name": "DooFlix",
+      "filename": "providers/dooflix.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "movieblast",
+      "name": "MovieBlast",
+      "filename": "providers/movieblast.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "moviesdrive",
+      "name": "MoviesDrive",
+      "filename": "providers/moviesdrive.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "allmovieland",
+      "name": "AllMovieLand",
+      "filename": "providers/allmovieland.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    }
+  ]
+}
