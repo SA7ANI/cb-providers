@@ -111,6 +111,168 @@
         "en",
         "hi"
       ]
+    },
+    {
+      "id": "vidnestanime",
+      "name": "VidnestAnime",
+      "filename": "providers/vidnest-anime.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "cinevibe",
+      "name": "Cinevibe",
+      "filename": "providers/cinevibe.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "cinemacity",
+      "name": "CinemaCity",
+      "filename": "providers/cinemacity.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "castle",
+      "name": "Castle",
+      "filename": "providers/castle.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "showbox",
+      "name": "ShowBox",
+      "filename": "providers/showbox.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "mycima",
+      "name": "MyCima",
+      "filename": "providers/mycima.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "hianime",
+      "name": "HiAnime",
+      "filename": "providers/hianime.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "kurage",
+      "name": "Kurage",
+      "filename": "providers/kurage.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "anizone",
+      "name": "AniZone",
+      "filename": "providers/anizone.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
     }
   ]
 }
