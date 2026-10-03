@@ -123,7 +123,7 @@ function getDownloadLinks(postUrl, postTitle) {
             const nexHtml = yield nexRes.text();
             const finalLinks = [...nexHtml.matchAll(/href="([^"]*(?:fastdl|vcloud|filebee|dgdrive|hubcloud|pixeldrain)[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi)];
             for (const f of finalLinks) {
-              const serverName = f[2].replace(/<[^>]+>/g, "").trim() || "Vega Server";
+              const serverName = f[2].replace(/<[^>]+>/g, "").replace(/&#x?[0-9a-f]+;|&[a-z]+;/gi, "").replace(/\s+/g, " ").trim() || "Vega Server";
               const qMatch = (f[0] + " " + postTitle).match(/(2160p|4k|1080p|720p|480p)/i);
               const qStr = qMatch ? qMatch[1].toUpperCase() : "1080P";
               const qNum = qStr.includes("2160") || qStr.includes("4K") ? 2160 : (qStr.includes("1080") ? 1080 : (qStr.includes("720") ? 720 : 480));
