@@ -1,6 +1,6 @@
 /**
  * redflix - Built from src/redflix/
- * Generated: 2026-10-03T16:31:08.622Z
+ * Generated: 2026-10-03T16:49:34.580Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -368,4 +368,12 @@ function getStreams(_0, _1, _2, _3) {
     }
   });
 }
-module.exports = { getStreams };
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams };
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+}
