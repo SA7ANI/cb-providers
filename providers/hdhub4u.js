@@ -58,7 +58,7 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
-var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
+var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var TMDB_BASE_URL = "https://api.themoviedb.org/3";
 var MAIN_URL = "https://new1.hdhub4u.free";
 var DOMAINS_URL = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json";
@@ -262,18 +262,28 @@ function getTMDBDetails(tmdbId, mediaType) {
   return __async(this, null, function* () {
     var _a;
     const endpoint = mediaType === "tv" ? "tv" : "movie";
-    const url = `${TMDB_BASE_URL}/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
-    const response = yield fetch(url, {
-      method: "GET",
-      headers: { "Accept": "application/json", "User-Agent": "Mozilla/5.0" }
-    });
-    if (!response.ok)
-      throw new Error(`TMDB API error: ${response.status}`);
-    const data = yield response.json();
-    const title = mediaType === "tv" ? data.name : data.title;
-    const releaseDate = mediaType === "tv" ? data.first_air_date : data.release_date;
-    const year = releaseDate ? parseInt(releaseDate.split("-")[0]) : null;
-    return { title, year, imdbId: ((_a = data.external_ids) == null ? void 0 : _a.imdb_id) || null };
+    const baseUrls = ["https://api.tmdb.org/3", "https://api.themoviedb.org/3"];
+    for (const base of baseUrls) {
+      const url = `${base}/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
+      try {
+        const response = yield fetch(url, {
+          method: "GET",
+          headers: {
+            "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+            "Accept": "application/json"
+          }
+        });
+        if (response.ok) {
+          const data = yield response.json();
+          const title = mediaType === "tv" ? data.name : data.title;
+          const releaseDate = mediaType === "tv" ? data.first_air_date : data.release_date;
+          const year = releaseDate ? parseInt(releaseDate.split("-")[0]) : null;
+          return { title, year, imdbId: ((_a = data.external_ids) == null ? void 0 : _a.imdb_id) || null };
+        }
+      } catch (e) {
+      }
+    }
+    throw new Error(`Failed to fetch TMDB details for ${tmdbId}`);
   });
 }
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
@@ -436,7 +446,7 @@ function hubCloudExtractor(url, referer) {
   return __async(this, null, function* () {
     var _a;
     try {
-      let currentUrl = url.replace("hubcloud.ink", "hubcloud.dad");
+      let currentUrl = url.replace(/hubcloud\.(ink|dad|cx|lol|top|rocks|site|buzz)/gi, "hubcloud.ist");
       const pageResponse = yield fetch(currentUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: referer }) });
       let pageData = yield pageResponse.text();
       let finalUrl = currentUrl;
@@ -643,8 +653,17 @@ function search(query) {
       const yearMatch = title.match(/\((\d{4})\)|\b(\d{4})\b/);
       const year = yearMatch ? parseInt(yearMatch[1] || yearMatch[2]) : null;
       let url = doc.permalink;
-      if (url && url.startsWith("/")) {
-        url = `${MAIN_URL}${url}`;
+      if (url) {
+        try {
+          if (url.startsWith("http")) {
+            const parsed = new URL(url);
+            url = `${MAIN_URL}${parsed.pathname}${parsed.search}`;
+          } else {
+            url = `${MAIN_URL}${url.startsWith("/") ? "" : "/"}${url}`;
+          }
+        } catch (e) {
+          url = `${MAIN_URL}/${url.replace(/^\/+/, "")}`;
+        }
       }
       return {
         title,
@@ -812,10 +831,10 @@ function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) 
           qualityStr = link.quality;
         }
         return {
-          name: `HDHub4u ${serverName}`,
-          title: mediaTitle,
+          name: `HDHub4u [${serverName}] - ${qualityStr.toUpperCase()}`,
+          title: `${mediaTitle}\n💾 ${formatBytes(link.size)}`,
           url: link.url,
-          quality: qualityStr,
+          quality: qualityStr.toLowerCase(),
           size: formatBytes(link.size),
           headers: link.headers || void 0,
           provider: "hdhub4u"
