@@ -2,33 +2,16 @@
  * RedFlix Stream Extractor
  */
 
-import * as cheerioModule from 'cheerio-without-node-native';
+import cheerio from 'cheerio-without-node-native';
 import { BASE_URL, DEFAULT_HEADERS } from './constants.js';
 import { normalizeTitle, getMediaMetadata, httpGet } from './utils.js';
 
-/**
- * Universal cheerio loader compatible with CJS, ESM, and sandbox environments
- */
 function loadCheerio(html) {
     if (!html) return null;
-    const ch = (cheerioModule && cheerioModule.load)
-        ? cheerioModule
-        : ((cheerioModule && cheerioModule.default && cheerioModule.default.load)
-            ? cheerioModule.default
-            : ((cheerioModule && cheerioModule.default) || cheerioModule));
-
-    if (typeof ch.load === 'function') {
-        return ch.load(html);
-    }
-    if (typeof ch === 'function') {
-        return ch(html);
-    }
-    try {
-        const fallback = require('cheerio');
-        if (typeof fallback.load === 'function') return fallback.load(html);
-        if (typeof fallback === 'function') return fallback(html);
-    } catch (e) {}
-    throw new Error('Cheerio parser not found');
+    const ch = (cheerio && cheerio.load) ? cheerio : ((cheerio && cheerio.default) || cheerio);
+    if (typeof ch.load === 'function') return ch.load(html);
+    if (typeof ch === 'function') return ch(html);
+    return null;
 }
 
 /**

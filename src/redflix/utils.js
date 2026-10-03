@@ -15,36 +15,12 @@ export function normalizeTitle(str) {
         .trim();
 }
 
-/**
- * Universal HTTP GET helper that supports both axios (with DoH/caching in ProviderLoader)
- * and native fetch (in React Native / Hermes).
- */
 export async function httpGet(url, options = {}) {
     const headers = { ...DEFAULT_HEADERS, ...options.headers };
-
-    // 1. Try axios if available
-    try {
-        let ax;
-        if (typeof axios !== 'undefined') {
-            ax = axios;
-        } else {
-            try { ax = require('axios'); } catch (e) {}
-        }
-
-        if (ax && typeof ax.get === 'function') {
-            const res = await ax.get(url, { headers, timeout: options.timeout || 10000 });
-            return {
-                data: res.data,
-                text: typeof res.data === 'string' ? res.data : JSON.stringify(res.data),
-                json: typeof res.data === 'object' ? res.data : JSON.parse(res.data)
-            };
-        }
-    } catch (e) {
-        // Fallback to fetch if axios fails
-    }
-
-    // 2. Fetch fallback
-    const res = await fetch(url, { headers, ...options });
+    const res = await fetch(url, {
+        headers,
+        ...options
+    });
     if (!res.ok) {
         throw new Error(`HTTP ${res.status} for ${url}`);
     }

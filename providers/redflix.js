@@ -1,6 +1,6 @@
 /**
  * redflix - Built from src/redflix/
- * Generated: 2026-10-03T16:49:34.580Z
+ * Generated: 2026-10-03T17:10:41.670Z
  */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
@@ -60,7 +60,7 @@ var __async = (__this, __arguments, generator) => {
 };
 
 // src/redflix/extractor.js
-var cheerioModule = __toESM(require("cheerio-without-node-native"));
+var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
 
 // src/redflix/constants.js
 var BASE_URL = "https://redflix.biz";
@@ -85,27 +85,9 @@ function normalizeTitle(str) {
 function httpGet(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const headers = __spreadValues(__spreadValues({}, DEFAULT_HEADERS), options.headers);
-    try {
-      let ax;
-      if (typeof axios !== "undefined") {
-        ax = axios;
-      } else {
-        try {
-          ax = require("axios");
-        } catch (e) {
-        }
-      }
-      if (ax && typeof ax.get === "function") {
-        const res2 = yield ax.get(url, { headers, timeout: options.timeout || 1e4 });
-        return {
-          data: res2.data,
-          text: typeof res2.data === "string" ? res2.data : JSON.stringify(res2.data),
-          json: typeof res2.data === "object" ? res2.data : JSON.parse(res2.data)
-        };
-      }
-    } catch (e) {
-    }
-    const res = yield fetch(url, __spreadValues({ headers }, options));
+    const res = yield fetch(url, __spreadValues({
+      headers
+    }, options));
     if (!res.ok) {
       throw new Error(`HTTP ${res.status} for ${url}`);
     }
@@ -207,22 +189,12 @@ function getMediaMetadata(_0, _1) {
 function loadCheerio(html) {
   if (!html)
     return null;
-  const ch = cheerioModule && cheerioModule.load ? cheerioModule : cheerioModule && cheerioModule.default && cheerioModule.default.load ? cheerioModule.default : cheerioModule && cheerioModule.default || cheerioModule;
-  if (typeof ch.load === "function") {
+  const ch = import_cheerio_without_node_native.default && import_cheerio_without_node_native.default.load ? import_cheerio_without_node_native.default : import_cheerio_without_node_native.default && import_cheerio_without_node_native.default.default || import_cheerio_without_node_native.default;
+  if (typeof ch.load === "function")
     return ch.load(html);
-  }
-  if (typeof ch === "function") {
+  if (typeof ch === "function")
     return ch(html);
-  }
-  try {
-    const fallback = require("cheerio");
-    if (typeof fallback.load === "function")
-      return fallback.load(html);
-    if (typeof fallback === "function")
-      return fallback(html);
-  } catch (e) {
-  }
-  throw new Error("Cheerio parser not found");
+  return null;
 }
 function searchRedFlix(baseUrl, title, year, mediaType) {
   return __async(this, null, function* () {
