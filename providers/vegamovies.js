@@ -124,20 +124,31 @@ function getDownloadLinks(postUrl, postTitle) {
             const finalLinks = [...nexHtml.matchAll(/href="([^"]*(?:fastdl|vcloud|filebee|dgdrive|hubcloud|pixeldrain)[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi)];
             for (const f of finalLinks) {
               const serverName = f[2].replace(/<[^>]+>/g, "").trim() || "Vega Server";
+              const qMatch = (f[0] + " " + postTitle).match(/(2160p|4k|1080p|720p|480p)/i);
+              const qStr = qMatch ? qMatch[1].toUpperCase() : "1080P";
+              const qNum = qStr.includes("2160") || qStr.includes("4K") ? 2160 : (qStr.includes("1080") ? 1080 : (qStr.includes("720") ? 720 : 480));
+              const sizeMatch = postTitle.match(/\[([0-9.]+\s*(?:GB|MB))\]/i);
+              const sizeStr = sizeMatch ? sizeMatch[1] : "";
               streams.push({
-                name: "VegaMovies",
+                name: `VegaMovies [${serverName}] - ${qStr}`,
                 url: f[1],
-                title: `${postTitle.slice(0, 60)} - [${serverName}]`,
+                quality: qNum,
+                size: sizeStr,
+                title: `${postTitle.slice(0, 50)} - [${serverName}]`,
                 behaviorHints: { notWebReady: true }
               });
             }
           } catch (e) {
           }
         } else {
+          const qMatch = postTitle.match(/(2160p|4k|1080p|720p|480p)/i);
+          const qStr = qMatch ? qMatch[1].toUpperCase() : "1080P";
+          const qNum = qStr.includes("2160") || qStr.includes("4K") ? 2160 : (qStr.includes("1080") ? 1080 : (qStr.includes("720") ? 720 : 480));
           streams.push({
-            name: "VegaMovies",
+            name: `VegaMovies [Direct] - ${qStr}`,
             url: link,
-            title: `${postTitle.slice(0, 60)} - [Direct]`,
+            quality: qNum,
+            title: `${postTitle.slice(0, 50)} - [Direct]`,
             behaviorHints: { notWebReady: true }
           });
         }

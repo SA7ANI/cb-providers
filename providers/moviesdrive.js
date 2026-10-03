@@ -154,8 +154,11 @@ function loadExtractor(url, referer) {
       const hostname = new URL(url).hostname;
       if (hostname.includes("hubcloud"))
         return yield hubCloudExtractor(url, referer);
-      if (hostname.includes("gdflix") || hostname.includes("gdlink"))
-        return [{ name: "Google Drive", quality: 1080, url }];
+      if (hostname.includes("gdflix") || hostname.includes("gdlink")) {
+        const qMatch = url.match(/(2160p|4k|1080p|720p|480p)/i);
+        const qNum = qMatch ? (qMatch[1].toLowerCase().includes("720") ? 720 : (qMatch[1].toLowerCase().includes("480") ? 480 : 1080)) : 1080;
+        return [{ name: "Google Drive Fast", quality: qNum, url }];
+      }
       return [];
     } catch (e) {
       return [];
@@ -217,6 +220,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
           for (const server of extracted) {
             const streams = yield loadExtractor(server, href);
             allLinks.push(...streams.map((s) => __spreadProps(__spreadValues({}, s), {
+              name: `MoviesDrive [${s.name}] - ${s.quality}P`,
               title: `${tmdbData.title || tmdbData.name} - ${s.name} [${s.quality}p]`,
               provider: "moviesdrive"
             })));
@@ -240,6 +244,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
               for (const epLink of epLinks) {
                 const streams = yield loadExtractor(epLink, nextHref);
                 allLinks.push(...streams.map((s) => __spreadProps(__spreadValues({}, s), {
+                  name: `MoviesDrive [${s.name}] - ${s.quality}P`,
                   title: `${tmdbData.title || tmdbData.name} S${seasonNum}E${episodeNum} - ${s.name} [${s.quality}p]`,
                   provider: "moviesdrive"
                 })));

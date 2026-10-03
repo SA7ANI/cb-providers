@@ -60,7 +60,7 @@ var __async = (__this, __arguments, generator) => {
 var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
 var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
 var TMDB_BASE_URL = "https://api.themoviedb.org/3";
-var MAIN_URL = "https://new6.hdhub4u.fo";
+var MAIN_URL = "https://new1.hdhub4u.free";
 var DOMAINS_URL = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json";
 var DOMAIN_CACHE_TTL = 4 * 60 * 60 * 1e3;
 var HEADERS = {
@@ -829,4 +829,12 @@ function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) 
     }
   });
 }
-module.exports = { getStreams };
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams };
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+}
