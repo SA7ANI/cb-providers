@@ -108,7 +108,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
     var _a;
     const streams = [];
     try {
-      const tmdbUrl = `https://api.themoviedb.org/3/${mediaType === "tv" ? "tv" : "movie"}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
+      const tmdbUrl = `https://api.tmdb.org/3/${mediaType === "tv" ? "tv" : "movie"}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
       const tmdbRes = yield fetch(tmdbUrl, { skipSizeCheck: true });
       const tmdbData = yield tmdbRes.json();
       const imdbId = ((_a = tmdbData.external_ids) == null ? void 0 : _a.imdb_id) || tmdbData.imdb_id;

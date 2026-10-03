@@ -88,7 +88,7 @@ function getTmdbDetails(tmdbId, type) {
     const endpoint = isSeries ? "tv" : "movie";
     const urls = [
       `https://api.tmdb.org/3/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}`,
-      `https://api.themoviedb.org/3/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}`
+      `https://api.tmdb.org/3/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}`
     ];
     for (const url of urls) {
       console.log(`[4KHDHub] Fetching TMDB details from: ${url}`);

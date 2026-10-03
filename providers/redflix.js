@@ -66,10 +66,10 @@ var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-n
 var BASE_URL = "https://redflix.biz";
 var TMDB_API_KEYS = [
   "1865f43a0549ca50d341dd9ab8b29f49",
-  "439c478a771f35c05022f9feabcca01c",
+  "1865f43a0549ca50d341dd9ab8b29f49",
   "e49339e830e014e414c2b9a71b2d4f82"
 ];
-var TMDB_BASE_URL = "https://api.themoviedb.org/3";
+var TMDB_BASE_URL = "https://api.tmdb.org/3";
 var DEFAULT_HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8",

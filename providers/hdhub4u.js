@@ -59,7 +59,7 @@ var __async = (__this, __arguments, generator) => {
 };
 var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
-var TMDB_BASE_URL = "https://api.themoviedb.org/3";
+var TMDB_BASE_URL = "https://api.tmdb.org/3";
 var MAIN_URL = "https://new1.hdhub4u.free";
 var DOMAINS_URL = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json";
 var DOMAIN_CACHE_TTL = 4 * 60 * 60 * 1e3;
@@ -262,7 +262,7 @@ function getTMDBDetails(tmdbId, mediaType) {
   return __async(this, null, function* () {
     var _a;
     const endpoint = mediaType === "tv" ? "tv" : "movie";
-    const baseUrls = ["https://api.tmdb.org/3", "https://api.themoviedb.org/3"];
+    const baseUrls = ["https://api.tmdb.org/3", "https://api.tmdb.org/3"];
     for (const base of baseUrls) {
       const url = `${base}/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
       try {

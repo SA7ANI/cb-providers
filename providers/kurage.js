@@ -38,7 +38,7 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 var KURAGE_BASE = "https://kurage.live";
-var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
+var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var ANILIST_URL = "https://graphql.anilist.co";
 var ARM_BASE = "https://arm.haglund.dev/api/v2";
 var CINEMETA_URL = "https://v3-cinemeta.strem.io/meta";
@@ -89,7 +89,7 @@ function getSyncInfo(id, mediaType, season, episode) {
         return { date: null, title: null, dayIndex: 1 };
       }
     });
-    const tmdbBase = `https://api.themoviedb.org/3/${mediaType === "movie" ? "movie" : "tv"}/${id}`;
+    const tmdbBase = `https://api.tmdb.org/3/${mediaType === "movie" ? "movie" : "tv"}/${id}`;
     const [details, base] = yield Promise.all([
       fetchJson(tmdbBase + (mediaType === "movie" ? "" : "/external_ids") + `?api_key=${TMDB_API_KEY}`),
       fetchJson(tmdbBase + `?api_key=${TMDB_API_KEY}`)

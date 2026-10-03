@@ -7,8 +7,8 @@ const VIDNEST_BASE_URL = 'https://backend.vidnest.fun';
 const PASSPHRASE = 'A7kP9mQeXU2BWcD4fRZV+Sg8yN0/M5tLbC1HJQwYe6o=';
 
 // TMDB API Configuration
-const TMDB_API_KEY = '439c478a771f35c05022f9feabcca01c';
-const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const TMDB_API_KEY = '1865f43a0549ca50d341dd9ab8b29f49';
+const TMDB_BASE_URL = 'https://api.tmdb.org/3';
 
 // Anime Servers Configuration
 const ANIME_SERVERS = {

@@ -64,8 +64,8 @@ var HEADERS = {
   "Referer": MAIN_URL + "/",
   "X-Requested-With": "XMLHttpRequest"
 };
-var TMDB_BASE_URL = "https://api.themoviedb.org/3";
-var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
+var TMDB_BASE_URL = "https://api.tmdb.org/3";
+var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 function getTMDBDetails(tmdbId, mediaType) {
   return __async(this, null, function* () {
     var _a;

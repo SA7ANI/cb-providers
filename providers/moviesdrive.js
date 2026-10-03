@@ -171,7 +171,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
     var _a;
     console.log(`[MoviesDrive] Querying streams for TMDB: ${tmdbId}, Type: ${mediaType}`);
     const tmdbApiKey = "1865f43a0549ca50d341dd9ab8b29f49";
-    const tmdbUrl = `https://api.themoviedb.org/3/${mediaType}/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids`;
+    const tmdbUrl = `https://api.tmdb.org/3/${mediaType}/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids`;
     const tmdbRes = yield fetch(tmdbUrl, {
       headers: {
         "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",

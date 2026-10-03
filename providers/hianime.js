@@ -86,7 +86,7 @@ function fetchJson(_0) {
 function getImdbId(tmdbId, mediaType) {
   return __async(this, null, function* () {
     try {
-      const url = `https://api.themoviedb.org/3/${mediaType === "tv" ? "tv" : "movie"}/${tmdbId}/external_ids?api_key=${TMDB_API_KEY}`;
+      const url = `https://api.tmdb.org/3/${mediaType === "tv" ? "tv" : "movie"}/${tmdbId}/external_ids?api_key=${TMDB_API_KEY}`;
       const data = yield fetchJson(url);
       return data.imdb_id || null;
     } catch (e) {
@@ -97,7 +97,7 @@ function getImdbId(tmdbId, mediaType) {
 function getTmdbShowTitle(tmdbId, mediaType) {
   return __async(this, null, function* () {
     try {
-      const url = `https://api.themoviedb.org/3/${mediaType === "tv" ? "tv" : "movie"}/${tmdbId}?api_key=${TMDB_API_KEY}`;
+      const url = `https://api.tmdb.org/3/${mediaType === "tv" ? "tv" : "movie"}/${tmdbId}?api_key=${TMDB_API_KEY}`;
       const data = yield fetchJson(url);
       return data.name || data.title || data.original_title || null;
     } catch (e) {

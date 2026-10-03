@@ -78,7 +78,7 @@ function fetchText(_0) {
 function getImdbId(tmdbId, mediaType) {
   return __async(this, null, function* () {
     try {
-      const url = `https://api.themoviedb.org/3/${mediaType === "tv" ? "tv" : "movie"}/${tmdbId}/external_ids?api_key=1865f43a0549ca50d341dd9ab8b29f49`;
+      const url = `https://api.tmdb.org/3/${mediaType === "tv" ? "tv" : "movie"}/${tmdbId}/external_ids?api_key=1865f43a0549ca50d341dd9ab8b29f49`;
       const res = yield fetch(url, { headers: HEADERS });
       if (!res.ok)
         return null;
@@ -245,7 +245,7 @@ function getStreams(tmdbId, mediaType, season, episode) {
         mappedEp = mapping.mal_episode || episode;
         animeTitle = yield getMalTitle(mapping.mal_id);
       } else {
-        const tmdbUrl = `https://api.themoviedb.org/3/movie/${tmdbId}?api_key=1865f43a0549ca50d341dd9ab8b29f49`;
+        const tmdbUrl = `https://api.tmdb.org/3/movie/${tmdbId}?api_key=1865f43a0549ca50d341dd9ab8b29f49`;
         const tmdbRes = yield fetch(tmdbUrl);
         const tmdbData = yield tmdbRes.json();
         animeTitle = tmdbData.title || tmdbData.original_title;

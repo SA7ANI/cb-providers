@@ -3,8 +3,8 @@
 
 // Constants
 const BASE_URL = 'https://cinevibe.asia';
-const TMDB_API_KEY = '439c478a771f35c05022f9feabcca01c'; // Same key used by other providers
-const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+const TMDB_API_KEY = '1865f43a0549ca50d341dd9ab8b29f49'; // Same key used by other providers
+const TMDB_BASE_URL = 'https://api.tmdb.org/3';
 
 const USER_AGENT = "Mozilla/5.0 (Linux; Android 10; K) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Mobile Safari/537.36";
 const BROWSER_FINGERPRINT = "eyJzY3JlZW4iOiIzNjB4ODA2eDI0Iiwi";

@@ -35,8 +35,8 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
-var TMDB_BASE_URL = "https://api.themoviedb.org/3";
+var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
+var TMDB_BASE_URL = "https://api.tmdb.org/3";
 var CASTLE_BASE = "https://api.hlowb.com";
 var PKG = "com.external.castle";
 var CHANNEL = "IndiaA";
@@ -104,17 +104,26 @@ function extractDataBlock(obj) {
 function getTMDBDetails(tmdbId, mediaType) {
   return __async(this, null, function* () {
     const endpoint = mediaType === "tv" ? "tv" : "movie";
-    const url = `${TMDB_BASE_URL}/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
-    const response = yield makeRequest(url);
-    const data = yield response.json();
-    const title = mediaType === "tv" ? data.name : data.title;
-    const releaseDate = mediaType === "tv" ? data.first_air_date : data.release_date;
-    const year = releaseDate ? parseInt(releaseDate.split("-")[0]) : null;
-    return {
-      title,
-      year,
-      tmdbId
-    };
+    const baseUrls = ["https://api.tmdb.org/3", "https://api.tmdb.org/3"];
+    for (const base of baseUrls) {
+      const url = `${base}/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
+      try {
+        const response = yield fetch(url);
+        if (response.ok) {
+          const data = yield response.json();
+          const title = mediaType === "tv" ? data.name : data.title;
+          const releaseDate = mediaType === "tv" ? data.first_air_date : data.release_date;
+          const year = releaseDate ? parseInt(releaseDate.split("-")[0]) : null;
+          return {
+            title,
+            year,
+            tmdbId
+          };
+        }
+      } catch (e) {
+      }
+    }
+    throw new Error(`Failed to fetch TMDB details for ${tmdbId}`);
   });
 }
 function decryptCastle(encryptedB64, securityKeyB64) {
@@ -207,17 +216,8 @@ function getSecurityKey() {
 function searchCastle(securityKey, keyword, page = 1, size = 30) {
   return __async(this, null, function* () {
     console.log(`[Castle] Searching for: ${keyword}`);
-    const params = new URLSearchParams({
-      channel: CHANNEL,
-      clientType: CLIENT,
-      keyword,
-      lang: LANG,
-      mode: "1",
-      packageName: PKG,
-      page: page.toString(),
-      size: size.toString()
-    });
-    const url = `${CASTLE_BASE}/film-api/v1.1.0/movie/searchByKeyword?${params.toString()}`;
+    const query = `channel=${CHANNEL}&clientType=${CLIENT}&keyword=${encodeURIComponent(keyword)}&lang=${LANG}&mode=1&packageName=${PKG}&page=${page}&size=${size}`;
+    const url = `${CASTLE_BASE}/film-api/v1.1.0/movie/searchByKeyword?${query}`;
     const response = yield makeRequest(url);
     const cipher = yield extractCipherFromResponse(response);
     const decrypted = yield decryptCastle(cipher, securityKey);

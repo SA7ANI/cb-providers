@@ -69,8 +69,8 @@ var SEARCH_HEADERS = __spreadProps(__spreadValues({}, HEADERS), {
   "packagename": APP_ID
 });
 var SIGN_SECRET = "GJ8reydarI7Jqat9rvbAJKNQ9gY4DoEQF2H5nfuI1gi";
-var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
-var TMDB_BASE_URL = "https://api.themoviedb.org/3";
+var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
+var TMDB_BASE_URL = "https://api.tmdb.org/3";
 var import_crypto_js = __toESM(require("crypto-js"));
 function generateSignedUrl(urlStr) {
   try {
