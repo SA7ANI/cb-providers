@@ -1,7 +1,3 @@
-/**
- * hdhub4u - Built from src/hdhub4u/
- * Generated: 2026-06-01T14:20:20.743Z
- */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -61,11 +57,7 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/hdhub4u/index.js
 var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
-
-// src/hdhub4u/constants.js
 var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
 var TMDB_BASE_URL = "https://api.themoviedb.org/3";
 var MAIN_URL = "https://new6.hdhub4u.fo";
@@ -80,8 +72,6 @@ function updateMainUrl(url) {
   MAIN_URL = url;
   HEADERS.Referer = `${url}/`;
 }
-
-// src/hdhub4u/utils.js
 var domainCacheTimestamp = 0;
 function formatBytes(bytes) {
   if (!bytes || bytes === 0)
@@ -286,8 +276,6 @@ function getTMDBDetails(tmdbId, mediaType) {
     return { title, year, imdbId: ((_a = data.external_ids) == null ? void 0 : _a.imdb_id) || null };
   });
 }
-
-// src/hdhub4u/extractors.js
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
 var import_crypto_js = __toESM(require("crypto-js"));
 function getRedirectLinks(url) {
@@ -641,8 +629,6 @@ function loadExtractor(_0) {
     }
   });
 }
-
-// src/hdhub4u/index.js
 function search(query) {
   return __async(this, null, function* () {
     const today = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];

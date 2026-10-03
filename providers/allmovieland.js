@@ -1,7 +1,3 @@
-/**
- * allmovieland - Built from src/allmovieland/
- * Generated: 2026-06-01T14:20:20.473Z
- */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -61,11 +57,7 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/allmovieland/index.js
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
-
-// src/allmovieland/constants.js
 var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
 var TMDB_BASE_URL = "https://api.themoviedb.org/3";
 var MAIN_URL = "https://allmovieland.one";
@@ -74,8 +66,6 @@ var HEADERS = {
   "Accept": "text/html,application/xhtml+xml,application/xml;q=0.9,image/avif,image/webp,*/*;q=0.8",
   "Accept-Language": "en-US,en;q=0.5"
 };
-
-// src/allmovieland/utils.js
 function getTMDBDetails(tmdbId, mediaType) {
   return __async(this, null, function* () {
     var _a;
@@ -143,8 +133,6 @@ function findBestTitleMatch(mediaInfo, searchResults) {
   }
   return bestMatch;
 }
-
-// src/allmovieland/index.js
 function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) {
   return __async(this, null, function* () {
     console.log(`[AllMovieLand] Fetching streams for TMDB ID: ${tmdbId}, Type: ${mediaType}`);

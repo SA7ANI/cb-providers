@@ -1,7 +1,3 @@
-/**
- * anizone - Built from src/anizone/
- * Generated: 2026-06-05T21:04:20.318Z
- */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
@@ -58,18 +54,12 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/anizone/index.js
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
-
-// src/anizone/constants.js
 var MAIN_URL = "https://anizone.to";
 var HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36",
   "Referer": "https://anizone.to/"
 };
-
-// src/anizone/utils.js
 function fetchText(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const finalUrl = url.startsWith("http") ? url : `${MAIN_URL}${url}`;
@@ -125,8 +115,6 @@ function getMalTitle(malId) {
     }
   });
 }
-
-// src/anizone/index.js
 function extractCardInfo($, el) {
   const href = $(el).find('a[href*="/anime/"]').first().attr("href");
   if (!href)

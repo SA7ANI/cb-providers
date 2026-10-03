@@ -1,7 +1,3 @@
-/**
- * mycima - Built from src/mycima/
- * Generated: 2026-06-01T14:20:20.835Z
- */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -61,11 +57,7 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/mycima/index.js
 var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
-
-// src/mycima/constants.js
 var MAIN_URL = "https://mycima.red";
 var HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
@@ -74,8 +66,6 @@ var HEADERS = {
 };
 var TMDB_BASE_URL = "https://api.themoviedb.org/3";
 var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
-
-// src/mycima/utils.js
 function getTMDBDetails(tmdbId, mediaType) {
   return __async(this, null, function* () {
     var _a;
@@ -203,8 +193,6 @@ function jsUnpack(code) {
     return code;
   }
 }
-
-// src/mycima/extractors.js
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
 var import_crypto_js = __toESM(require("crypto-js"));
 function hexDecode(hex) {
@@ -507,8 +495,6 @@ function loadExtractor(url) {
     }
   });
 }
-
-// src/mycima/index.js
 function search(query) {
   return __async(this, null, function* () {
     const url = `${MAIN_URL}/filtering/?keywords=${encodeURIComponent(query)}`;

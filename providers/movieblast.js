@@ -1,7 +1,3 @@
-/**
- * movieblast - Built from src/movieblast/
- * Generated: 2026-06-01T14:20:20.783Z
- */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -61,8 +57,6 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/movieblast/constants.js
 var BASE_URL = "https://app.cloud-mb.xyz";
 var TOKEN = "jdvhhjv255vghhghdhvfch2565656jhdcghfdf";
 var APP_ID = "com.movieblast";
@@ -77,8 +71,6 @@ var SEARCH_HEADERS = __spreadProps(__spreadValues({}, HEADERS), {
 var SIGN_SECRET = "GJ8reydarI7Jqat9rvbAJKNQ9gY4DoEQF2H5nfuI1gi";
 var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
 var TMDB_BASE_URL = "https://api.themoviedb.org/3";
-
-// src/movieblast/utils.js
 var import_crypto_js = __toESM(require("crypto-js"));
 function generateSignedUrl(urlStr) {
   try {
@@ -168,8 +160,6 @@ function findBestMatch(mediaInfo, searchResults) {
   }
   return bestMatch;
 }
-
-// src/movieblast/index.js
 function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) {
   return __async(this, null, function* () {
     console.log(`[MovieBlast] Fetching streams for TMDB ID: ${tmdbId}, Type: ${mediaType}`);

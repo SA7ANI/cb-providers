@@ -1,7 +1,3 @@
-/**
- * kurage - Built from src/kurage/
- * Generated: 2026-06-02T14:17:12.167Z
- */
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
 var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
@@ -41,8 +37,6 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/kurage/constants.js
 var KURAGE_BASE = "https://kurage.live";
 var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
 var ANILIST_URL = "https://graphql.anilist.co";
@@ -55,8 +49,6 @@ var DEFAULT_HEADERS = {
   "Origin": KURAGE_BASE,
   "Referer": KURAGE_BASE + "/"
 };
-
-// src/kurage/utils.js
 function fetchText(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const response = yield fetch(url, __spreadProps(__spreadValues({}, options), {
@@ -194,8 +186,6 @@ function resolveAnilistId(syncInfo) {
     return null;
   });
 }
-
-// src/kurage/index.js
 function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
     try {

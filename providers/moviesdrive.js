@@ -1,7 +1,3 @@
-/**
- * moviesdrive - Built from src/moviesdrive/
- * Generated: 2026-06-01T21:56:44.531Z
- */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -61,11 +57,7 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/moviesdrive/index.js
 var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
-
-// src/moviesdrive/constants.js
 var DOMAINS_URL = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json";
 var HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",
@@ -74,8 +66,6 @@ var HEADERS = {
   "Cache-Control": "max-age=0",
   "Connection": "keep-alive"
 };
-
-// src/moviesdrive/utils.js
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
 var cachedMainUrl = "";
 function getMainUrl() {
@@ -172,10 +162,9 @@ function loadExtractor(url, referer) {
     }
   });
 }
-
-// src/moviesdrive/index.js
 function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
   return __async(this, null, function* () {
+    var _a2, _b, _c, _d;
     var _a;
     console.log(`[MoviesDrive] Querying streams for TMDB: ${tmdbId}, Type: ${mediaType}`);
     const tmdbApiKey = "1865f43a0549ca50d341dd9ab8b29f49";
@@ -200,7 +189,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       const searchRes = yield fetch(`${mainUrl}/search.php?q=${imdbId}`, { headers: HEADERS });
       if (searchRes.ok) {
         const searchData = yield searchRes.json();
-        match = searchData?.hits?.map((h) => h.document).find((d) => d.imdb_id === imdbId);
+        match = (_a2 = searchData == null ? void 0 : searchData.hits) == null ? void 0 : _a2.map((h) => h.document).find((d) => d.imdb_id === imdbId);
       }
       const mediaTitle = tmdbData.title || tmdbData.name;
       if (!match && mediaTitle) {
@@ -208,7 +197,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
         const titleRes = yield fetch(`${mainUrl}/search.php?q=${encodeURIComponent(mediaTitle)}`, { headers: HEADERS });
         if (titleRes.ok) {
           const titleData = yield titleRes.json();
-          match = titleData?.hits?.map((h) => h.document).find((d) => d.imdb_id === imdbId || (d.post_title && d.post_title.toLowerCase().includes(mediaTitle.toLowerCase()))) || titleData?.hits?.[0]?.document;
+          match = ((_b = titleData == null ? void 0 : titleData.hits) == null ? void 0 : _b.map((h) => h.document).find((d) => d.imdb_id === imdbId || d.post_title && d.post_title.toLowerCase().includes(mediaTitle.toLowerCase()))) || ((_d = (_c = titleData == null ? void 0 : titleData.hits) == null ? void 0 : _c[0]) == null ? void 0 : _d.document);
         }
       }
       if (!match) {

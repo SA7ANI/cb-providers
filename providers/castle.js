@@ -1,7 +1,3 @@
-/**
- * castle - Built from src/castle/
- * Generated: 2025-12-31T21:23:16.715Z
- */
 "use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
@@ -39,8 +35,6 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/castle/constants.js
 var TMDB_API_KEY = "439c478a771f35c05022f9feabcca01c";
 var TMDB_BASE_URL = "https://api.themoviedb.org/3";
 var CASTLE_BASE = "https://api.hlowb.com";
@@ -66,8 +60,6 @@ var PLAYBACK_HEADERS = {
   "Sec-Fetch-Site": "cross-site",
   "DNT": "1"
 };
-
-// src/castle/http.js
 function makeRequest(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     try {
@@ -109,8 +101,6 @@ function extractDataBlock(obj) {
   }
   return obj || {};
 }
-
-// src/castle/tmdb.js
 function getTMDBDetails(tmdbId, mediaType) {
   return __async(this, null, function* () {
     const endpoint = mediaType === "tv" ? "tv" : "movie";
@@ -127,60 +117,53 @@ function getTMDBDetails(tmdbId, mediaType) {
     };
   });
 }
-
-// src/castle/decrypt.js
 function decryptCastle(encryptedB64, securityKeyB64) {
   return __async(this, null, function* () {
     console.log("[Castle] Starting local AES-CBC decryption...");
     try {
       const CryptoJS = require("crypto-js");
-      
-      // Monkey-patch to bypass NuvioMobile QuickJS JNI typed array mapping bug
-      if (typeof __crypto_aes_decrypt_raw !== 'undefined') {
+      if (typeof __crypto_aes_decrypt_raw !== "undefined") {
         const originalDecrypt = CryptoJS.AES.decrypt;
         CryptoJS.AES.decrypt = function(cipher, key, options) {
           try {
             const wordArrayToBytes = (wordArray) => {
               const bytes = new Uint8Array(wordArray.sigBytes);
               for (let i = 0; i < wordArray.sigBytes; i++) {
-                bytes[i] = (wordArray.words[i >>> 2] >>> (24 - (i % 4) * 8)) & 0xff;
+                bytes[i] = wordArray.words[i >>> 2] >>> 24 - i % 4 * 8 & 255;
               }
               return bytes;
             };
-            const toUint8Array = (data) => {
-              if (data instanceof Uint8Array) return data;
-              if (data instanceof ArrayBuffer) return new Uint8Array(data);
-              if (data && typeof data.length === 'number') return new Uint8Array(Array.prototype.slice.call(data));
+            const toUint8Array = (data2) => {
+              if (data2 instanceof Uint8Array)
+                return data2;
+              if (data2 instanceof ArrayBuffer)
+                return new Uint8Array(data2);
+              if (data2 && typeof data2.length === "number")
+                return new Uint8Array(Array.prototype.slice.call(data2));
               return new Uint8Array(0);
             };
-            const data = typeof cipher === 'string'
-              ? new Uint8Array(Array.from(atob(cipher), c => c.charCodeAt(0)))
-              : (cipher.ciphertext ? wordArrayToBytes(cipher.ciphertext) : toUint8Array(cipher));
+            const data = typeof cipher === "string" ? new Uint8Array(Array.from(atob(cipher), (c) => c.charCodeAt(0))) : cipher.ciphertext ? wordArrayToBytes(cipher.ciphertext) : toUint8Array(cipher);
             const kBytes = wordArrayToBytes(key);
-            const ivBytes = (options && options.iv) ? wordArrayToBytes(options.iv) : new Uint8Array(0);
-            const mode = (options && options.mode) || 'AES-CBC';
-            
-            // Map Uint8Array (unsigned) to Int8Array (signed) to match Kotlin ByteArray
-            const keyArg = typeof Int8Array !== 'undefined' ? new Int8Array(kBytes.buffer) : kBytes;
-            const ivArg = typeof Int8Array !== 'undefined' ? new Int8Array(ivBytes.buffer) : ivBytes;
-            const dataArg = typeof Int8Array !== 'undefined' ? new Int8Array(data.buffer) : data;
-            
+            const ivBytes = options && options.iv ? wordArrayToBytes(options.iv) : new Uint8Array(0);
+            const mode = options && options.mode || "AES-CBC";
+            const keyArg = typeof Int8Array !== "undefined" ? new Int8Array(kBytes.buffer) : kBytes;
+            const ivArg = typeof Int8Array !== "undefined" ? new Int8Array(ivBytes.buffer) : ivBytes;
+            const dataArg = typeof Int8Array !== "undefined" ? new Int8Array(data.buffer) : data;
             const resBytes = __crypto_aes_decrypt_raw(mode, keyArg, ivArg, dataArg);
             const plain = new TextDecoder().decode(resBytes);
-            return { toString: function() { return plain; } };
+            return { toString: function() {
+              return plain;
+            } };
           } catch (err) {
             console.error("[Castle JNI Patch] Decrypt failed, falling back:", err);
             return originalDecrypt.call(CryptoJS.AES, cipher, key, options);
           }
         };
       }
-
       const CASTLE_SUFFIX = "T!BgJB";
-      
       const securityKeyWords = CryptoJS.enc.Base64.parse(securityKeyB64);
       const suffixWords = CryptoJS.enc.Utf8.parse(CASTLE_SUFFIX);
       const keyMaterial = securityKeyWords.concat(suffixWords);
-      
       let finalKey;
       if (keyMaterial.sigBytes < 16) {
         const padding = CryptoJS.lib.WordArray.create(new Array(16 - keyMaterial.sigBytes).fill(0));
@@ -190,20 +173,16 @@ function decryptCastle(encryptedB64, securityKeyB64) {
       } else {
         finalKey = keyMaterial;
       }
-      
       const iv = finalKey;
-      
       const decrypted = CryptoJS.AES.decrypt(encryptedB64, finalKey, {
         iv,
         mode: CryptoJS.mode.CBC,
         padding: CryptoJS.pad.Pkcs7
       });
-      
       const result = decrypted.toString(CryptoJS.enc.Utf8);
       if (!result) {
         throw new Error("Decryption resulted in empty string (possible key/IV mismatch)");
       }
-      
       console.log("[Castle] Local decryption successful");
       return result;
     } catch (error) {
@@ -212,8 +191,6 @@ function decryptCastle(encryptedB64, securityKeyB64) {
     }
   });
 }
-
-// src/castle/api.js
 function getSecurityKey() {
   return __async(this, null, function* () {
     console.log("[Castle] Fetching security key...");
@@ -341,8 +318,6 @@ function findCastleMovieId(securityKey, tmdbInfo) {
     throw new Error("Could not extract movie ID from search results");
   });
 }
-
-// src/castle/utils.js
 function getQualityValue(quality) {
   if (!quality)
     return 0;
@@ -383,8 +358,6 @@ function resolutionToQuality(resolution) {
   };
   return qualityMap[resolution] || `${resolution}p`;
 }
-
-// src/castle/index.js
 function processVideoResponse(videoData, mediaInfo, seasonNum, episodeNum, resolution, languageInfo) {
   const streams = [];
   const data = extractDataBlock(videoData);
@@ -393,7 +366,6 @@ function processVideoResponse(videoData, mediaInfo, seasonNum, episodeNum, resol
     console.log("[Castle] No videoUrl found in response");
     return streams;
   }
-  
   const subtitles = [];
   if (data.subtitles && Array.isArray(data.subtitles)) {
     data.subtitles.forEach((sub) => {
@@ -407,7 +379,6 @@ function processVideoResponse(videoData, mediaInfo, seasonNum, episodeNum, resol
       }
     });
   }
-
   let mediaTitle = mediaInfo.title || "Unknown";
   if (mediaInfo.year) {
     mediaTitle += ` (${mediaInfo.year})`;

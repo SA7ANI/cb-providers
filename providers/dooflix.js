@@ -1,7 +1,3 @@
-/**
- * dooflix - Built from src/dooflix/
- * Generated: 2026-06-01T14:20:20.721Z
- */
 var __defProp = Object.defineProperty;
 var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
 var __getOwnPropNames = Object.getOwnPropertyNames;
@@ -39,15 +35,11 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/dooflix/index.js
 var dooflix_exports = {};
 __export(dooflix_exports, {
   getStreams: () => getStreams
 });
 module.exports = __toCommonJS(dooflix_exports);
-
-// src/dooflix/constants.js
 var BASE_API = "https://panel.watchkaroabhi.com";
 var API_KEY = "qNhKLJiZVyoKdi9NCQGz8CIGrpUijujE";
 var HEADERS = {
@@ -56,8 +48,6 @@ var HEADERS = {
   "X-App-Version": "305"
 };
 var STREAM_REFERER = "https://molop.art/";
-
-// src/dooflix/index.js
 function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) {
   return __async(this, null, function* () {
     console.log(`[DooFlix] Fetching streams for TMDB ID: ${tmdbId}, Type: ${mediaType}`);

@@ -1,7 +1,3 @@
-/**
- * cinemacity - Built from src/cinemacity/
- * Generated: 2026-06-01T14:20:20.706Z
- */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -61,11 +57,7 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/cinemacity/index.js
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
-
-// src/cinemacity/constants.js
 var MAIN_URL = "https://cinemacity.cc";
 var HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36",
@@ -73,8 +65,6 @@ var HEADERS = {
   "Referer": "https://cinemacity.cc/"
 };
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
-
-// src/cinemacity/utils.js
 var atobPolyfill = (str) => {
   try {
     const chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/=";
@@ -113,8 +103,6 @@ function extractQuality(url) {
     return "360p";
   return "HD";
 }
-
-// src/cinemacity/index.js
 function getStreams(tmdbId, mediaType, season, episode) {
   return __async(this, null, function* () {
     var _a;

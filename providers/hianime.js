@@ -1,7 +1,3 @@
-/**
- * hianime - Built from src/hianime/
- * Generated: 2026-06-01T14:20:20.767Z
- */
 var __create = Object.create;
 var __defProp = Object.defineProperty;
 var __defProps = Object.defineProperties;
@@ -61,11 +57,7 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
-// src/hianime/index.js
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
-
-// src/hianime/constants.js
 var MEGAPLAY_BASE = "https://megaplay.buzz";
 var VIDWISH_BASE = "https://vidwish.live";
 var MEGACLOUD_BASE = "https://megacloud.bloggy.click";
@@ -75,8 +67,6 @@ var DEFAULT_HEADERS = {
   "Accept": "*/*",
   "Connection": "keep-alive"
 };
-
-// src/hianime/utils.js
 function fetchText(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const response = yield fetch(url, __spreadValues({
@@ -143,8 +133,6 @@ function searchMalId(title, mediaType) {
     }
   });
 }
-
-// src/hianime/index.js
 function extractSources(apiUrl, referer, origin, serverName, animeTitle, episodeNum, type) {
   return __async(this, null, function* () {
     var _a;
