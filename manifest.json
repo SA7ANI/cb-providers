@@ -258,6 +258,59 @@
       "contentLanguage": [
         "en"
       ]
+    },
+    {
+      "id": "uhdmovies",
+      "name": "UHDMovies",
+      "filename": "providers/uhdmovies.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "vegamovies",
+      "name": "VegaMovies",
+      "filename": "providers/vegamovies.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "redflix",
+      "name": "RedFlix",
+      "filename": "providers/redflix.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en"
+      ]
     }
   ]
 }
