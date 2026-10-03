@@ -83,12 +83,12 @@ function getMainUrl() {
     if (cachedMainUrl)
       return cachedMainUrl;
     try {
-      const response = yield fetch(DOMAINS_URL, { headers: { "User-Agent": "Mozilla/5.0" } });
+      const response = yield fetch("https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json", { headers: { "User-Agent": "Mozilla/5.0" } });
       const data = yield response.json();
-      cachedMainUrl = data.moviesdrive || "https://new3.moviesdrives.my";
+      cachedMainUrl = data.moviesdrive || "https://new5.moviesdrive.christmas";
       return cachedMainUrl;
     } catch (e) {
-      return "https://new3.moviesdrives.my";
+      return "https://new5.moviesdrive.christmas";
     }
   });
 }
@@ -96,7 +96,7 @@ function hubCloudExtractor(url, referer) {
   return __async(this, null, function* () {
     var _a;
     try {
-      let currentUrl = url.replace("hubcloud.ink", "hubcloud.dad");
+      let currentUrl = url.replace(/hubcloud\.(ink|dad|cx|lol|top|rocks|site|buzz)/gi, "hubcloud.ist");
       const pageResponse = yield fetch(currentUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: referer }) });
       let pageData = yield pageResponse.text();
       let finalUrl = currentUrl;
@@ -131,12 +131,16 @@ function hubCloudExtractor(url, referer) {
       for (const element of elements) {
         const link = $(element).attr("href");
         const text = $(element).text().toLowerCase();
-        if (text.includes("download file") || text.includes("fsl server") || text.includes("s3 server") || text.includes("fslv2") || text.includes("mega server") || link && link.includes("r2.dev")) {
+        if (link && !link.includes("telegram") && !link.startsWith("#")) {
           let label = "HubCloud";
-          if (link && link.includes("r2.dev"))
+          if (link.includes("r2.dev"))
             label = "Direct R2";
-          else if (link && link.includes("workers.dev"))
+          else if (link.includes("workers.dev"))
             label = "ZipDisk Server";
+          else if (link.includes("pixeldrain"))
+            label = "PixelServer";
+          else if (link.includes("gpdl") || text.includes("10gbps"))
+            label = "HubCloud - 10Gbps";
           else if (text.includes("fsl server"))
             label = "HubCloud - FSL";
           else if (text.includes("s3 server"))
@@ -190,22 +194,25 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       return [];
     }
     const mainUrl = yield getMainUrl();
-    const searchUrl = `${mainUrl}/search.php?q=${imdbId}`;
     try {
-      console.log(`[MoviesDrive] Searching at: ${searchUrl}`);
-      const searchRes = yield fetch(searchUrl, { headers: HEADERS });
-      if (!searchRes.ok) {
-        console.error(`[MoviesDrive] Search request failed: ${searchRes.status}`);
-        return [];
+      let match = null;
+      console.log(`[MoviesDrive] Searching at: ${mainUrl}/search.php?q=${imdbId}`);
+      const searchRes = yield fetch(`${mainUrl}/search.php?q=${imdbId}`, { headers: HEADERS });
+      if (searchRes.ok) {
+        const searchData = yield searchRes.json();
+        match = searchData?.hits?.map((h) => h.document).find((d) => d.imdb_id === imdbId);
       }
-      const searchData = yield searchRes.json();
-      if (!searchData.hits || searchData.hits.length === 0) {
-        console.log("[MoviesDrive] No hits found");
-        return [];
+      const mediaTitle = tmdbData.title || tmdbData.name;
+      if (!match && mediaTitle) {
+        console.log(`[MoviesDrive] IMDb search failed, falling back to title search: ${mediaTitle}`);
+        const titleRes = yield fetch(`${mainUrl}/search.php?q=${encodeURIComponent(mediaTitle)}`, { headers: HEADERS });
+        if (titleRes.ok) {
+          const titleData = yield titleRes.json();
+          match = titleData?.hits?.map((h) => h.document).find((d) => d.imdb_id === imdbId || (d.post_title && d.post_title.toLowerCase().includes(mediaTitle.toLowerCase()))) || titleData?.hits?.[0]?.document;
+        }
       }
-      const match = searchData.hits.map((h) => h.document).find((d) => d.imdb_id === imdbId);
       if (!match) {
-        console.log("[MoviesDrive] No exact IMDB match found");
+        console.log("[MoviesDrive] No match found on MoviesDrive");
         return [];
       }
       const permalink = match.permalink;
@@ -215,7 +222,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       const $ = import_cheerio_without_node_native2.default.load(pageHtml);
       const allLinks = [];
       if (mediaType === "movie") {
-        const downloadLinks = $("h5 > a").map((i, el) => $(el).attr("href")).get();
+        const downloadLinks = $("h5 > a, p > a.btn, a[href*='search-recover'], a[href*='hubcloud']").map((i, el) => $(el).attr("href")).get();
         for (const dLink of [...new Set(downloadLinks)]) {
           const extracted = yield extractMdrive(dLink);
           for (const server of extracted) {
@@ -280,7 +287,7 @@ function extractMdrive(url) {
           });
           const data = yield apiRes.json();
           if (data.hits) {
-            return data.hits.map((h) => h.url).filter((u) => !!u);
+            return data.hits.map((h) => h.url ? h.url.replace(/hubcloud\.(ink|dad|cx|lol|top|rocks|site|buzz)/gi, "hubcloud.ist") : null).filter((u) => !!u);
           }
         }
       }
