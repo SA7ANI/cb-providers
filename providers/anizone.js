@@ -54,7 +54,10 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+var _cheerioRaw = require("cheerio-without-node-native");
+var _cheerio = (_cheerioRaw && _cheerioRaw.default && (typeof _cheerioRaw.default.load === "function" || typeof _cheerioRaw.default === "function")) ? _cheerioRaw.default : _cheerioRaw;
+var loadHtml = function(h) { return (_cheerio && _cheerio.load) ? _cheerio.load(h) : (_cheerio ? _cheerio(h) : null); };
+var import_cheerio_without_node_native = { default: { load: loadHtml }, load: loadHtml };
 var MAIN_URL = "https://anizone.to";
 var HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) Chrome/120.0.0.0 Safari/537.36",

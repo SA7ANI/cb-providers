@@ -57,7 +57,10 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+var _cheerioRaw = require("cheerio-without-node-native");
+var _cheerio = (_cheerioRaw && _cheerioRaw.default && (typeof _cheerioRaw.default.load === "function" || typeof _cheerioRaw.default === "function")) ? _cheerioRaw.default : _cheerioRaw;
+var loadHtml = function(h) { return (_cheerio && _cheerio.load) ? _cheerio.load(h) : (_cheerio ? _cheerio(h) : null); };
+var import_cheerio_without_node_native = { default: { load: loadHtml }, load: loadHtml };
 var MEGAPLAY_BASE = "https://megaplay.buzz";
 var VIDWISH_BASE = "https://vidwish.live";
 var MEGACLOUD_BASE = "https://megacloud.bloggy.click";
