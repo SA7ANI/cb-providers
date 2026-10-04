@@ -41,7 +41,7 @@ var __async = (__this, __arguments, generator) => {
 var BASE_URL = "https://4khdhub.one";
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36";
-var DOMAINS_URL = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json";
+var DOMAINS_URL = "https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json";
 var domainCache = { url: BASE_URL, ts: 0 };
 function fetchLatestDomain() {
   return __async(this, null, function* () {
@@ -188,7 +188,10 @@ function formatBytes(val) {
     i = 0;
   return parseFloat((val / Math.pow(k, i)).toFixed(2)) + " " + sizes[i];
 }
-var cheerio = require("cheerio-without-node-native");
+var _rawCheerio = require("cheerio-without-node-native");
+var cheerio = (_rawCheerio && _rawCheerio.default && (typeof _rawCheerio.default.load === "function" || typeof _rawCheerio.default === "function")) ? _rawCheerio.default : _rawCheerio;
+var cheerio2 = cheerio;
+var cheerio3 = cheerio;
 function fetchPageUrl(name, year, isSeries) {
   return __async(this, null, function* () {
     const domain = yield fetchLatestDomain();
@@ -236,7 +239,7 @@ function fetchPageUrl(name, year, isSeries) {
     return matchingCards.length > 0 ? matchingCards[0] : null;
   });
 }
-var cheerio2 = require("cheerio-without-node-native");
+
 function resolveRedirectUrl(redirectUrl) {
   return __async(this, null, function* () {
     if (redirectUrl.includes("hubcloud.") || redirectUrl.includes("hubdrive.")) {
@@ -370,7 +373,7 @@ function extractHubCloud(hubCloudUrl, baseMeta) {
     return results;
   });
 }
-var cheerio3 = require("cheerio-without-node-native");
+
 function getStreams(tmdbId, type, season, episode) {
   return __async(this, null, function* () {
     const tmdbDetails = yield getTmdbDetails(tmdbId, type);

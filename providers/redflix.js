@@ -1,13 +1,9 @@
 /**
  * redflix - Built from src/redflix/
- * Generated: 2026-10-03T17:10:41.670Z
+ * Generated: 2026-10-04T17:37:00.750Z
  */
-var __create = Object.create;
 var __defProp = Object.defineProperty;
-var __getOwnPropDesc = Object.getOwnPropertyDescriptor;
-var __getOwnPropNames = Object.getOwnPropertyNames;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
-var __getProtoOf = Object.getPrototypeOf;
 var __hasOwnProp = Object.prototype.hasOwnProperty;
 var __propIsEnum = Object.prototype.propertyIsEnumerable;
 var __defNormalProp = (obj, key, value) => key in obj ? __defProp(obj, key, { enumerable: true, configurable: true, writable: true, value }) : obj[key] = value;
@@ -22,22 +18,6 @@ var __spreadValues = (a, b) => {
     }
   return a;
 };
-var __copyProps = (to, from, except, desc) => {
-  if (from && typeof from === "object" || typeof from === "function") {
-    for (let key of __getOwnPropNames(from))
-      if (!__hasOwnProp.call(to, key) && key !== except)
-        __defProp(to, key, { get: () => from[key], enumerable: !(desc = __getOwnPropDesc(from, key)) || desc.enumerable });
-  }
-  return to;
-};
-var __toESM = (mod, isNodeMode, target) => (target = mod != null ? __create(__getProtoOf(mod)) : {}, __copyProps(
-  // If the importer is in node compatibility mode or this is not an ESM
-  // file that has been converted to a CommonJS file using a Babel-
-  // compatible transform (i.e. "__esModule" has not been set), then set
-  // "default" to the CommonJS "module.exports" for node compatibility.
-  isNodeMode || !mod || !mod.__esModule ? __defProp(target, "default", { value: mod, enumerable: true }) : target,
-  mod
-));
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {
@@ -59,14 +39,11 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 
-// src/redflix/extractor.js
-var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
-
 // src/redflix/constants.js
 var BASE_URL = "https://redflix.biz";
 var TMDB_API_KEYS = [
   "1865f43a0549ca50d341dd9ab8b29f49",
-  "1865f43a0549ca50d341dd9ab8b29f49",
+  "439c478a771f35c05022f9feabcca01c",
   "e49339e830e014e414c2b9a71b2d4f82"
 ];
 var TMDB_BASE_URL = "https://api.tmdb.org/3";
@@ -137,11 +114,12 @@ function getMediaMetadata(_0, _1) {
           const cleanTmdbId = idStr.replace(/^tmdb:/i, "");
           url = `${TMDB_BASE_URL}/${endpoint}/${cleanTmdbId}?api_key=${key}&append_to_response=external_ids`;
         }
-        const response = yield httpGet(url, {
-          headers: { "Accept": "application/json" },
-          timeout: 6e3
+        const res = yield fetch(url, {
+          headers: { "Accept": "application/json", "User-Agent": "Mozilla/5.0" }
         });
-        const data = response.json || response.data;
+        if (!res.ok)
+          continue;
+        const data = yield res.json();
         if (data) {
           if (isImdb) {
             const results = mediaType === "tv" ? data.tv_results : data.movie_results;
@@ -167,8 +145,8 @@ function getMediaMetadata(_0, _1) {
       try {
         const cinemetaType = mediaType === "tv" ? "series" : "movie";
         const cinemetaUrl = `https://v3-cinemeta.strem.io/meta/${cinemetaType}/${idStr}.json`;
-        const cRes = yield httpGet(cinemetaUrl, { headers: { "Accept": "application/json" } });
-        const cData = cRes.json || cRes.data;
+        const cRes = yield fetch(cinemetaUrl, { headers: { "Accept": "application/json", "User-Agent": "Mozilla/5.0" } });
+        const cData = yield cRes.json();
         if ((_b = cData == null ? void 0 : cData.meta) == null ? void 0 : _b.name) {
           const yearStr = String(cData.meta.year || "").split("\u2013")[0];
           return {
@@ -186,11 +164,24 @@ function getMediaMetadata(_0, _1) {
 }
 
 // src/redflix/extractor.js
+var cheerioLib = null;
+try {
+  const raw = require("cheerio-without-node-native");
+  cheerioLib = raw && raw.default && (typeof raw.default.load === "function" || typeof raw.default === "function") ? raw.default : raw;
+} catch (e) {
+}
 function loadCheerio(html) {
   if (!html)
     return null;
-  const ch = import_cheerio_without_node_native.default && import_cheerio_without_node_native.default.load ? import_cheerio_without_node_native.default : import_cheerio_without_node_native.default && import_cheerio_without_node_native.default.default || import_cheerio_without_node_native.default;
-  if (typeof ch.load === "function")
+  let ch = cheerioLib;
+  if (!ch) {
+    try {
+      const raw = require("cheerio-without-node-native");
+      ch = raw && raw.default && (typeof raw.default.load === "function" || typeof raw.default === "function") ? raw.default : raw;
+    } catch (e) {
+    }
+  }
+  if (ch && typeof ch.load === "function")
     return ch.load(html);
   if (typeof ch === "function")
     return ch(html);

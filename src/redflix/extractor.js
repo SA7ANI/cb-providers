@@ -2,14 +2,25 @@
  * RedFlix Stream Extractor
  */
 
-import cheerio from 'cheerio-without-node-native';
+var cheerioLib = null;
+try {
+    const raw = require('cheerio-without-node-native');
+    cheerioLib = (raw && raw.default && (typeof raw.default.load === 'function' || typeof raw.default === 'function')) ? raw.default : raw;
+} catch (e) {}
+
 import { BASE_URL, DEFAULT_HEADERS } from './constants.js';
 import { normalizeTitle, getMediaMetadata, httpGet } from './utils.js';
 
 function loadCheerio(html) {
     if (!html) return null;
-    const ch = (cheerio && cheerio.load) ? cheerio : ((cheerio && cheerio.default) || cheerio);
-    if (typeof ch.load === 'function') return ch.load(html);
+    let ch = cheerioLib;
+    if (!ch) {
+        try {
+            const raw = require('cheerio-without-node-native');
+            ch = (raw && raw.default && (typeof raw.default.load === 'function' || typeof raw.default === 'function')) ? raw.default : raw;
+        } catch (e) {}
+    }
+    if (ch && typeof ch.load === 'function') return ch.load(html);
     if (typeof ch === 'function') return ch(html);
     return null;
 }

@@ -10,7 +10,7 @@ export const TMDB_API_KEYS = [
     'e49339e830e014e414c2b9a71b2d4f82'
 ];
 
-export const TMDB_BASE_URL = 'https://api.themoviedb.org/3';
+export const TMDB_BASE_URL = 'https://api.tmdb.org/3';
 
 export const DEFAULT_HEADERS = {
     'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36',

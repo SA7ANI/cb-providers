@@ -57,11 +57,14 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
+var _cheerioRaw = require("cheerio-without-node-native");
+var _cheerio = (_cheerioRaw && _cheerioRaw.default && (typeof _cheerioRaw.default.load === "function" || typeof _cheerioRaw.default === "function")) ? _cheerioRaw.default : _cheerioRaw;
+var loadHtml = function(h) { return (_cheerio && _cheerio.load) ? _cheerio.load(h) : (_cheerio ? _cheerio(h) : null); };
+var import_cheerio_without_node_native2 = { default: { load: loadHtml }, load: loadHtml };
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var TMDB_BASE_URL = "https://api.tmdb.org/3";
 var MAIN_URL = "https://new1.hdhub4u.free";
-var DOMAINS_URL = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json";
+var DOMAINS_URL = "https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json";
 var DOMAIN_CACHE_TTL = 4 * 60 * 60 * 1e3;
 var HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36 Edg/131.0.0.0",
@@ -286,7 +289,7 @@ function getTMDBDetails(tmdbId, mediaType) {
     throw new Error(`Failed to fetch TMDB details for ${tmdbId}`);
   });
 }
-var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
+var import_cheerio_without_node_native = import_cheerio_without_node_native2;
 var import_crypto_js = __toESM(require("crypto-js"));
 function getRedirectLinks(url) {
   return __async(this, null, function* () {

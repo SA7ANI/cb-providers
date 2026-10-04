@@ -75,12 +75,11 @@ export async function getMediaMetadata(id, mediaType, userConfig = {}) {
                 url = `${TMDB_BASE_URL}/${endpoint}/${cleanTmdbId}?api_key=${key}&append_to_response=external_ids`;
             }
 
-            const response = await httpGet(url, {
-                headers: { 'Accept': 'application/json' },
-                timeout: 6000
+            const res = await fetch(url, {
+                headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' }
             });
-
-            const data = response.json || response.data;
+            if (!res.ok) continue;
+            const data = await res.json();
             if (data) {
                 if (isImdb) {
                     const results = mediaType === 'tv' ? data.tv_results : data.movie_results;
@@ -109,8 +108,8 @@ export async function getMediaMetadata(id, mediaType, userConfig = {}) {
         try {
             const cinemetaType = mediaType === 'tv' ? 'series' : 'movie';
             const cinemetaUrl = `https://v3-cinemeta.strem.io/meta/${cinemetaType}/${idStr}.json`;
-            const cRes = await httpGet(cinemetaUrl, { headers: { 'Accept': 'application/json' } });
-            const cData = cRes.json || cRes.data;
+            const cRes = await fetch(cinemetaUrl, { headers: { 'Accept': 'application/json', 'User-Agent': 'Mozilla/5.0' } });
+            const cData = await cRes.json();
             if (cData?.meta?.name) {
                 const yearStr = String(cData.meta.year || '').split('–')[0];
                 return {
