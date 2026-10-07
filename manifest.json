@@ -5,7 +5,7 @@
     {
       "id": "moviesdrive",
       "name": "MoviesDrive",
-      "description": "MoviesDrive provider for Nuvio",
+      "description": "MoviesDrive provider for Nuvio with HubCloud and Google Drive extraction",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -18,14 +18,16 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://www.google.com/s2/favicons?domain=moviesdrives.my&sz=128",
       "contentLanguage": [
-        "en"
+        "en",
+        "hi"
       ]
     },
     {
       "id": "4khdhub",
       "name": "4KHDHub",
-      "description": "4KHDHub provider for Nuvio",
+      "description": "4KHDHub provider for Nuvio with 4K and 1080p high speed links",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -38,6 +40,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://www.google.com/s2/favicons?domain=4khdhub.one&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -46,7 +49,7 @@
     {
       "id": "hdhub4u",
       "name": "HDHub4u",
-      "description": "HDHub4u provider for Nuvio",
+      "description": "Direct links from HDHub4u with high-speed download support",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -59,6 +62,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://www.google.com/s2/favicons?domain=new6.hdhub4u.fo&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -67,7 +71,7 @@
     {
       "id": "vegamovies",
       "name": "VegaMovies",
-      "description": "VegaMovies provider for Nuvio",
+      "description": "VegaMovies provider for Nuvio with V-Cloud / G-Direct links",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -80,6 +84,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://www.google.com/s2/favicons?domain=vegamovies.im&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -88,7 +93,7 @@
     {
       "id": "castle",
       "name": "Castle",
-      "description": "Castle provider for Nuvio",
+      "description": "Castle Multi-Language streaming provider with local AES decryption",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -101,14 +106,20 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://static.hbayy.com/simple-blog-13/prod/_nuxt/big-logo.DESZ4mBj.png",
       "contentLanguage": [
-        "en"
+        "en",
+        "hi",
+        "ta",
+        "te",
+        "ml",
+        "kn"
       ]
     },
     {
       "id": "redflix",
       "name": "RedFlix",
-      "description": "RedFlix provider for Nuvio",
+      "description": "RedFlix multi-server HD streaming provider for Nuvio",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -121,6 +132,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://www.google.com/s2/favicons?domain=redflix.biz&sz=128",
       "contentLanguage": [
         "en"
       ]
@@ -128,7 +140,7 @@
     {
       "id": "movieblast",
       "name": "MovieBlast",
-      "description": "MovieBlast provider for Nuvio",
+      "description": "Direct links via MovieBlast API with multi-language support",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -141,14 +153,17 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/Icons/movieblast.png",
       "contentLanguage": [
+        "te",
+        "hi",
         "en"
       ]
     },
     {
       "id": "kurage",
       "name": "Kurage",
-      "description": "Kurage Anime provider for Nuvio",
+      "description": "Kurage.live anime streaming with high-fidelity anime sync and subtitles",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -161,6 +176,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://kurage.live/favicon.ico",
       "contentLanguage": [
         "en",
         "ja"
@@ -169,7 +185,7 @@
     {
       "id": "vidnest",
       "name": "Vidnest",
-      "description": "Vidnest multi-server provider for Nuvio",
+      "description": "Vidnest multi-server streaming with local cipher decoding",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -182,6 +198,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://vidnest.fun/favicon.ico",
       "contentLanguage": [
         "en"
       ]
@@ -189,7 +206,7 @@
     {
       "id": "anizone",
       "name": "AniZone",
-      "description": "AniZone Anime provider for Nuvio",
+      "description": "AniZone anime streaming with multi-audio and soft subtitles",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -202,6 +219,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://anizone.to/favicon.ico",
       "contentLanguage": [
         "en",
         "ja"
@@ -212,7 +230,7 @@
     {
       "id": "moviesdrive",
       "name": "MoviesDrive",
-      "description": "MoviesDrive provider for Nuvio",
+      "description": "MoviesDrive provider for Nuvio with HubCloud and Google Drive extraction",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -225,14 +243,16 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://www.google.com/s2/favicons?domain=moviesdrives.my&sz=128",
       "contentLanguage": [
-        "en"
+        "en",
+        "hi"
       ]
     },
     {
       "id": "4khdhub",
       "name": "4KHDHub",
-      "description": "4KHDHub provider for Nuvio",
+      "description": "4KHDHub provider for Nuvio with 4K and 1080p high speed links",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -245,6 +265,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://www.google.com/s2/favicons?domain=4khdhub.one&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -253,7 +274,7 @@
     {
       "id": "hdhub4u",
       "name": "HDHub4u",
-      "description": "HDHub4u provider for Nuvio",
+      "description": "Direct links from HDHub4u with high-speed download support",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -266,6 +287,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://www.google.com/s2/favicons?domain=new6.hdhub4u.fo&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -274,7 +296,7 @@
     {
       "id": "vegamovies",
       "name": "VegaMovies",
-      "description": "VegaMovies provider for Nuvio",
+      "description": "VegaMovies provider for Nuvio with V-Cloud / G-Direct links",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -287,6 +309,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://www.google.com/s2/favicons?domain=vegamovies.im&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -295,7 +318,7 @@
     {
       "id": "castle",
       "name": "Castle",
-      "description": "Castle provider for Nuvio",
+      "description": "Castle Multi-Language streaming provider with local AES decryption",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -308,14 +331,20 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://static.hbayy.com/simple-blog-13/prod/_nuxt/big-logo.DESZ4mBj.png",
       "contentLanguage": [
-        "en"
+        "en",
+        "hi",
+        "ta",
+        "te",
+        "ml",
+        "kn"
       ]
     },
     {
       "id": "redflix",
       "name": "RedFlix",
-      "description": "RedFlix provider for Nuvio",
+      "description": "RedFlix multi-server HD streaming provider for Nuvio",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -328,6 +357,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://www.google.com/s2/favicons?domain=redflix.biz&sz=128",
       "contentLanguage": [
         "en"
       ]
@@ -335,7 +365,7 @@
     {
       "id": "movieblast",
       "name": "MovieBlast",
-      "description": "MovieBlast provider for Nuvio",
+      "description": "Direct links via MovieBlast API with multi-language support",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -348,14 +378,17 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/Icons/movieblast.png",
       "contentLanguage": [
+        "te",
+        "hi",
         "en"
       ]
     },
     {
       "id": "kurage",
       "name": "Kurage",
-      "description": "Kurage Anime provider for Nuvio",
+      "description": "Kurage.live anime streaming with high-fidelity anime sync and subtitles",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -368,6 +401,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://kurage.live/favicon.ico",
       "contentLanguage": [
         "en",
         "ja"
@@ -376,7 +410,7 @@
     {
       "id": "vidnest",
       "name": "Vidnest",
-      "description": "Vidnest multi-server provider for Nuvio",
+      "description": "Vidnest multi-server streaming with local cipher decoding",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -389,6 +423,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://vidnest.fun/favicon.ico",
       "contentLanguage": [
         "en"
       ]
@@ -396,7 +431,7 @@
     {
       "id": "anizone",
       "name": "AniZone",
-      "description": "AniZone Anime provider for Nuvio",
+      "description": "AniZone anime streaming with multi-audio and soft subtitles",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -409,6 +444,7 @@
         "mp4",
         "m3u8"
       ],
+      "logo": "https://anizone.to/favicon.ico",
       "contentLanguage": [
         "en",
         "ja"
