@@ -3,47 +3,6 @@
   "version": "1.0.0",
   "scrapers": [
     {
-      "id": "redflix",
-      "name": "RedFlix",
-      "description": "RedFlix provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/redflix.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "vegamovies",
-      "name": "VegaMovies",
-      "description": "VegaMovies provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vegamovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
       "id": "moviesdrive",
       "name": "MoviesDrive",
       "description": "MoviesDrive provider for Nuvio",
@@ -61,6 +20,27 @@
       ],
       "contentLanguage": [
         "en"
+      ]
+    },
+    {
+      "id": "4khdhub",
+      "name": "4KHDHub",
+      "description": "4KHDHub provider for Nuvio",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/4khdhub.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
       ]
     },
     {
@@ -85,16 +65,16 @@
       ]
     },
     {
-      "id": "4khdhub",
-      "name": "4KHDHub",
-      "description": "4KHDHub provider for Nuvio",
+      "id": "vegamovies",
+      "name": "VegaMovies",
+      "description": "VegaMovies provider for Nuvio",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/4khdhub.js",
+      "filename": "providers/vegamovies.js",
       "enabled": true,
       "formats": [
         "mp4",
@@ -126,6 +106,26 @@
       ]
     },
     {
+      "id": "redflix",
+      "name": "RedFlix",
+      "description": "RedFlix provider for Nuvio",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/redflix.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
       "id": "movieblast",
       "name": "MovieBlast",
       "description": "MovieBlast provider for Nuvio",
@@ -146,189 +146,9 @@
       ]
     },
     {
-      "id": "vidnest",
-      "name": "Vidnest",
-      "description": "Vidnest provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vidnest.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "dooflix",
-      "name": "DooFlix",
-      "description": "DooFlix provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/dooflix.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "allmovieland",
-      "name": "AllMovieLand",
-      "description": "AllMovieLand provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/allmovieland.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "vidnestanime",
-      "name": "VidnestAnime",
-      "description": "VidnestAnime provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vidnest-anime.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "cinevibe",
-      "name": "Cinevibe",
-      "description": "Cinevibe provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/cinevibe.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "cinemacity",
-      "name": "CinemaCity",
-      "description": "CinemaCity provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/cinemacity.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "showbox",
-      "name": "ShowBox",
-      "description": "ShowBox provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/showbox.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "mycima",
-      "name": "MyCima",
-      "description": "MyCima provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/mycima.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "hianime",
-      "name": "HiAnime",
-      "description": "HiAnime provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/hianime.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
       "id": "kurage",
       "name": "Kurage",
-      "description": "Kurage provider for Nuvio",
+      "description": "Kurage Anime provider for Nuvio",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -342,94 +162,13 @@
         "m3u8"
       ],
       "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "anizone",
-      "name": "AniZone",
-      "description": "AniZone provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/anizone.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "uhdmovies",
-      "name": "UHDMovies",
-      "description": "UHDMovies provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/uhdmovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
         "en",
-        "hi"
+        "ja"
       ]
     }
   ],
   "providers": [
     {
-      "id": "redflix",
-      "name": "RedFlix",
-      "description": "RedFlix provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/redflix.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "vegamovies",
-      "name": "VegaMovies",
-      "description": "VegaMovies provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vegamovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
       "id": "moviesdrive",
       "name": "MoviesDrive",
       "description": "MoviesDrive provider for Nuvio",
@@ -447,6 +186,27 @@
       ],
       "contentLanguage": [
         "en"
+      ]
+    },
+    {
+      "id": "4khdhub",
+      "name": "4KHDHub",
+      "description": "4KHDHub provider for Nuvio",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/4khdhub.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
       ]
     },
     {
@@ -471,16 +231,16 @@
       ]
     },
     {
-      "id": "4khdhub",
-      "name": "4KHDHub",
-      "description": "4KHDHub provider for Nuvio",
+      "id": "vegamovies",
+      "name": "VegaMovies",
+      "description": "VegaMovies provider for Nuvio",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/4khdhub.js",
+      "filename": "providers/vegamovies.js",
       "enabled": true,
       "formats": [
         "mp4",
@@ -512,36 +272,16 @@
       ]
     },
     {
-      "id": "vidnest",
-      "name": "Vidnest",
-      "description": "Vidnest provider for Nuvio",
+      "id": "redflix",
+      "name": "RedFlix",
+      "description": "RedFlix provider for Nuvio",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/vidnest.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "dooflix",
-      "name": "DooFlix",
-      "description": "DooFlix provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/dooflix.js",
+      "filename": "providers/redflix.js",
       "enabled": true,
       "formats": [
         "mp4",
@@ -572,149 +312,9 @@
       ]
     },
     {
-      "id": "allmovieland",
-      "name": "AllMovieLand",
-      "description": "AllMovieLand provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/allmovieland.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "vidnestanime",
-      "name": "VidnestAnime",
-      "description": "VidnestAnime provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vidnest-anime.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "cinevibe",
-      "name": "Cinevibe",
-      "description": "Cinevibe provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/cinevibe.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "cinemacity",
-      "name": "CinemaCity",
-      "description": "CinemaCity provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/cinemacity.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "showbox",
-      "name": "ShowBox",
-      "description": "ShowBox provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/showbox.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "mycima",
-      "name": "MyCima",
-      "description": "MyCima provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/mycima.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "hianime",
-      "name": "HiAnime",
-      "description": "HiAnime provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/hianime.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
       "id": "kurage",
       "name": "Kurage",
-      "description": "Kurage provider for Nuvio",
+      "description": "Kurage Anime provider for Nuvio",
       "version": "1.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
@@ -728,48 +328,8 @@
         "m3u8"
       ],
       "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "anizone",
-      "name": "AniZone",
-      "description": "AniZone provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/anizone.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "uhdmovies",
-      "name": "UHDMovies",
-      "description": "UHDMovies provider for Nuvio",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/uhdmovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "contentLanguage": [
         "en",
-        "hi"
+        "ja"
       ]
     }
   ]
