@@ -1,271 +1,142 @@
-# Nuvio Providers
+# 🌶️ CB Providers
 
-A collection of streaming providers for the Nuvio app. Providers are JavaScript modules that fetch streams from various sources.
+[![Providers](https://img.shields.io/badge/Active_Providers-27_Verified-emerald?style=for-the-badge&logo=fastapi)](manifest.json)
+[![Platform](https://img.shields.io/badge/Platform-Nuvio_App-blue?style=for-the-badge)](https://github.com/yoruix/nuvio-providers)
+[![License](https://img.shields.io/badge/License-GNU_GPLv3-orange?style=for-the-badge)](LICENSE)
 
-📖 **[Read the Comprehensive Developer Guide](DOCUMENTATION.md)**
+A curated, high-performance collection of streaming and scraper plugins built for the **Nuvio App**.
 
-## Quick Start
-
-### Using in Nuvio App
-
-1. Open **Nuvio** > **Settings** > **Plugins**
-2. Add this repository URL:
-   ```
-   https://raw.githubusercontent.com/yoruix/nuvio-providers/refs/heads/main/manifest.json
-   ```
-3. Refresh and enable the providers you want
-4. **Developer Mode**: To test local changes, run `npm start` on your computer.
-   > ⚠️ **Important:** You must use the **development build** of Nuvio (`npx expo run:android` or `npx expo run:ios`). Some providers may work locally but fail in React Native.
-   - Go to **Settings** > **Developer** > **Plugin Tester** in the app.
-   - Enter your local server URL (e.g., `http://192.168.1.5:3000/manifest.json`).
-   - You can also test individual provider URLs here.
+All 27 providers are **tested, live-verified**, and optimized for fast stream extraction across 4K UHD, 1080p, Multi-Audio (Hindi, English, Japanese, Tamil, Telugu), and Anime.
 
 ---
 
-## Project Structure
+## ⚡ Quick Start: Add to Nuvio App
 
-```
-nuvio-providers/
-├── src/                    # Source files (multi-file development)
-│   ├── vixsrc/
-│   │   ├── index.js        # Main entry point
-│   │   ├── extractor.js    # Stream extraction
-│   │   ├── http.js         # HTTP utilities
-│   │   └── ...
-│   └── uhdmovies/
-│       └── ...
-│
-├── providers/              # Output directory (ready-to-use files)
-│   ├── vixsrc.js           # Bundled from src/vixsrc/
+1. Open **Nuvio App** > **Settings** > **Plugins**
+2. Paste the manifest repository URL:
+   ```text
+   https://raw.githubusercontent.com/SA7ANI/cb-providers/main/manifest.json
+   ```
+3. Tap **Add** / **Refresh** to load all 27 active modules.
+4. Toggle your desired providers and prioritize as needed.
+
+---
+
+## 🚀 Active Provider Fleet (27 Verified Modules)
+
+| # | Provider Name | ID | Supported Media | Content Languages | Description |
+|---|---|---|---|---|---|
+| 1 | **MoviesDrive** | `moviesdrive` | Movies, TV | `en`, `hi` | HubCloud & Google Drive high-speed stream extraction |
+| 2 | **4KHDHub** | `4khdhub` | Movies, TV | `en`, `hi` | Direct 4K & 1080p high speed links |
+| 3 | **HDHub4u** | `hdhub4u` | Movies, TV | `en`, `hi` | Fast direct links with download & streaming mirrors |
+| 4 | **VegaMovies** | `vegamovies` | Movies, TV | `en`, `hi` | V-Cloud direct streaming & multi-quality options |
+| 5 | **UHDMovies** | `uhdmovies` | Movies, TV | `en`, `hi` | Premier 4K UHD & 1080p HEVC download & stream sources |
+| 6 | **MoviesMod** | `moviesmod` | Movies, TV | `en`, `hi` | High-speed multi-quality movies with GDrive/HubCloud |
+| 7 | **DesiFlix** | `desiflix` | Movies, TV | `en`, `hi` | Indian movies, Bollywood & Hindi series |
+| 8 | **Einthusan** | `einthusan` | Movies | `en`, `hi`, `ta`, `te`, `ml`, `kn` | Indian cinema catalog (Hindi, Tamil, Telugu, Malayalam) |
+| 9 | **Castle** | `castle` | Movies, TV | `en`, `hi` | Direct fast streaming with multi-server failover |
+| 10 | **RedFlix** | `redflix` | Movies, TV | `en`, `hi` | RedFlix catalog streaming |
+| 11 | **MovieBlast** | `movieblast` | Movies, TV | `en`, `hi` | Direct cloud links & multi-server playback |
+| 12 | **🧲 Torrentio** | `torrentio` | Movies, TV | `en` | Multi-torrent streaming engine for global movies & series |
+| 13 | **MovieBox** | `moviebox` | Movies, TV | `en` | Multi-server fast streaming |
+| 14 | **Dahmermovies** | `dahmermovies` | Movies | `en` | High-speed direct movie streams |
+| 15 | **Dahmermovies-TV** | `dahmermovies-tv` | TV | `en` | Fast TV series multi-episode streams |
+| 16 | **Kurage** | `kurage` | Anime, TV | `en`, `ja` | Anime streaming with multi-server failover |
+| 17 | **AniZone** | `anizone` | Anime, TV | `en`, `ja` | High-quality anime with multi-audio & soft subtitles |
+| 18 | **AnimeDekho** | `animedekho` | Anime, TV | `en`, `hi`, `ja` | Hindi & multi-audio anime streaming |
+| 19 | **Reanime** | `reanime` | Anime, Movies | `en`, `ja` | Anime & Asian content streaming |
+| 20 | **Vidnest** | `vidnest` | Movies, TV | `en` | Multi-server streaming with local cipher decoding |
+| 21 | **PlayIMDb** | `playimdb` | Movies, TV | `en` | Multi-hoster movie streaming engine |
+| 22 | **Purstream** | `purstream` | Movies, TV | `en` | Direct stream resolver |
+| 23 | **🪨 VidRock** | `vidrock` | Movies, TV | `en` | Embed video streamer |
+| 24 | **TopCartoons** | `topcartoons` | TV | `en` | Animated series, cartoons & family entertainment |
+| 25 | **ZinkMovies** | `zinkmovies` | Movies | `en` | Fast direct links |
+| 26 | **Movix VF** | `movix` | Movies, TV | `fr`, `en` | French audio/subbed streaming |
+| 27 | **🌸 PersianStremio** | `persianstremio` | Movies, TV | `fa`, `en` | Multi-source streams with Persian support |
+
+---
+
+## 🛠️ Project Structure
+
+```text
+cb-providers/
+├── providers/                 # Production-ready, standalone provider bundles
+│   ├── moviesdrive.js
+│   ├── 4khdhub.js
 │   ├── uhdmovies.js
-│   └── ...
-│
-├── manifest.json           # Provider registry
-├── build.js                # Build script
+│   ├── torrentio.js
+│   └── ... (27 modules)
+├── src/                       # Multi-file source development (optional)
+├── manifest.json              # Provider plugin registry (Nuvio standard)
+├── build.js                   # Hermes/esbuild bundler & transpiler
 └── package.json
 ```
 
 ---
 
-## Development
+## 💻 Provider Development
 
-There are two ways to create providers:
+### Single-File Provider (Standard)
 
-### Option 1: Single-File Provider
+Create a JavaScript file in `providers/<provider-id>.js`. Providers expose a `getStreams` method:
 
-For simple providers, you can create a single JavaScript file directly in the `providers/` directory.
-
-**Important:** The app's JavaScript engine (Hermes) has limitations with `async/await` in dynamic code.
-- **Recommended**: Use Promise chains (`.then()`).
-- **Alternative**: Use `async/await` and run the transpiler command (see below).
-
-**Example (Promise Chains):**
 ```javascript
 // providers/myprovider.js
 
-function getStreams(tmdbId, mediaType, season, episode) {
-  console.log(`[MyProvider] Fetching ${mediaType} ${tmdbId}`);
-  
-  return fetch(`https://api.example.com/streams/${tmdbId}`)
-    .then(response => response.json())
-    .then(data => {
-      return data.streams.map(s => ({
-        name: "MyProvider",
-        title: s.title,
-        url: s.url,
-        quality: s.quality
-      }));
-    })
-    .catch(error => {
-      console.error('[MyProvider] Error:', error.message);
-      return [];
-    });
+async function getStreams(tmdbId, mediaType, season, episode, userConfig = {}) {
+  try {
+    const res = await fetch(`https://api.example.com/streams/${tmdbId}`);
+    const data = await res.json();
+    return data.streams.map(s => ({
+      name: "MyProvider",
+      title: s.title,
+      url: s.url,
+      quality: s.quality || "1080p",
+      headers: {
+        "User-Agent": "Mozilla/5.0..."
+      }
+    }));
+  } catch (err) {
+    console.error('[MyProvider] Error:', err.message);
+    return [];
+  }
 }
 
 module.exports = { getStreams };
 ```
 
-To register the provider, add it to `manifest.json`:
+Register the scraper in `manifest.json`:
 ```json
 {
   "id": "myprovider",
   "name": "My Provider",
-  "filename": "providers/myprovider.js",
-  "supportedTypes": ["movie", "tv"],
-  "enabled": true
-}
-```
-
-### Option 2: Multi-File Provider (Recommended)
-
-For complex providers, use the `src/` directory. This allows you to split code into multiple files. The build script automatically handles bundling and `async/await` transpilation.
-
-1. **Create source folder:**
-   ```bash
-   mkdir -p src/myprovider
-   ```
-
-2. **Create entry point** (`src/myprovider/index.js`):
-   ```javascript
-   import { fetchPage } from './http.js';
-   import { extractStreams } from './extractor.js';
-
-   // async/await is fully supported here
-   async function getStreams(tmdbId, mediaType, season, episode) {
-     const page = await fetchPage(tmdbId, mediaType, season, episode);
-     return extractStreams(page);
-   }
-
-   module.exports = { getStreams };
-   ```
-
-3. **Build:**
-   ```bash
-   node build.js myprovider
-   ```
-
-This generates `providers/myprovider.js`.
-
----
-
-## Building
-
-### Build Source Providers
-Bundles files from `src/<provider>/` into `providers/<provider>.js`.
-
-```bash
-# Build specific provider
-node build.js vixsrc
-
-# Build multiple
-node build.js vixsrc uhdmovies
-
-# Build all source providers
-node build.js
-```
-
-### Transpile Single-File Providers
-If you wrote a single-file provider using `async/await`, you must transpile it for compatibility.
-
-```bash
-# Transpile specific file
-node build.js --transpile myprovider.js
-
-# Transpile all applicable files in providers/
-node build.js --transpile
-```
-
-### Watch Mode
-Automatically rebuilds when files change.
-```bash
-npm run build:watch
-```
-
----
-
-## Testing
-
-Create a test script to identify issues before loading into the app.
-
-```javascript
-// test-myprovider.js
-const { getStreams } = require('./providers/myprovider.js');
-
-async function test() {
-  console.log('Testing...');
-  const streams = await getStreams('872585', 'movie'); // Oppenheimer ID
-  console.log('Streams found:', streams.length);
-}
-
-test();
-```
-
-Run with Node.js:
-```bash
-node test-myprovider.js
-```
-
----
-
-## Stream Object Format
-
-Providers must return an array of stream objects:
-
-```javascript
-{
-  name: "Provider Name",           // Provider identifier
-  title: "1080p Stream",           // Stream description
-  url: "https://...",              // Direct stream URL (m3u8, mp4, mkv)
-  quality: "1080p",                // Quality label
-  size: "2.5 GB",                  // Optional file size
-  headers: {                       // Optional headers for playback
-    "Referer": "https://source.com",
-    "User-Agent": "Mozilla/5.0..."
-  }
-}
-```
-
----
-
-## Available Modules
-
-Providers have access to these modules via `require()`:
-
-| Module | Usage |
-|--------|-------|
-| `cheerio-without-node-native` | HTML parsing |
-| `crypto-js` | Encryption/decryption |
-| `axios` | HTTP requests |
-
-Native `fetch` and `console` are also available globally.
-
----
-
-## Manifest Options
-
-The `manifest.json` file controls provider settings.
-
-```json
-{
-  "id": "unique-id",
-  "name": "Display Name",
   "description": "Short description",
   "version": "1.0.0",
   "author": "Your Name",
   "supportedTypes": ["movie", "tv"],
-  "filename": "providers/file.js",
+  "filename": "providers/myprovider.js",
   "enabled": true,
-  "logo": "https://url/to/logo.png",
-  "contentLanguage": ["en", "hi"],
-  "formats": ["mkv", "mp4"],
-  "limited": false,
-  "disabledPlatforms": ["ios"],
-  "supportsExternalPlayer": true
+  "formats": ["mp4", "m3u8"],
+  "logo": "https://example.com/logo.png",
+  "contentLanguage": ["en"]
 }
 ```
 
 ---
 
-## Contributing
+## 🙏 Credits & Acknowledgements
 
-1. **Fork the repository**
-2. **Create a branch**: `git checkout -b add-myprovider`
-3. **Develop and test**
-4. **Build**: `node build.js myprovider`
-5. **Commit**: `git commit -m "Add MyProvider"`
-6. **Push and PR**
+This repository is built upon, inspired by, and grateful to the open-source community around Nuvio:
 
----
-
-## License
-
-This project is licensed under the **GNU General Public License v3.0**.
+- **[Yoruix / Nuvio Team](https://github.com/yoruix/nuvio-providers)**: For creating the foundational Nuvio provider plugin architecture, Hermes engine runtime specifications, and original provider implementations.
+- **[D3adlyRocket / All-in-One-Nuvio](https://github.com/D3adlyRocket/All-in-One-Nuvio)**: For scraper logic, community modules, and resolver contributions.
+- **[Eclipsia](https://codeberg.org/eclipsia/nuvio-plugin)**: For open-source plugin extensions and extractor patterns.
+- **Community Authors & Maintainers**: Special thanks to all community contributors including Kabir, piratezoro9, ChillPill, A2R14N, and all third-party extractor creators.
+- **[SA7ANI](https://github.com/SA7ANI)**: For maintaining, live testing, and curating this collection.
 
 ---
 
-## Disclaimer
+## ⚖️ License & Disclaimer
 
-- **No content is hosted by this repository.**
-- Providers fetch publicly available content from third-party websites.
-- Users are responsible for compliance with local laws.
-- For DMCA concerns, contact the actual content hosts.
+- **License**: Licensed under the **GNU General Public License v3.0**.
+- **Disclaimer**: This repository does not host any video files or media content. All providers scrape publicly accessible third-party search engines and APIs. Users are solely responsible for ensuring compliance with applicable copyright and local laws.
