@@ -165,6 +165,47 @@
         "en",
         "ja"
       ]
+    },
+    {
+      "id": "vidnest",
+      "name": "Vidnest",
+      "description": "Vidnest multi-server provider for Nuvio",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/vidnest.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "anizone",
+      "name": "AniZone",
+      "description": "AniZone Anime provider for Nuvio",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/anizone.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "ja"
+      ]
     }
   ],
   "providers": [
@@ -322,6 +363,47 @@
         "tv"
       ],
       "filename": "providers/kurage.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "ja"
+      ]
+    },
+    {
+      "id": "vidnest",
+      "name": "Vidnest",
+      "description": "Vidnest multi-server provider for Nuvio",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/vidnest.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en"
+      ]
+    },
+    {
+      "id": "anizone",
+      "name": "AniZone",
+      "description": "AniZone Anime provider for Nuvio",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/anizone.js",
       "enabled": true,
       "formats": [
         "mp4",
