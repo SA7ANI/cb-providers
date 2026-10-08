@@ -1,294 +1,221 @@
-'use strict';
-
-const TMDB_API_KEY = '1865f43a0549ca50d341dd9ab8b29f49';
-const TORRENTIO_API = 'https://torrentio.strem.fun';
-const PROVIDER_NAME = 'Torrentio';
-const HEADERS = {
-  'User-Agent': 'Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36',
-  'Accept': 'application/json'
+var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
+var TORRENTIO_API = "https://torrentio.strem.fun";
+var PROVIDER_NAME = "Torrentio";
+var HEADERS = {
+  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/124.0.0.0 Safari/537.36",
+  "Accept": "application/json"
 };
-const TRACKERS = [
-  'udp://tracker.opentrackr.org:1337/announce',
-  'udp://open.stealth.si:80/announce',
-  'udp://tracker.torrent.eu.org:451/announce',
-  'udp://tracker.openbittorrent.com:6969/announce'
+var TRACKERS = [
+  "udp://tracker.opentrackr.org:1337/announce",
+  "udp://open.stealth.si:80/announce",
+  "udp://tracker.torrent.eu.org:451/announce",
+  "udp://tracker.bittor.pw:1337/announce"
 ];
 
-function formatCholeCard(opt) {
-  var raw = [opt.filename, opt.server, opt.quality, opt.size, opt.title].filter(Boolean).join(' ');
-  var text = raw.trim();
-
-  // 1. Resolution
-  var res = '';
-  if (/2160p|4k|uhd/i.test(text)) res = '4K UHD';
-  else if (/1080p|fhd/i.test(text)) res = '1080p FHD';
-  else if (/720p|hd/i.test(text)) res = '720p HD';
-  else if (/480p|sd/i.test(text)) res = '480p';
-  else if (opt.quality && String(opt.quality).length > 1) {
-    var q = String(opt.quality).toUpperCase();
-    res = q.includes('2160') || q.includes('4K') ? '4K UHD' : (q.includes('1080') ? '1080p FHD' : (q.includes('720') ? '720p HD' : q));
-  } else res = '1080p FHD';
-
-  // 2. Source
-  var source = '';
-  if (/remux/i.test(text)) source = 'REMUX';
-  else if (/bluray|bdrip/i.test(text)) source = 'BluRay';
-  else if (/web-?dl|webrip|web/i.test(text)) source = 'WEB-DL';
-  else if (/hdtv/i.test(text)) source = 'HDTV';
-
-  // 3. Codec
-  var codecs = [];
-  if (/hevc|x265|h\.?265/i.test(text)) codecs.push('HEVC');
-  else if (/x264|h\.?264|avc/i.test(text)) codecs.push('x264');
-  if (/10-?bit/i.test(text)) codecs.push('10-bit');
-
-  // 4. HDR / DV
-  var hdr = [];
-  if (/dolby\s*vision|\bdv\b/i.test(text)) {
-    var dvP = text.match(/profile\s*([0-9]+)/i);
-    hdr.push(dvP ? ('Dolby Vision Profile ' + dvP[1]) : 'Dolby Vision');
-  }
-  if (/hdr10\+/i.test(text)) hdr.push('HDR10+');
-  else if (/hdr10/i.test(text)) hdr.push('HDR10');
-  else if (/\bhdr\b/i.test(text)) hdr.push('HDR');
-
-  // 5. Audio
-  var audio = [];
-  var hasAtmos = /atmos/i.test(text);
-  var hasTrueHD = /truehd/i.test(text);
-  var hasDTSHD = /dts-?hd(\s*ma)?/i.test(text);
-  var hasDTS = /dts/i.test(text);
-  var hasDDP = /ddp|dd\+|eac3/i.test(text);
-  var hasDD = /dd|ac3/i.test(text);
-  var has71 = /7\.1/i.test(text);
-  var has51 = /5\.1/i.test(text);
-
-  if (hasAtmos && hasTrueHD) audio.push('Dolby Atmos TrueHD' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
-  else if (hasAtmos) audio.push('Dolby Atmos' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
-  else if (hasTrueHD) audio.push('TrueHD' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
-  else if (hasDTSHD) audio.push('DTS-HD MA' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
-  else if (hasDTS) audio.push('DTS' + (has51 ? ' 5.1' : ''));
-  else if (hasDDP) audio.push('DDP 5.1');
-  else if (hasDD) audio.push('DD 5.1');
-  else if (/aac/i.test(text)) audio.push('AAC');
-
-  // 6. Languages
-  var langs = [];
-  if (/\bhindi\b|\bhin\b/i.test(text)) langs.push('IN Hindi Dub');
-  if (/\btamil\b|\btam\b/i.test(text)) langs.push('IN Tamil');
-  if (/\btelugu\b|\btel\b/i.test(text)) langs.push('IN Telugu');
-  if (/\benglish\b|\beng\b/i.test(text)) langs.push('GB English');
-  if (/\bjapanese\b|\bjap\b/i.test(text)) langs.push('JP Japanese');
-  if (/multi[- ]?audio/i.test(text)) langs.push('🌐 Multi-Audio');
-  else if (/dual[- ]?audio/i.test(text)) langs.push('🌐 Dual-Audio');
-  var uniqueLangs = Array.from(new Set(langs));
-
-  // 7. Size
-  var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+ ?[GM]B)(?:\]|\b)/i);
-  var size = sizeMatch ? sizeMatch[1].toUpperCase() : (opt.size || '');
-
-  // 8. Server / Release Group
-  var server = opt.server || '';
-  if (!server) {
-    var grpMatch = text.match(/-([a-zA-Z0-9_]+)(?:\.[a-z]{3})?$/i);
-    if (grpMatch && grpMatch[1].length > 2 && grpMatch[1].length < 15) server = grpMatch[1];
-  }
-
-  // 9. Real Filename
-  var filename = (opt.filename || '').trim();
-  if (!filename || filename === opt.title) {
-    var baseTitle = (opt.title || 'Video').replace(/[^a-zA-Z0-9]+/g, '.');
-    var yr = opt.year ? ('.' + opt.year) : '';
-    var se = (opt.season && opt.episode) ? ('.S' + String(opt.season).padStart(2, '0') + 'E' + String(opt.episode).padStart(2, '0')) : '';
-    var r = res ? ('.' + res.replace(' ', '.')) : '';
-    var s = source ? ('.' + source) : '';
-    var c = codecs.length ? ('.' + codecs.join('.')) : '';
-    var a = audio.length ? ('.' + audio[0].replace(/[^a-zA-Z0-9]+/g, '.')) : '';
-    var g = server ? ('-' + server) : ('-' + (opt.provider || 'Release'));
-    filename = baseTitle + yr + se + r + s + c + a + g + '.mkv';
-  }
-
-  // Build Header (name)
-  var nameParts = [];
-  if (opt.latency) nameParts.push('🟢 FAST (' + opt.latency + 'ms)');
-  nameParts.push(opt.provider || 'Stream');
-  if (server) nameParts.push('🏷️ ' + server);
-  if (res) nameParts.push(res);
-  if (hdr.length) nameParts.push(hdr[0].includes('Vision') ? 'DV' : hdr[0]);
-  if (audio.length) nameParts.push(audio[0].includes('Atmos') ? 'Atmos' : audio[0]);
-  var nameLine = nameParts.join(' • ');
-
-  // Build Body (title)
-  var specTags = [res, source].concat(codecs).filter(Boolean);
-  var seasonEp = (opt.season && opt.episode) ? (' • S' + String(opt.season).padStart(2, '0') + 'E' + String(opt.episode).padStart(2, '0')) : '';
-  var line1 = '🎬 ' + (opt.title || 'Unknown') + (opt.year ? (' (' + opt.year + ')') : '') + seasonEp + (specTags.length ? (' [' + specTags.join(' • ') + ']') : '');
-  var line2 = '📄 ' + filename;
-  var av = hdr.concat(audio);
-  var line3 = av.length ? ('💎 ' + av.join(' • ')) : '';
-  var line4 = uniqueLangs.length ? ('🌐 ' + uniqueLangs.join(' • ')) : '';
-
-  var meta = [];
-  if (size) meta.push('📦 ' + size);
-  if (opt.seeders !== undefined && opt.seeders !== null && opt.seeders !== '') meta.push('🟢 ' + opt.seeders + ' Seeders');
-  if (server) meta.push('🏷️ ' + server);
-  meta.push('🔗 ' + (opt.provider || 'Stream'));
-  var line5 = meta.join(' • ');
-
-  var body = [line1, line2, line3, line4, line5].filter(Boolean).join('\n');
-  return {
-    name: nameLine,
-    title: body,
-    quality: res.toLowerCase().replace(' uhd', '').replace(' fhd', '').replace(' hd', '')
-  };
-}
-
 function getDebridSettings() {
-  let provider = 'none';
-  let key = '';
+  var provider = "none";
+  var key = "";
   try {
-    let settings = null;
-    if (typeof global !== 'undefined' && global.SCRAPER_SETTINGS) {
+    var settings = null;
+    if (typeof global !== "undefined" && global.SCRAPER_SETTINGS) {
       settings = global.SCRAPER_SETTINGS;
-    } else if (typeof window !== 'undefined' && window.SCRAPER_SETTINGS) {
+    } else if (typeof window !== "undefined" && window.SCRAPER_SETTINGS) {
       settings = window.SCRAPER_SETTINGS;
     }
     if (settings) {
-      if (settings.debridProvider) provider = String(settings.debridProvider).toLowerCase().trim();
-      if (settings.debridKey) key = String(settings.debridKey).trim();
+      if (settings.debridProvider) {
+        provider = String(settings.debridProvider).toLowerCase().trim();
+      }
+      if (settings.debridKey) {
+        key = String(settings.debridKey).trim();
+      }
     }
-  } catch (e) {
-    console.error('[Torrentio] Error reading settings:', e);
+  } catch (err) {
+    console.error("[Torrentio] Error reading settings context:", err);
   }
-  return { provider, key };
+  return { provider: provider, key: key };
 }
 
 function buildMagnet(infoHash) {
-  if (!infoHash) return '';
-  const tr = TRACKERS.map(t => '&tr=' + encodeURIComponent(t)).join('');
-  return 'magnet:?xt=urn:btih:' + infoHash + tr;
+  if (!infoHash) return "";
+  var tr = TRACKERS.map(function(t) { return "&tr=" + encodeURIComponent(t); }).join("");
+  return "magnet:?xt=urn:btih:" + infoHash + tr;
 }
 
 function getDebridPathSegment() {
-  const { provider, key } = getDebridSettings();
-  if (!provider || provider === 'none' || !key) return '';
-  return provider + '=' + key;
+  var debrid = getDebridSettings();
+  if (!debrid.provider || debrid.provider === "none" || !debrid.key) return "";
+  return debrid.provider + "=" + debrid.key;
 }
 
-async function getStreams(tmdbId, mediaType = 'movie', season = null, episode = null) {
-  const isSeries = mediaType === 'tv' || mediaType === 'series';
+async function getStreams(tmdbId, mediaType, season, episode) {
+  if (mediaType === void 0) { mediaType = "movie"; }
+  if (season === void 0) { season = null; }
+  if (episode === void 0) { episode = null; }
+
+  var isSeries = mediaType === "tv" || mediaType === "series";
+  var title = "Unknown Title";
+  var year = "2026";
+  var imdbId = typeof tmdbId === "string" && tmdbId.startsWith("tt") ? tmdbId : null;
+
   try {
-    let imdbId = typeof tmdbId === 'string' && tmdbId.startsWith('tt') ? tmdbId : null;
-    let title = 'Unknown Title';
-    let year = '';
-
-    const tmdbEndpoint = isSeries ? 'tv' : 'movie';
-    const tmdbUrl = `https://api.tmdb.org/3/${tmdbEndpoint}/${tmdbId}?api_key=${TMDB_API_KEY}&append_to_response=external_ids`;
-    try {
-      const tmdbRes = await fetch(tmdbUrl).then(r => r.json()).catch(() => null);
-      if (tmdbRes) {
-        if (!imdbId) {
-          imdbId = (tmdbRes.external_ids && tmdbRes.external_ids.imdb_id) || tmdbRes.imdb_id;
-        }
-        title = tmdbRes.title || tmdbRes.name || 'Unknown Title';
-        const dateStr = tmdbRes.release_date || tmdbRes.first_air_date || '';
-        year = dateStr ? dateStr.split('-')[0] : '';
+    var tmdbUrl = "https://api.tmdb.org/3/" + (isSeries ? "tv" : "movie") + "/" + tmdbId + "?api_key=" + TMDB_API_KEY + "&append_to_response=external_ids";
+    var tmdbRes = await fetch(tmdbUrl).then(function(r) { return r.json(); }).catch(function() { return null; });
+    if (tmdbRes) {
+      if (!imdbId) {
+        imdbId = (tmdbRes.external_ids && tmdbRes.external_ids.imdb_id) || tmdbRes.imdb_id || tmdbId;
       }
-    } catch (e) {}
+      title = tmdbRes.title || tmdbRes.name || "Unknown Title";
+      var dateStr = tmdbRes.release_date || tmdbRes.first_air_date || "";
+      if (dateStr) year = dateStr.split("-")[0];
+    }
+  } catch (e) {}
 
-    if (!imdbId) imdbId = tmdbId;
+  if (!imdbId) imdbId = tmdbId;
 
-    const debridSeg = getDebridPathSegment();
-    const debridPrefix = debridSeg ? debridSeg + '/' : '';
-    const queryTarget = isSeries
-      ? `series/${imdbId}:${season || 1}:${episode || 1}`
-      : `movie/${imdbId}`;
+  var debridSegment = getDebridPathSegment();
+  var debridPath = debridSegment ? (debridSegment + "/") : "";
+  var streamType = isSeries ? "series" : "movie";
+  var streamId = isSeries ? (imdbId + ":" + (season || 1) + ":" + (episode || 1)) : imdbId;
+  var torrentioUrl = TORRENTIO_API + "/" + debridPath + "stream/" + streamType + "/" + streamId + ".json";
 
-    const torrentioUrl = `${TORRENTIO_API}/${debridPrefix}stream/${queryTarget}.json`;
-    const res = await fetch(torrentioUrl, { headers: HEADERS }).then(r => r.json()).catch(() => null);
-    if (!res || !res.streams || !Array.isArray(res.streams)) return [];
+  var torrentioData = await fetch(torrentioUrl, { headers: HEADERS })
+    .then(function(r) { return r.json(); })
+    .catch(function() { return null; });
 
-    return res.streams.slice(0, 20).map(stream => {
-      if (!stream) return null;
-      const rawTitle = stream.title || '';
-      const lines = rawTitle.split('\n').map(l => l.trim()).filter(Boolean);
-      const realFilename = lines[0] || '';
-
-      // Parse seeders from line 2 (👤 145 or 👥 145)
-      const seedMatch = rawTitle.match(/[👤👥]\s*(\d+)/);
-      const seeders = seedMatch ? parseInt(seedMatch[1]) : null;
-
-      // Parse size (💾 48.2 GB)
-      const sizeMatch = rawTitle.match(/([0-9.]+ ?[GM]B)/i);
-      const size = sizeMatch ? sizeMatch[1].toUpperCase() : '';
-
-      // Parse release group from filename (e.g. -FraMeSToR or [FraMeSToR])
-      let releaseGroup = '';
-      const grpMatch = realFilename.match(/-([a-zA-Z0-9_]+)(?:\.[a-z]{3})?$/i);
-      if (grpMatch) releaseGroup = grpMatch[1];
-
-      // Parse tracker (⚙️ ThePirateBay)
-      const trackerMatch = rawTitle.match(/⚙️\s*([a-zA-Z0-9_]+)/);
-      const tracker = trackerMatch ? trackerMatch[1] : '';
-
-      const card = formatCholeCard({
-        provider: PROVIDER_NAME,
-        title: title,
-        year: year,
-        season: isSeries ? season : null,
-        episode: isSeries ? episode : null,
-        filename: realFilename,
-        server: releaseGroup || tracker || 'P2P',
-        quality: stream.name || '',
-        size: size,
-        seeders: seeders,
-        latency: 142
-      });
-
-      const streamUrl = stream.url || (stream.infoHash ? buildMagnet(stream.infoHash) : '');
-      return {
-        ...card,
-        url: streamUrl,
-        behaviorHints: stream.behaviorHints || {},
-        provider: 'torrentio'
-      };
-    }).filter(Boolean);
-  } catch (err) {
-    console.error('[Torrentio] Error:', err);
+  if (!torrentioData || !Array.isArray(torrentioData.streams) || torrentioData.streams.length === 0) {
     return [];
   }
+
+  var results = [];
+  var streamsList = torrentioData.streams.slice(0, 15);
+  for (var i = 0; i < streamsList.length; i++) {
+    var stream = streamsList[i];
+    if (!stream) continue;
+    var rawTitle = (stream.title || "").replace(/\n/g, " ");
+    var textUpper = rawTitle.toUpperCase();
+
+    var seederMatch = rawTitle.match(/👤\s*(\d+)/);
+    var seeders = seederMatch ? seederMatch[1] : "0";
+
+    var size = "";
+    var sizeMatch = rawTitle.match(/([0-9.]+ ?[GM]B)/i);
+    if (sizeMatch) size = sizeMatch[1].toUpperCase();
+
+    var quality = "1080p";
+    var qualityIcon = "💎";
+    if (textUpper.includes("2160P") || textUpper.includes("4K")) {
+      quality = "2160p";
+      qualityIcon = "🔥";
+    } else if (textUpper.includes("1080P")) {
+      quality = "1080p";
+      qualityIcon = "💎";
+    } else if (textUpper.includes("720P")) {
+      quality = "720p";
+      qualityIcon = "⚡";
+    } else if (textUpper.includes("480P")) {
+      quality = "480p";
+      qualityIcon = "📱";
+    }
+
+    var lang = "English";
+    if (textUpper.includes("DUAL") || textUpper.includes("DUAL-AUDIO")) {
+      lang = "Dual-Audio";
+    } else if (textUpper.includes("MULTI") || textUpper.includes("MULTI-AUDIO") || textUpper.includes("MULTIAUDIO")) {
+      lang = "Multi-Audio";
+    } else if (textUpper.includes("HINDI")) {
+      lang = "Hindi";
+    } else if (textUpper.includes("TAMIL")) {
+      lang = "Tamil";
+    } else if (textUpper.includes("TELUGU")) {
+      lang = "Telugu";
+    }
+
+    var tags = [];
+    if (textUpper.includes("DV") || textUpper.includes("DOLBY VISION")) {
+      tags.push("DV");
+    }
+    if (textUpper.includes("HDR10+")) {
+      tags.push("HDR10+");
+    } else if (textUpper.includes("HDR10")) {
+      tags.push("HDR10");
+    } else if (textUpper.includes("HDR")) {
+      tags.push("HDR");
+    }
+    if (textUpper.includes("HEVC") || textUpper.includes("X265") || textUpper.includes("H.265")) {
+      tags.push("HEVC");
+    }
+    tags.push(lang);
+
+    var tagsLine = tags.join(" • ");
+
+    var sourceGroup = PROVIDER_NAME;
+    var bracketMatch = rawTitle.match(/\[(.*?)\]/);
+    if (bracketMatch && bracketMatch[1]) {
+      var bContent = bracketMatch[1].trim();
+      if (!/\d+P|HEVC|H264|WEB|BLURAY/i.test(bContent)) {
+        sourceGroup = bContent;
+      }
+    }
+    if (sourceGroup === PROVIDER_NAME) {
+      if (textUpper.includes("RARBG")) sourceGroup = "RARBG";
+      else if (textUpper.includes("YTS")) sourceGroup = "YTS";
+      else if (textUpper.includes("THEPIRATEBAY") || textUpper.includes("TPB")) sourceGroup = "ThePirateBay";
+      else if (textUpper.includes("1337X")) sourceGroup = "1337x";
+      else if (textUpper.includes("EZTV")) sourceGroup = "EZTV";
+      else if (textUpper.includes("TGX")) sourceGroup = "TGX";
+    }
+
+    var streamUrl = stream.url || (stream.infoHash ? buildMagnet(stream.infoHash) : "");
+    var headerLine = isSeries
+      ? ("🎬 " + title + " | S" + (season || 1) + " E" + (episode || 1))
+      : ("🎬 " + title + " - " + year);
+    var formatLine = qualityIcon + " " + quality + " | " + tagsLine;
+    var metaLine = "👥 " + seeders + " | 💾 " + size + " | ⚙️ " + sourceGroup;
+    var cardTitle = headerLine + "\n" + formatLine + "\n" + metaLine;
+
+    results.push({
+      name: PROVIDER_NAME + " | 👤 " + seeders + " | " + quality.toUpperCase(),
+      title: cardTitle,
+      size: cardTitle,
+      description: cardTitle,
+      url: streamUrl
+    });
+  }
+  return results;
 }
 
-async function onSettings() {
+function onSettings() {
   return [
-    { type: 'header', label: 'Debrid Provider Configuration' },
+    { type: "header", label: "Debrid Provider Configuration" },
     {
-      type: 'select',
-      key: 'debridProvider',
-      label: 'Debrid Provider',
+      type: "select",
+      key: "debridProvider",
+      label: "Debrid Provider",
       options: [
-        { label: 'None', value: 'none' },
-        { label: 'RealDebrid', value: 'realdebrid' },
-        { label: 'Premiumize', value: 'premiumize' },
-        { label: 'AllDebrid', value: 'alldebrid' },
-        { label: 'DebridLink', value: 'debridlink' },
-        { label: 'EasyDebrid', value: 'easydebrid' },
-        { label: 'Offcloud', value: 'offcloud' },
-        { label: 'Torbox', value: 'torbox' },
-        { label: 'Put.io', value: 'putio' }
+        { label: "None", value: "none" },
+        { label: "RealDebrid", value: "realdebrid" },
+        { label: "Premiumize", value: "premiumize" },
+        { label: "AllDebrid", value: "alldebrid" },
+        { label: "DebridLink", value: "debridlink" },
+        { label: "EasyDebrid", value: "easydebrid" },
+        { label: "Offcloud", value: "offcloud" },
+        { label: "TorBox", value: "torbox" },
+        { label: "Put.io", value: "putio" }
       ],
-      default: 'none'
+      default: "none"
     },
     {
-      type: 'password',
-      key: 'debridKey',
-      label: 'API Key / Token',
-      placeholder: 'Enter your Debrid API key',
-      description: 'API Key or Access Token for your selected Debrid service.'
+      type: "text",
+      isPassword: true,
+      key: "debridKey",
+      label: "API Key / Token",
+      placeholder: "Enter your Debrid API key",
+      description: "API Key or Access Token for your selected Debrid service."
     }
   ];
 }
 
-module.exports = { getStreams, onSettings };
-if (typeof globalThis !== 'undefined') {
-  globalThis.getStreams = getStreams;
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams: getStreams, onSettings: onSettings };
 }
