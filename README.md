@@ -53,7 +53,7 @@ All 29 providers are **tested, live-verified**, and optimized for fast stream ex
 | 25 | **ZinkMovies** | `zinkmovies` | Movies | `en` | Fast direct links |
 | 26 | **Movix VF** | `movix` | Movies, TV | `fr`, `en` | French audio/subbed streaming |
 | 27 | **🌸 PersianStremio** | `persianstremio` | Movies, TV | `fa`, `en` | Multi-source streams with Persian support |
-| 28 | **WatchAnimeWorld** | `watchanimeworld` | Anime, TV, Movies | `hi`, `ta`, `te`, `en`, `ja` | Multi-Language Indian & Global Anime: Hindi, Tamil, Telugu, English, Japanese |
+| 28 | **AnimeWorld** | `animeworld` | Anime, TV, Movies | `hi`, `ta`, `te`, `en`, `ja` | Multi-Language Indian & Global Anime: Hindi, Tamil, Telugu, English, Japanese |
 | 29 | **AnimeSalt** | `animesalt` | Anime, TV, Movies | `ja`, `en`, `hi` | High-speed anime streaming with Multi-Server failover (Abyss, VidMoly, Videasy) |
 
 ---

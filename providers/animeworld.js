@@ -1,5 +1,5 @@
 /**
- * WatchAnimeWorld Scraper for Nuvio & Chole Bhature Ecosystem
+ * AnimeWorld Scraper for Nuvio & Chole Bhature Ecosystem
  * Source: https://watchanimeworld.one/
  * Multi-Language Indian & Global Anime: Hindi, Tamil, Telugu, English, Japanese
  */
@@ -364,7 +364,7 @@ async function getStreams(tmdbId, mediaType = 'tv', season = 1, episode = 1) {
             if (ds.url && !seen.has(ds.url)) {
               seen.add(ds.url);
               const card = formatCholeCard({
-                provider: 'WatchAnimeWorld',
+                provider: 'AnimeWorld',
                 title: mediaInfo.title,
                 year: mediaInfo.year,
                 season: isSeries ? s : null,
@@ -379,14 +379,14 @@ async function getStreams(tmdbId, mediaType = 'tv', season = 1, episode = 1) {
                 title: card.title,
                 quality: card.quality,
                 url: ds.url,
-                provider: 'watchanimeworld'
+                provider: 'animeworld'
               });
             }
           }
         } else if (!seen.has(src.url)) {
           seen.add(src.url);
           const card = formatCholeCard({
-            provider: 'WatchAnimeWorld',
+            provider: 'AnimeWorld',
             title: mediaInfo.title,
             year: mediaInfo.year,
             season: isSeries ? s : null,
@@ -400,13 +400,13 @@ async function getStreams(tmdbId, mediaType = 'tv', season = 1, episode = 1) {
             title: card.title,
             quality: card.quality,
             url: src.url,
-            provider: 'watchanimeworld'
+            provider: 'animeworld'
           });
         }
       } else if (src.url && !seen.has(src.url)) {
         seen.add(src.url);
         const card = formatCholeCard({
-          provider: 'WatchAnimeWorld',
+          provider: 'AnimeWorld',
           title: mediaInfo.title,
           year: mediaInfo.year,
           season: isSeries ? s : null,
@@ -420,7 +420,7 @@ async function getStreams(tmdbId, mediaType = 'tv', season = 1, episode = 1) {
           title: card.title,
           quality: card.quality,
           url: src.url,
-          provider: 'watchanimeworld'
+          provider: 'animeworld'
         });
       }
     }

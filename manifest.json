@@ -614,8 +614,8 @@
       ]
     },
     {
-      "id": "watchanimeworld",
-      "name": "WatchAnimeWorld",
+      "id": "animeworld",
+      "name": "AnimeWorld",
       "description": "Best Source for Hindi, Tamil, Telugu, and English Multi-Audio Anime and Cartoons",
       "version": "2.2.0",
       "author": "Chole Bhature",
@@ -624,7 +624,7 @@
         "tv",
         "movie"
       ],
-      "filename": "providers/watchanimeworld.js",
+      "filename": "providers/animeworld.js",
       "enabled": true,
       "formats": [
         "mp4",
@@ -1277,8 +1277,8 @@
       ]
     },
     {
-      "id": "watchanimeworld",
-      "name": "WatchAnimeWorld",
+      "id": "animeworld",
+      "name": "AnimeWorld",
       "description": "Best Source for Hindi, Tamil, Telugu, and English Multi-Audio Anime and Cartoons",
       "version": "2.2.0",
       "author": "Chole Bhature",
@@ -1287,7 +1287,7 @@
         "tv",
         "movie"
       ],
-      "filename": "providers/watchanimeworld.js",
+      "filename": "providers/animeworld.js",
       "enabled": true,
       "formats": [
         "mp4",
