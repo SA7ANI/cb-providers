@@ -1,14 +1,14 @@
 {
   "manifestVersion": 1,
   "name": "CB Provider Repo",
-  "version": "1.0.0",
+  "version": "2.0.0",
   "description": "Auto-generated Nuvio provider plugin managed by Chole Bhature Ecosystem.",
   "scrapers": [
     {
       "id": "moviesdrive",
       "name": "MoviesDrive",
       "description": "MoviesDrive provider for Nuvio with HubCloud and Google Drive extraction",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -30,7 +30,7 @@
       "id": "4khdhub",
       "name": "4KHDHub",
       "description": "4KHDHub provider for Nuvio with 4K and 1080p high speed links",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -52,7 +52,7 @@
       "id": "hdhub4u",
       "name": "HDHub4u",
       "description": "Direct links from HDHub4u with high-speed download support",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -74,7 +74,7 @@
       "id": "vegamovies",
       "name": "VegaMovies",
       "description": "VegaMovies provider for Nuvio with V-Cloud / G-Direct links",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -96,7 +96,7 @@
       "id": "castle",
       "name": "Castle",
       "description": "Castle Multi-Language streaming provider with local AES decryption",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -122,7 +122,7 @@
       "id": "redflix",
       "name": "RedFlix",
       "description": "RedFlix multi-server HD streaming provider for Nuvio",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -143,7 +143,7 @@
       "id": "movieblast",
       "name": "MovieBlast",
       "description": "Direct links via MovieBlast API with multi-language support",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -166,7 +166,7 @@
       "id": "kurage",
       "name": "Kurage",
       "description": "Kurage.live anime streaming with high-fidelity anime sync and subtitles",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -189,7 +189,7 @@
       "id": "vidnest",
       "name": "Vidnest",
       "description": "Vidnest multi-server streaming with local cipher decoding",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -210,7 +210,7 @@
       "id": "anizone",
       "name": "AniZone",
       "description": "AniZone anime streaming with multi-audio and soft subtitles",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -233,7 +233,7 @@
       "id": "animedekho",
       "name": "AnimeDekho",
       "description": "AnimeDekho streaming anime series and movies with Hindi dub, multi-audio and high-speed multi-server support",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -257,7 +257,7 @@
       "id": "desiflix",
       "name": "DesiFlix",
       "description": "Bollywood, Hollywood, and South Indian movies, in Dual Language",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -280,7 +280,7 @@
       "id": "dahmermovies",
       "name": "Dahmermovies",
       "description": "1080p Movies from Dahmermovies",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -302,7 +302,7 @@
       "id": "dahmermovies-tv",
       "name": "Dahmermovies-TV",
       "description": "Only works on Android TV",
-      "version": "1.0.1",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -324,7 +324,7 @@
       "id": "einthusan",
       "name": "Einthustan",
       "description": "1080p Movies in Multi-Lang",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "✮☆[D3ADLY]☆✮",
       "supportedTypes": [
         "movie",
@@ -348,7 +348,7 @@
       "id": "moviebox",
       "name": "MovieBox",
       "description": "MovieBox streaming with multiple language support (DASH + MP4)",
-      "version": "1.2.3",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -372,7 +372,7 @@
       "id": "moviesmod",
       "name": "MoviesMod",
       "description": "Movie and TV show streams from MoviesMod with multiple quality options",
-      "version": "1.0.1",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -395,7 +395,7 @@
       "id": "movix",
       "name": "Movix VF",
       "description": "Movies and TV series in English & French (dubbed/subtitled)",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "wooodyhood",
       "supportedTypes": [
         "movie",
@@ -417,7 +417,7 @@
       "id": "persianstremio",
       "name": "PersianStremio",
       "description": "Persian Stremio plugin for movies, series,and Persian media content in Iranian & English.",
-      "version": "1.4.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -462,7 +462,7 @@
       "id": "purstream",
       "name": "Purstream",
       "description": "Films and series in French (VF) / subtitled French (VOSTFR) / multi-language (MULTI) from purstream.art.",
-      "version": "3.0.0",
+      "version": "2.0.0",
       "author": "wooodyhood",
       "supportedTypes": [
         "movie",
@@ -484,7 +484,7 @@
       "id": "topcartoons",
       "name": "TopCartoons",
       "description": "Popular cartoons streaming",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Phisher",
       "supportedTypes": [
         "movie",
@@ -506,7 +506,7 @@
       "id": "torrentio",
       "name": "Torrentio",
       "description": "Torrentio – Torrent streaming. Supports optional debrid services.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -528,7 +528,7 @@
       "id": "vidrock",
       "name": "VidRock",
       "description": "VidRock - 1080p 480p and 360p",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -549,7 +549,7 @@
       "id": "uhdmovies",
       "name": "UHDMovies",
       "description": "UHD Movies streaming with multiple resolution",
-      "version": "1.2.1",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -570,7 +570,7 @@
       "id": "zinkmovies",
       "name": "ZinkMovies",
       "description": "Bollywood Movies, Hollywood Movies, South Indian Movies, Hindi Dubbed Movies, Web Series, OTT Releases, & Trending Cinema",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Kabir",
       "supportedTypes": [
         "movie",
@@ -595,7 +595,7 @@
       "id": "reanime",
       "name": "Reanime",
       "description": "Reanime anime streaming with automated AniList mapping and subtitle support",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -619,7 +619,7 @@
       "id": "moviesdrive",
       "name": "MoviesDrive",
       "description": "MoviesDrive provider for Nuvio with HubCloud and Google Drive extraction",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -641,7 +641,7 @@
       "id": "4khdhub",
       "name": "4KHDHub",
       "description": "4KHDHub provider for Nuvio with 4K and 1080p high speed links",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -663,7 +663,7 @@
       "id": "hdhub4u",
       "name": "HDHub4u",
       "description": "Direct links from HDHub4u with high-speed download support",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -685,7 +685,7 @@
       "id": "vegamovies",
       "name": "VegaMovies",
       "description": "VegaMovies provider for Nuvio with V-Cloud / G-Direct links",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -707,7 +707,7 @@
       "id": "castle",
       "name": "Castle",
       "description": "Castle Multi-Language streaming provider with local AES decryption",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -733,7 +733,7 @@
       "id": "redflix",
       "name": "RedFlix",
       "description": "RedFlix multi-server HD streaming provider for Nuvio",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -754,7 +754,7 @@
       "id": "movieblast",
       "name": "MovieBlast",
       "description": "Direct links via MovieBlast API with multi-language support",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -777,7 +777,7 @@
       "id": "kurage",
       "name": "Kurage",
       "description": "Kurage.live anime streaming with high-fidelity anime sync and subtitles",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -800,7 +800,7 @@
       "id": "vidnest",
       "name": "Vidnest",
       "description": "Vidnest multi-server streaming with local cipher decoding",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -821,7 +821,7 @@
       "id": "anizone",
       "name": "AniZone",
       "description": "AniZone anime streaming with multi-audio and soft subtitles",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -844,7 +844,7 @@
       "id": "animedekho",
       "name": "AnimeDekho",
       "description": "AnimeDekho streaming anime series and movies with Hindi dub, multi-audio and high-speed multi-server support",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -868,7 +868,7 @@
       "id": "desiflix",
       "name": "DesiFlix",
       "description": "Bollywood, Hollywood, and South Indian movies, in Dual Language",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -891,7 +891,7 @@
       "id": "dahmermovies",
       "name": "Dahmermovies",
       "description": "1080p Movies from Dahmermovies",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -913,7 +913,7 @@
       "id": "dahmermovies-tv",
       "name": "Dahmermovies-TV",
       "description": "Only works on Android TV",
-      "version": "1.0.1",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -935,7 +935,7 @@
       "id": "einthusan",
       "name": "Einthustan",
       "description": "1080p Movies in Multi-Lang",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "✮☆[D3ADLY]☆✮",
       "supportedTypes": [
         "movie",
@@ -959,7 +959,7 @@
       "id": "moviebox",
       "name": "MovieBox",
       "description": "MovieBox streaming with multiple language support (DASH + MP4)",
-      "version": "1.2.3",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -983,7 +983,7 @@
       "id": "moviesmod",
       "name": "MoviesMod",
       "description": "Movie and TV show streams from MoviesMod with multiple quality options",
-      "version": "1.0.1",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -1006,7 +1006,7 @@
       "id": "movix",
       "name": "Movix VF",
       "description": "Movies and TV series in English & French (dubbed/subtitled)",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "wooodyhood",
       "supportedTypes": [
         "movie",
@@ -1028,7 +1028,7 @@
       "id": "persianstremio",
       "name": "PersianStremio",
       "description": "Persian Stremio plugin for movies, series,and Persian media content in Iranian & English.",
-      "version": "1.4.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -1073,7 +1073,7 @@
       "id": "purstream",
       "name": "Purstream",
       "description": "Films and series in French (VF) / subtitled French (VOSTFR) / multi-language (MULTI) from purstream.art.",
-      "version": "3.0.0",
+      "version": "2.0.0",
       "author": "wooodyhood",
       "supportedTypes": [
         "movie",
@@ -1095,7 +1095,7 @@
       "id": "topcartoons",
       "name": "TopCartoons",
       "description": "Popular cartoons streaming",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Phisher",
       "supportedTypes": [
         "movie",
@@ -1117,7 +1117,7 @@
       "id": "torrentio",
       "name": "Torrentio",
       "description": "Torrentio – Torrent streaming. Supports optional debrid services.",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -1139,7 +1139,7 @@
       "id": "vidrock",
       "name": "VidRock",
       "description": "VidRock - 1080p 480p and 360p",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -1160,7 +1160,7 @@
       "id": "uhdmovies",
       "name": "UHDMovies",
       "description": "UHD Movies streaming with multiple resolution",
-      "version": "1.2.1",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -1181,7 +1181,7 @@
       "id": "zinkmovies",
       "name": "ZinkMovies",
       "description": "Bollywood Movies, Hollywood Movies, South Indian Movies, Hindi Dubbed Movies, Web Series, OTT Releases, & Trending Cinema",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Kabir",
       "supportedTypes": [
         "movie",
@@ -1206,7 +1206,7 @@
       "id": "reanime",
       "name": "Reanime",
       "description": "Reanime anime streaming with automated AniList mapping and subtitle support",
-      "version": "1.0.0",
+      "version": "2.0.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
