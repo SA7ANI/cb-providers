@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "name": "CB Provider Repo",
-  "version": "2.0.0",
+  "version": "2.1.0",
   "description": "Auto-generated Nuvio provider plugin managed by Chole Bhature Ecosystem.",
   "scrapers": [
     {
@@ -210,7 +210,7 @@
       "id": "anizone",
       "name": "AniZone",
       "description": "AniZone anime streaming with multi-audio and soft subtitles",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -233,7 +233,7 @@
       "id": "animedekho",
       "name": "AnimeDekho",
       "description": "AnimeDekho streaming anime series and movies with Hindi dub, multi-audio and high-speed multi-server support",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -595,7 +595,7 @@
       "id": "reanime",
       "name": "Reanime",
       "description": "Reanime anime streaming with automated AniList mapping and subtitle support",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -821,7 +821,7 @@
       "id": "anizone",
       "name": "AniZone",
       "description": "AniZone anime streaming with multi-audio and soft subtitles",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": "Chole Bhature",
       "supportedTypes": [
         "movie",
@@ -844,7 +844,7 @@
       "id": "animedekho",
       "name": "AnimeDekho",
       "description": "AnimeDekho streaming anime series and movies with Hindi dub, multi-audio and high-speed multi-server support",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
@@ -1206,7 +1206,7 @@
       "id": "reanime",
       "name": "Reanime",
       "description": "Reanime anime streaming with automated AniList mapping and subtitle support",
-      "version": "2.0.0",
+      "version": "2.1.0",
       "author": "Nuvio Team",
       "supportedTypes": [
         "movie",

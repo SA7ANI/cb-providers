@@ -522,7 +522,7 @@ function searchReanimeAnime(query, year, targetAnilistId = null) {
       unique.push(candidate);
     }
     unique.sort((a, b) => b.score - a.score);
-    return unique.length > 0 ? unique[0] : null;
+    return (unique.length > 0 && unique[0].score >= 50) ? unique[0] : null;
   });
 }
 function getFlixEmbeds(slug, episodeNumber, language, anilistId) {

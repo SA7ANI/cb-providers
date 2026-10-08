@@ -166,15 +166,24 @@ function matchCard(items, targetTitle, originalTitle, mediaType, season) {
             const titles = getTitles(item);
             for (const t of titles) {
                 const nt = normalize(t);
-                if (nt === normTarget || nt === normOrig) {
+                if (nt && (nt === normTarget || nt === normOrig || (normTarget && (nt.includes(normTarget) || normTarget.includes(nt))))) {
                     return item.slug;
                 }
             }
         }
-        return items[0].slug;
+        return null;
     }
 
-    // TV Series season matching
+    // TV Series matching: only consider items that actually match the title
+    const matchingItems = items.filter(item => {
+        const titles = getTitles(item);
+        return titles.some(t => {
+            const nt = normalize(t);
+            return nt && (nt === normTarget || nt === normOrig || (normTarget && (nt.includes(normTarget) || normTarget.includes(nt))));
+        });
+    });
+    if (matchingItems.length === 0) return null;
+
     const s = parseInt(season) || 1;
     if (s > 1) {
         const seasonRegexes = [
@@ -182,7 +191,7 @@ function matchCard(items, targetTitle, originalTitle, mediaType, season) {
             new RegExp(`\\b${s}(?:nd|rd|th)?\\s*season\\b`, 'i'),
             new RegExp(`\\bs${s}\\b`, 'i')
         ];
-        for (const item of items) {
+        for (const item of matchingItems) {
             const titles = getTitles(item);
             for (const t of titles) {
                 if (seasonRegexes.some(r => r.test(t))) {
@@ -193,7 +202,7 @@ function matchCard(items, targetTitle, originalTitle, mediaType, season) {
     } else {
         // Season 1: Avoid items with Season 2+, 2nd season, etc.
         const otherSeasonRegex = /season\s*[2-9]|\b[2-9](?:nd|rd|th)\s*season/i;
-        for (const item of items) {
+        for (const item of matchingItems) {
             const titles = getTitles(item);
             const hasOtherSeason = titles.some(t => otherSeasonRegex.test(t));
             if (!hasOtherSeason) {
@@ -202,7 +211,7 @@ function matchCard(items, targetTitle, originalTitle, mediaType, season) {
         }
     }
 
-    return items[0].slug;
+    return matchingItems[0].slug;
 }
 
 function getStreams(tmdbId, mediaType, season, episode) {

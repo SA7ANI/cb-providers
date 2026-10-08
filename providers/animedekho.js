@@ -617,8 +617,8 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
           bestMatch = item;
         }
       }
-      if (!bestMatch || highestSim < 0.2) {
-        bestMatch = results[0];
+      if (!bestMatch || highestSim < 0.5) {
+        return [];
       }
       let targetUrl = bestMatch.href;
       const mediaTypeVal = mediaType === "movie" ? 1 : 2;
