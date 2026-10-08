@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "name": "CB Provider Repo",
-  "version": "2.1.0",
+  "version": "2.2.0",
   "description": "Auto-generated Nuvio provider plugin managed by Chole Bhature Ecosystem.",
   "scrapers": [
     {
@@ -611,6 +611,58 @@
       "logo": "https://www.google.com/s2/favicons?domain=reanime.to&sz=128",
       "contentLanguage": [
         "en"
+      ]
+    },
+    {
+      "id": "watchanimeworld",
+      "name": "WatchAnimeWorld",
+      "description": "Best Source for Hindi, Tamil, Telugu, and English Multi-Audio Anime and Cartoons",
+      "version": "2.2.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "anime",
+        "tv",
+        "movie"
+      ],
+      "filename": "providers/watchanimeworld.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "mkv",
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=watchanimeworld.one&sz=128",
+      "contentLanguage": [
+        "hi",
+        "ta",
+        "te",
+        "en",
+        "ja"
+      ]
+    },
+    {
+      "id": "animesalt",
+      "name": "AnimeSalt",
+      "description": "High-speed anime streaming with Multi-Server failover (Abyss, VidMoly, Videasy)",
+      "version": "2.2.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "anime",
+        "tv",
+        "movie"
+      ],
+      "filename": "providers/animesalt.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "mkv",
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=animesalt.cam&sz=128",
+      "contentLanguage": [
+        "ja",
+        "en",
+        "hi"
       ]
     }
   ],
@@ -1222,6 +1274,58 @@
       "logo": "https://www.google.com/s2/favicons?domain=reanime.to&sz=128",
       "contentLanguage": [
         "en"
+      ]
+    },
+    {
+      "id": "watchanimeworld",
+      "name": "WatchAnimeWorld",
+      "description": "Best Source for Hindi, Tamil, Telugu, and English Multi-Audio Anime and Cartoons",
+      "version": "2.2.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "anime",
+        "tv",
+        "movie"
+      ],
+      "filename": "providers/watchanimeworld.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "mkv",
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=watchanimeworld.one&sz=128",
+      "contentLanguage": [
+        "hi",
+        "ta",
+        "te",
+        "en",
+        "ja"
+      ]
+    },
+    {
+      "id": "animesalt",
+      "name": "AnimeSalt",
+      "description": "High-speed anime streaming with Multi-Server failover (Abyss, VidMoly, Videasy)",
+      "version": "2.2.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "anime",
+        "tv",
+        "movie"
+      ],
+      "filename": "providers/animesalt.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "mkv",
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=animesalt.cam&sz=128",
+      "contentLanguage": [
+        "ja",
+        "en",
+        "hi"
       ]
     }
   ]
