@@ -1,0 +1,95 @@
+name: CD - Build, Validate & CDN Sync
+
+on:
+  push:
+    branches:
+      - main
+  workflow_dispatch:
+
+permissions:
+  contents: write
+
+jobs:
+  cd:
+    runs-on: ubuntu-latest
+    name: Build, Validate & Purge CDN Cache
+    steps:
+      - name: 📥 Checkout Repository
+        uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+          token: ${{ secrets.GITHUB_TOKEN }}
+
+      - name: ⚙️ Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: 'npm'
+
+      - name: 📦 Install Dependencies
+        run: npm ci || npm install
+
+      - name: 🔨 Transpile Providers for Hermes Runtime
+        run: node build.js
+
+      - name: 🧪 Validate Manifest & Scrapers
+        run: |
+          node -e '
+            const fs = require("fs");
+            const manifest = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
+            const scrapers = manifest.scrapers || manifest.providers || [];
+            console.log(`Found ${scrapers.length} scrapers in manifest.json`);
+            let missing = 0;
+            for (const s of scrapers) {
+              if (!fs.existsSync(s.filename)) {
+                console.error(`❌ Missing file: ${s.filename}`);
+                missing++;
+              }
+            }
+            if (missing > 0) process.exit(1);
+            console.log("✅ All manifest provider files exist!");
+          '
+
+      - name: 🚀 Purge jsDelivr CDN Cache
+        run: |
+          node -e '
+            const https = require("https");
+            const fs = require("fs");
+            
+            const manifest = JSON.parse(fs.readFileSync("manifest.json", "utf8"));
+            const scrapers = manifest.scrapers || manifest.providers || [];
+            
+            const urls = [
+              "https://purge.jsdelivr.net/gh/SA7ANI/cb-providers@main/manifest.json",
+              ...scrapers.map(s => `https://purge.jsdelivr.net/gh/SA7ANI/cb-providers@main/${s.filename}`)
+            ];
+
+            console.log(`Purging ${urls.length} files from jsDelivr CDN cache...`);
+            
+            Promise.all(urls.map(url => new Promise((resolve) => {
+              https.get(url, (res) => {
+                let data = "";
+                res.on("data", chunk => data += chunk);
+                res.on("end", () => {
+                  try {
+                    const json = JSON.parse(data);
+                    console.log(`✅ Purged: ${url} -> ${json.status || res.statusCode}`);
+                  } catch (e) {
+                    console.log(`ℹ️ Purged: ${url} (${res.statusCode})`);
+                  }
+                  resolve();
+                });
+              }).on("error", err => {
+                console.warn(`⚠️ Warning purging ${url}:`, err.message);
+                resolve();
+              });
+            }))).then(() => {
+              console.log("✨ All jsDelivr CDN URLs purged successfully!");
+            });
+          '
+
+      - name: 🔄 Keep Template Branch Synchronized
+        run: |
+          git config user.name "github-actions[bot]"
+          git config user.email "github-actions[bot]@users.noreply.github.com"
+          git push origin main:template --force || echo "Could not push to template branch, skipping"

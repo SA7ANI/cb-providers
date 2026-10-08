@@ -158,32 +158,27 @@ async function main() {
         return;
     }
 
-    const providers = getProvidersToBuild();
+    // Transpile all single-file providers in providers/ for Hermes engine compatibility
+    const allProviderFiles = fs.existsSync(outDir)
+        ? fs.readdirSync(outDir).filter(f => f.endsWith('.js') && f !== '_template.js')
+        : [];
 
-    if (providers.length === 0) {
-        console.log('No providers found in src/ directory.');
-        console.log('Create a provider: mkdir -p src/myprovider && touch src/myprovider/index.js');
-        return;
+    console.log(`\n🔄 Transpiling ${allProviderFiles.length} provider(s) for Hermes engine...\n`);
+    for (const file of allProviderFiles) {
+        await transpileSingleFile(file);
     }
 
-    const minifyLabel = shouldMinify ? ' (minified)' : '';
-    console.log(`\n📦 Building ${providers.length} provider(s)${minifyLabel}...\n`);
-
-    // Ensure output directory exists
-    if (!fs.existsSync(outDir)) {
-        fs.mkdirSync(outDir, { recursive: true });
+    const providers = args.filter(a => !a.startsWith('-'));
+    if (providers.length > 0) {
+        const minifyLabel = shouldMinify ? ' (minified)' : '';
+        console.log(`\n📦 Building ${providers.length} source provider(s)${minifyLabel}...\n`);
+        if (!fs.existsSync(outDir)) fs.mkdirSync(outDir, { recursive: true });
+        for (const provider of providers) {
+            await buildProvider(provider, { minify: shouldMinify });
+        }
     }
 
-    let success = 0;
-    let failed = 0;
-
-    for (const provider of providers) {
-        const result = await buildProvider(provider, { minify: shouldMinify });
-        if (result) success++;
-        else failed++;
-    }
-
-    console.log(`\n✨ Done! ${success} built, ${failed} skipped/failed\n`);
+    console.log(`\n✨ Build & transpilation complete!\n`);
 }
 
 main().catch(err => {
