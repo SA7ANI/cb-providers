@@ -11,154 +11,144 @@ const _0x2d04b7=_0x496e;(function(_0x5076a3,_0x39fd72){const _0x12f68b=_0x496e,_
   var PROVIDER_ID = "dahmermovies-tv";
   var DEFAULT_LANG = "🇬🇧 English";
 
-  function formatCholeCard(opt) {
-    var raw = [opt.filename, opt.server, opt.quality, opt.size, opt.title, opt.rawText].filter(Boolean).join(' ');
-    var text = raw.trim();
+  
+function formatCholeCard(opt) {
+  var raw = [(opt.filename || ''), (opt.rawText || ''), (opt.server || ''), (opt.quality || ''), (opt.size || ''), (opt.title || '')].join(' ');
+  var text = raw.trim();
+  var cleanText = text.replace(/4khdhub/gi, '').replace(/hdhub4u/gi, '');
 
-    // 1. Resolution
-    var res = '';
-    if (/2160p|4k|uhd/i.test(text)) res = '4K UHD';
-    else if (/1080p|fhd/i.test(text)) res = '1080p FHD';
-    else if (/720p|hd/i.test(text)) res = '720p HD';
-    else if (/480p|sd/i.test(text)) res = '480p';
-    else if (opt.quality && String(opt.quality).length > 1) {
-      var q = String(opt.quality).toUpperCase();
-      res = q.includes('2160') || q.includes('4K') ? '4K UHD' : (q.includes('1080') ? '1080p FHD' : (q.includes('720') ? '720p HD' : q));
-    } else res = '1080p FHD';
+  var res = '';
+  var qCheck = opt.quality ? String(opt.quality).trim() : '';
+  if (/\b(?:2160p|4k|uhd)\b/i.test(qCheck)) res = '4K UHD';
+  else if (/\b(?:1080p|fhd)\b/i.test(qCheck)) res = '1080p FHD';
+  else if (/\b(?:720p|hd)\b/i.test(qCheck)) res = '720p HD';
+  else if (/\b(?:480p|sd)\b/i.test(qCheck)) res = '480p';
+  else if (/\b(?:2160p|4k|uhd)\b/i.test(cleanText)) res = '4K UHD';
+  else if (/\b(?:1080p|fhd)\b/i.test(cleanText)) res = '1080p FHD';
+  else if (/\b(?:720p|hd)\b/i.test(cleanText)) res = '720p HD';
+  else if (/\b(?:480p|sd)\b/i.test(cleanText)) res = '480p';
+  else res = qCheck ? qCheck.toUpperCase() : '1080p FHD';
 
-    // 2. Source
-    var source = '';
-    if (/remux/i.test(text)) source = 'REMUX';
-    else if (/bluray|bdrip/i.test(text)) source = 'BluRay';
-    else if (/web-?dl|webrip|web/i.test(text)) source = 'WEB-DL';
-    else if (/hdtv/i.test(text)) source = 'HDTV';
-    else source = 'WEB-DL';
+  var source = '';
+  if (/\bremux\b/i.test(text)) source = 'REMUX';
+  else if (/\b(?:bluray|bdrip|brrip)\b/i.test(text)) source = 'BluRay';
+  else if (/\b(?:web-?dl|webrip|web)\b/i.test(text)) source = 'WEB-DL';
+  else if (/\bhdtv\b/i.test(text)) source = 'HDTV';
 
-    // 3. Codec
-    var codecs = [];
-    if (/hevc|x265|h\.?265/i.test(text)) codecs.push('HEVC');
-    else if (/x264|h\.?264|avc/i.test(text)) codecs.push('x264');
-    else codecs.push('x264');
-    if (/10-?bit/i.test(text)) codecs.push('10-bit');
+  var codecs = [];
+  if (/\b(?:hevc|x265|h\.?265)\b/i.test(text)) codecs.push('HEVC');
+  else if (/\b(?:x264|h\.?264|avc)\b/i.test(text)) codecs.push('x264');
+  if (/\b10-?bit\b/i.test(text)) codecs.push('10-bit');
 
-    // 4. HDR / DV
-    var hdr = [];
-    if (/dolby\s*vision|\bdv\b/i.test(text)) {
-      var dvP = text.match(/profile\s*([0-9]+)/i);
-      hdr.push(dvP ? ('Dolby Vision Profile ' + dvP[1]) : 'Dolby Vision');
-    }
-    if (/hdr10\+/i.test(text)) hdr.push('HDR10+');
-    else if (/hdr10/i.test(text)) hdr.push('HDR10');
-    else if (/\bhdr\b/i.test(text)) hdr.push('HDR');
+  var hdr = [];
+  if (/\b(?:dolby\s*vision|dv)\b/i.test(text)) hdr.push('Dolby Vision');
+  if (/\bhdr10\+\b/i.test(text)) hdr.push('HDR10+');
+  else if (/\b(?:hdr10|hdr)\b/i.test(text)) hdr.push('HDR');
 
-    // 5. Audio
-    var audio = [];
-    var hasAtmos = /atmos/i.test(text);
-    var hasTrueHD = /truehd/i.test(text);
-    var hasDTSHD = /dts-?hd(\s*ma)?/i.test(text);
-    var hasDTS = /dts/i.test(text);
-    var hasDDP = /ddp|dd\+|eac3/i.test(text);
-    var hasDD = /dd\s*5\.?1|dd5\.?1|\bac3\b/i.test(text);
-    var has71 = /7\.1/i.test(text);
-    var has51 = /5\.1/i.test(text);
+  var audio = [];
+  var hasAtmos = /\b(?:atmos|ddpa)\b/i.test(text);
+  var hasTrueHD = /\btruehd\b/i.test(text);
+  var hasDTSHD = /\bdts-?hd(?:\s*ma)?\b/i.test(text);
+  var hasDTS = /\bdts\b/i.test(text);
+  var hasDDP = /\b(?:ddp|dd\+|eac3)\b/i.test(text);
+  var hasDD = /\b(?:dd|ac3)\b/i.test(text);
+  var has71 = /7\.1/i.test(text);
+  var has51 = /5\.1/i.test(text);
 
-    if (hasAtmos && hasTrueHD) audio.push('Dolby Atmos TrueHD' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
-    else if (hasAtmos) audio.push('Dolby Atmos' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
-    else if (hasTrueHD) audio.push('TrueHD' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
-    else if (hasDTSHD) audio.push('DTS-HD MA' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
-    else if (hasDTS) audio.push('DTS' + (has51 ? ' 5.1' : ''));
-    else if (hasDDP) audio.push('DDP 5.1');
-    else if (hasDD) audio.push('DD 5.1');
-    else if (/aac/i.test(text)) audio.push('AAC');
-    else audio.push('AAC 2.0');
+  if (hasAtmos) audio.push('Dolby Atmos' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
+  else if (hasTrueHD) audio.push('TrueHD' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
+  else if (hasDTSHD) audio.push('DTS-HD MA' + (has71 ? ' 7.1' : (has51 ? ' 5.1' : '')));
+  else if (hasDTS) audio.push('DTS' + (has51 ? ' 5.1' : ''));
+  else if (hasDDP) audio.push('DDP 5.1');
+  else if (hasDD) audio.push('DD 5.1');
+  else if (/\baac\b/i.test(text)) audio.push('AAC');
 
-    // 6. Languages
-    var langs = [];
-    if (/\bhindi\b|\bhin\b/i.test(text)) langs.push('🇮🇳 Hindi Dub');
-    if (/\btamil\b|\btam\b/i.test(text)) langs.push('🇮🇳 Tamil');
-    if (/\btelugu\b|\btel\b/i.test(text)) langs.push('🇮🇳 Telugu');
-    if (/\bmalayalam\b|\bmal\b/i.test(text)) langs.push('🇮🇳 Malayalam');
-    if (/\bkannada\b|\bkan\b/i.test(text)) langs.push('🇮🇳 Kannada');
-    if (/\bpersian\b|\bfarsi\b/i.test(text)) langs.push('🇮🇷 Persian Dub');
-    if (/\bfrench\b|\bvf\b|\bvostfr\b/i.test(text)) langs.push('🇫🇷 French VF');
-    if (/\benglish\b|\beng\b/i.test(text)) langs.push('🇬🇧 English');
-    if (/\bjapanese\b|\bjap\b/i.test(text)) langs.push('🇯🇵 Japanese');
-    if (/multi[- ]?audio/i.test(text)) langs.push('🌐 Multi-Audio');
-    else if (/dual[- ]?audio/i.test(text)) langs.push('🌐 Dual-Audio');
-    if (!langs.length && opt.defaultLang) langs.push(opt.defaultLang);
-    if (!langs.length) langs.push('🇬🇧 English');
-    var uniqueLangs = Array.from(new Set(langs));
-
-    // 7. Size
-    var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+ ?[GM]B)(?:\]|\b)/i);
-    var size = sizeMatch ? sizeMatch[1].toUpperCase() : (opt.size || '');
-
-    // 8. Server / Release Group
-    var server = opt.server || '';
-    if (!server && opt.filename) {
-      var fnGrp = opt.filename.match(/-([a-zA-Z0-9_.]+?)(?:\.[a-z0-9]{3,4})?$/i);
-      if (fnGrp && fnGrp[1].length >= 2 && fnGrp[1].length < 20) server = fnGrp[1];
-    }
-    if (!server) {
-      var sMatch = text.match(/Server\s*([0-9a-zA-Z]+)/i);
-      if (sMatch) server = 'Server ' + sMatch[1];
-      else {
-        var grpMatch = text.match(/-([a-zA-Z0-9_.]+)(?:\.[a-z0-9]{3,4})?$/i);
-        if (grpMatch && grpMatch[1].length >= 2 && grpMatch[1].length < 20) server = grpMatch[1];
-      }
-    }
-
-    // 9. Real Filename
-    var filename = (opt.filename || '').trim();
-    if (!filename || filename === opt.title) {
-      var baseTitle = (opt.title || 'Video').replace(/[^a-zA-Z0-9]+/g, '.');
-      var yr = opt.year ? ('.' + opt.year) : '';
-      var se = (opt.season && opt.episode) ? ('.S' + String(opt.season).padStart(2, '0') + 'E' + String(opt.episode).padStart(2, '0')) : '';
-      var r = res ? ('.' + res.replace(/\s+/g, '.')) : '';
-      var s = source ? ('.' + source) : '';
-      var c = codecs.length ? ('.' + codecs.join('.')) : '';
-      var a = audio.length ? ('.' + audio[0].replace(/[^a-zA-Z0-9]+/g, '.')) : '';
-      var g = server ? ('-' + server.replace(/[\s\-_]+/g, '')) : ('-' + (opt.provider || 'Release'));
-      filename = baseTitle + yr + se + r + s + c + a + g + '.mkv';
-    }
-
-    // Build Header (name)
-    var nameParts = [];
-    if (opt.latency) {
-      nameParts.push('🟢 FAST (' + opt.latency + 'ms)');
-      nameParts.push(opt.provider || 'Stream');
-    } else {
-      nameParts.push('🟢 ' + (opt.provider || 'Stream'));
-    }
-    if (server) nameParts.push('🏷️ ' + server);
-    if (res) nameParts.push(res);
-    if (hdr.length) nameParts.push(hdr[0].includes('Vision') ? 'DV' : hdr[0]);
-    if (audio.length) nameParts.push(audio[0].includes('Atmos') ? 'Atmos' : audio[0]);
-    var nameLine = nameParts.join(' • ');
-
-    // Build Body (title)
-    var specTags = [res, source].concat(codecs).filter(Boolean);
-    var seasonEp = (opt.season && opt.episode) ? (' • S' + String(opt.season).padStart(2, '0') + 'E' + String(opt.episode).padStart(2, '0')) : '';
-    var line1 = '🎬 ' + (opt.title || 'Unknown') + (opt.year ? (' (' + opt.year + ')') : '') + seasonEp + (specTags.length ? (' [' + specTags.join(' • ') + ']') : '');
-    var line2 = '📄 ' + filename;
-    var av = hdr.concat(audio);
-    var line3 = av.length ? ('💎 ' + av.join(' • ')) : '';
-    var line4 = uniqueLangs.length ? ('🌐 ' + uniqueLangs.join(' • ')) : '';
-
-    var meta = [];
-    if (size) meta.push('📦 ' + size);
-    if (opt.seeders !== undefined && opt.seeders !== null && opt.seeders !== '') meta.push('🟢 ' + opt.seeders + ' Seeders');
-    if (server) meta.push('🏷️ ' + server);
-    meta.push('🔗 ' + (opt.provider || 'Stream'));
-    var line5 = meta.join(' • ');
-
-    var body = [line1, line2, line3, line4, line5].filter(Boolean).join('\n');
-    return {
-      name: nameLine,
-      title: body,
-      quality: res.toLowerCase().replace(' uhd', '').replace(' fhd', '').replace(' hd', '')
-    };
+  var langs = [];
+  if (/\b(?:hindi|hin)\b/i.test(text)) langs.push('🇮🇳 Hindi');
+  if (/\b(?:tamil|tam)\b/i.test(text)) langs.push('🇮🇳 Tamil');
+  if (/\b(?:telugu|tel)\b/i.test(text)) langs.push('🇮🇳 Telugu');
+  if (/\b(?:english|eng)\b/i.test(text)) langs.push('🇬🇧 English');
+  if (/\b(?:korean|kor)\b/i.test(text)) langs.push('🇰🇷 Korean');
+  if (/\b(?:japanese|jap|jpn)\b/i.test(text)) langs.push('🇯🇵 Japanese');
+  if (/\bdual[- ]?audio\b/i.test(text)) langs.push('🌐 Dual-Audio');
+  if (/\bmulti[- ]?audio\b/i.test(text)) langs.push('🌐 Multi-Audio');
+  if (langs.length === 0 && opt.defaultLang) {
+    langs.push(opt.defaultLang);
   }
+  var uniqueLangs = Array.from(new Set(langs));
+
+  var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
+  var rawSize = opt.size || (sizeMatch ? sizeMatch[1] : '');
+  var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, '$1 $2').toUpperCase() : '';
+
+  var server = opt.server || '';
+  if (!server) {
+    var grpMatch = text.match(/-([a-zA-Z0-9_]+)(?:\.[a-z]{3})?$/i);
+    if (grpMatch && grpMatch[1].length > 2 && grpMatch[1].length < 15) server = grpMatch[1];
+  }
+
+  var nameParts = [];
+  if (opt.latency) nameParts.push('🟢 FAST (' + opt.latency + 'ms)');
+  nameParts.push(opt.provider || 'Stream');
+  if (server) nameParts.push('🏷️ ' + server);
+  if (res) nameParts.push(res);
+  if (source) nameParts.push(source);
+  if (codecs.length) nameParts.push(codecs.join(' '));
+  if (hdr.length) nameParts.push(hdr.join(' '));
+  if (audio.length) nameParts.push(audio[0]);
+  if (uniqueLangs.length) {
+    var dualTag = uniqueLangs.find(function(l) { return l.indexOf('Dual') !== -1 || l.indexOf('Multi') !== -1; });
+    if (dualTag) nameParts.push(dualTag);
+    else nameParts.push(uniqueLangs.slice(0, 2).join(' + '));
+  }
+  if (opt.seeders !== undefined && opt.seeders !== null && opt.seeders !== '') {
+    nameParts.push('🌱 ' + opt.seeders);
+  }
+  var nameLine = nameParts.join(' • ');
+
+  var filename = (opt.filename || '').trim();
+  if (!filename || filename === opt.title) {
+    var baseTitle = (opt.title || 'Video').replace(/[^a-zA-Z0-9]+/g, '.');
+    var yr = opt.year ? ('.' + opt.year) : '';
+    var se = (opt.season && opt.episode) ? ('.S' + String(opt.season).padStart(2, '0') + 'E' + String(opt.episode).padStart(2, '0')) : '';
+    var r = res ? ('.' + res.replace(/\s+/g, '.')) : '';
+    var s = source ? ('.' + source) : '';
+    var c = codecs.length ? ('.' + codecs.join('.')) : '';
+    var a = audio.length ? ('.' + audio[0].replace(/[^a-zA-Z0-9]+/g, '.')) : '';
+    var g = server ? ('-' + server.replace(/[\s\-_]+/g, '')) : ('-' + (opt.provider || 'Release'));
+    filename = baseTitle + yr + se + r + s + c + a + g + '.mkv';
+  }
+
+  var specTags = [res, source].concat(codecs).filter(Boolean);
+  var seasonEp = (opt.season && opt.episode) ? (' • S' + String(opt.season).padStart(2, '0') + 'E' + String(opt.episode).padStart(2, '0')) : '';
+  var line1 = '🎬 ' + (opt.title || 'Unknown') + (opt.year ? (' (' + opt.year + ')') : '') + seasonEp + (specTags.length ? (' [' + specTags.join(' • ') + ']') : '');
+  var line2 = '📄 ' + filename;
+  var av = hdr.concat(audio);
+  var line3 = av.length ? ('💎 ' + av.join(' • ')) : '';
+  var line4 = uniqueLangs.length ? ('🌐 ' + uniqueLangs.join(' • ')) : '';
+
+  var meta = [];
+  if (size) meta.push('📦 ' + size);
+  if (opt.seeders !== undefined && opt.seeders !== null && opt.seeders !== '') meta.push('🟢 ' + opt.seeders + ' Seeders');
+  if (server) meta.push('🏷️ ' + server);
+  meta.push('🔗 ' + (opt.provider || 'Stream'));
+  var line5 = meta.join(' • ');
+
+  var body = [line1, line2, line3, line4, line5].filter(Boolean).join('\n');
+
+  var qualitySlug = '1080p';
+  if (res.indexOf('4K') !== -1 || res.indexOf('2160') !== -1) qualitySlug = '4k';
+  else if (res.indexOf('1080') !== -1) qualitySlug = '1080p';
+  else if (res.indexOf('720') !== -1) qualitySlug = '720p';
+  else if (res.indexOf('480') !== -1) qualitySlug = '480p';
+
+  return {
+    name: nameLine,
+    title: body,
+    quality: qualitySlug,
+    size: size || ''
+  };
+}
 
   async function wrappedGetStreams(tmdbId, mediaType, season, episode) {
     var mediaInfo = { title: '', year: '' };
