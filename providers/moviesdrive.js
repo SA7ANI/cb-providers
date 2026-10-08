@@ -70,6 +70,94 @@ var HEADERS = {
   "Connection": "keep-alive"
 };
 var import_cheerio_without_node_native = import_cheerio_without_node_native2;
+function formatCholeCard(opt) {
+  var raw = (opt.filename || '') + ' ' + (opt.server || '') + ' ' + (opt.quality || '') + ' ' + (opt.size || '');
+  var text = raw.trim();
+  var res = '';
+  if (/2160p|4k|uhd/i.test(text)) res = '4K UHD';
+  else if (/1080p|fhd/i.test(text)) res = '1080p FHD';
+  else if (/720p|hd/i.test(text)) res = '720p HD';
+  else if (/480p|sd/i.test(text)) res = '480p';
+  else res = opt.quality ? String(opt.quality).toUpperCase() : '1080P';
+
+  var source = '';
+  if (/remux/i.test(text)) source = 'REMUX';
+  else if (/bluray|bdrip/i.test(text)) source = 'BluRay';
+  else if (/web-?dl|webrip|web/i.test(text)) source = 'WEB-DL';
+  else if (/hdtv/i.test(text)) source = 'HDTV';
+
+  var codecs = [];
+  if (/hevc|x265|h\.?265/i.test(text)) codecs.push('HEVC');
+  else if (/x264|h\.?264|avc/i.test(text)) codecs.push('x264');
+  if (/10-?bit/i.test(text)) codecs.push('10-bit');
+
+  var hdr = [];
+  if (/dolby\s*vision|\bdv\b/i.test(text)) hdr.push('Dolby Vision');
+  if (/hdr10\+/i.test(text)) hdr.push('HDR10+');
+  else if (/hdr10|hdr/i.test(text)) hdr.push('HDR10');
+
+  var audio = [];
+  if (/atmos/i.test(text)) audio.push('Dolby Atmos');
+  if (/truehd/i.test(text)) audio.push('TrueHD');
+  else if (/dts-?hd(\s*ma)?/i.test(text)) audio.push('DTS-HD MA');
+  else if (/dts/i.test(text)) audio.push('DTS');
+  else if (/ddp|dd\+|eac3/i.test(text)) audio.push('DDP 5.1');
+  else if (/dd|ac3/i.test(text)) audio.push('DD 5.1');
+  else if (/aac/i.test(text)) audio.push('AAC');
+
+  var langs = [];
+  if (/\bhindi\b|\bhin\b/i.test(text)) langs.push('🇮🇳 Hindi Dub');
+  if (/\btamil\b|\btam\b/i.test(text)) langs.push('🇮🇳 Tamil');
+  if (/\btelugu\b|\btel\b/i.test(text)) langs.push('🇮🇳 Telugu');
+  if (/\benglish\b|\beng\b/i.test(text)) langs.push('🇬🇧 English');
+  if (/dual[- ]?audio/i.test(text)) langs.push('🌐 Dual-Audio');
+  if (/multi[- ]?audio/i.test(text)) langs.push('🌐 Multi-Audio');
+  var uniqueLangs = Array.from(new Set(langs));
+
+  var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+ ?[GM]B)(?:\]|\b)/i);
+  var size = sizeMatch ? sizeMatch[1].toUpperCase() : (opt.size || '');
+
+  var nameParts = [opt.provider || 'Stream'];
+  if (opt.server) nameParts.push('🏷️ ' + opt.server);
+  if (res) nameParts.push(res);
+  if (uniqueLangs.some(function(l) { return l.indexOf('Dual') !== -1 || l.indexOf('Multi') !== -1; })) nameParts.push('Dual-Audio');
+  var nameLine = nameParts.join(' • ');
+
+  var specTags = [res, source].concat(codecs).filter(Boolean);
+  var seasonEp = (opt.season && opt.episode) ? (' • S' + String(opt.season).padStart(2, '0') + 'E' + String(opt.episode).padStart(2, '0')) : '';
+  var line1 = '🎬 ' + (opt.title || 'Unknown') + (opt.year ? (' (' + opt.year + ')') : '') + seasonEp + (specTags.length ? (' [' + specTags.join(' • ') + ']') : '');
+  
+  var filename = (opt.filename || '').trim();
+  if (!filename || filename === opt.title) {
+    var baseTitle = (opt.title || 'Video').replace(/[^a-zA-Z0-9]+/g, '.');
+    var yr = opt.year ? ('.' + opt.year) : '';
+    var se = (opt.season && opt.episode) ? ('.S' + String(opt.season).padStart(2, '0') + 'E' + String(opt.episode).padStart(2, '0')) : '';
+    var r = res ? ('.' + res.replace(/\s+/g, '.')) : '';
+    var s = source ? ('.' + source) : '';
+    var c = codecs.length ? ('.' + codecs.join('.')) : '';
+    var a = audio.length ? ('.' + audio[0].replace(/[^a-zA-Z0-9]+/g, '.')) : '';
+    var g = opt.server ? ('-' + opt.server.replace(/[\s\-_]+/g, '')) : ('-' + (opt.provider || 'Release'));
+    filename = baseTitle + yr + se + r + s + c + a + g + '.mkv';
+  }
+  var line2 = '📄 ' + filename;
+
+  var av = hdr.concat(audio);
+  var line3 = av.length ? ('💎 ' + av.join(' • ')) : '';
+  var line4 = uniqueLangs.length ? ('🌐 ' + uniqueLangs.join(' • ')) : '';
+
+  var meta = [];
+  if (size) meta.push('📦 ' + size);
+  if (opt.server) meta.push('🏷️ ' + opt.server);
+  meta.push('🔗 ' + (opt.provider || 'Stream'));
+  var line5 = meta.join(' • ');
+
+  var body = [line1, line2, line3, line4, line5].filter(Boolean).join('\n');
+  return {
+    name: nameLine,
+    title: body,
+    quality: res.toLowerCase().replace(' uhd', '').replace(' fhd', '').replace(' hd', '')
+  };
+}
 var cachedMainUrl = "";
 function getMainUrl() {
   return __async(this, null, function* () {
@@ -142,7 +230,7 @@ function hubCloudExtractor(url, referer) {
             label = "HubCloud - FSLv2";
           else if (text.includes("mega server"))
             label = "HubCloud - Mega";
-          links.push({ name: label, quality, url: link, size });
+          links.push({ name: label, quality, url: link, size, realFilename: header });
         }
       }
       return links;
@@ -222,11 +310,18 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
           const extracted = yield extractMdrive(dLink);
           for (const server of extracted) {
             const streams = yield loadExtractor(server, href);
-            allLinks.push(...streams.map((s) => __spreadProps(__spreadValues({}, s), {
-              name: `MoviesDrive [${s.name}] - ${s.quality}P`,
-              title: `${tmdbData.title || tmdbData.name} - ${s.name} [${s.quality}p]`,
+            allLinks.push(...streams.map((s) => __spreadProps(__spreadValues({}, s), __spreadValues({
               provider: "moviesdrive"
-            })));
+            }, formatCholeCard({
+              provider: "MoviesDrive",
+              title: tmdbData.title || tmdbData.name,
+              year: tmdbData.release_date ? tmdbData.release_date.split("-")[0] : "",
+              filename: s.realFilename || match.post_title || "",
+              server: s.name,
+              quality: `${s.quality}p`,
+              size: s.size || "",
+              url: s.url
+            })))));
           }
         }
       } else {
@@ -246,11 +341,20 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
               const epLinks = [link1, link2].filter((l) => !!l);
               for (const epLink of epLinks) {
                 const streams = yield loadExtractor(epLink, nextHref);
-                allLinks.push(...streams.map((s) => __spreadProps(__spreadValues({}, s), {
-                  name: `MoviesDrive [${s.name}] - ${s.quality}P`,
-                  title: `${tmdbData.title || tmdbData.name} S${seasonNum}E${episodeNum} - ${s.name} [${s.quality}p]`,
+                allLinks.push(...streams.map((s) => __spreadProps(__spreadValues({}, s), __spreadValues({
                   provider: "moviesdrive"
-                })));
+                }, formatCholeCard({
+                  provider: "MoviesDrive",
+                  title: tmdbData.title || tmdbData.name,
+                  year: tmdbData.first_air_date ? tmdbData.first_air_date.split("-")[0] : "",
+                  season: seasonNum,
+                  episode: episodeNum,
+                  filename: s.realFilename || match.post_title || "",
+                  server: s.name,
+                  quality: `${s.quality}p`,
+                  size: s.size || "",
+                  url: s.url
+                })))));
               }
             }
           }

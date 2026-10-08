@@ -61,6 +61,94 @@ var _cheerioRaw = require("cheerio-without-node-native");
 var _cheerio = (_cheerioRaw && _cheerioRaw.default && (typeof _cheerioRaw.default.load === "function" || typeof _cheerioRaw.default === "function")) ? _cheerioRaw.default : _cheerioRaw;
 var loadHtml = function(h) { return (_cheerio && _cheerio.load) ? _cheerio.load(h) : (_cheerio ? _cheerio(h) : null); };
 var import_cheerio_without_node_native2 = { default: { load: loadHtml }, load: loadHtml };
+function formatCholeCard(opt) {
+  var raw = (opt.filename || '') + ' ' + (opt.server || '') + ' ' + (opt.quality || '') + ' ' + (opt.size || '');
+  var text = raw.trim();
+  var res = '';
+  if (/2160p|4k|uhd/i.test(text)) res = '4K UHD';
+  else if (/1080p|fhd/i.test(text)) res = '1080p FHD';
+  else if (/720p|hd/i.test(text)) res = '720p HD';
+  else if (/480p|sd/i.test(text)) res = '480p';
+  else res = opt.quality ? String(opt.quality).toUpperCase() : '1080P';
+
+  var source = '';
+  if (/remux/i.test(text)) source = 'REMUX';
+  else if (/bluray|bdrip/i.test(text)) source = 'BluRay';
+  else if (/web-?dl|webrip|web/i.test(text)) source = 'WEB-DL';
+  else if (/hdtv/i.test(text)) source = 'HDTV';
+
+  var codecs = [];
+  if (/hevc|x265|h\.?265/i.test(text)) codecs.push('HEVC');
+  else if (/x264|h\.?264|avc/i.test(text)) codecs.push('x264');
+  if (/10-?bit/i.test(text)) codecs.push('10-bit');
+
+  var hdr = [];
+  if (/dolby\s*vision|\bdv\b/i.test(text)) hdr.push('Dolby Vision');
+  if (/hdr10\+/i.test(text)) hdr.push('HDR10+');
+  else if (/hdr10|hdr/i.test(text)) hdr.push('HDR10');
+
+  var audio = [];
+  if (/atmos/i.test(text)) audio.push('Dolby Atmos');
+  if (/truehd/i.test(text)) audio.push('TrueHD');
+  else if (/dts-?hd(\s*ma)?/i.test(text)) audio.push('DTS-HD MA');
+  else if (/dts/i.test(text)) audio.push('DTS');
+  else if (/ddp|dd\+|eac3/i.test(text)) audio.push('DDP 5.1');
+  else if (/dd|ac3/i.test(text)) audio.push('DD 5.1');
+  else if (/aac/i.test(text)) audio.push('AAC');
+
+  var langs = [];
+  if (/\bhindi\b|\bhin\b/i.test(text)) langs.push('🇮🇳 Hindi Dub');
+  if (/\btamil\b|\btam\b/i.test(text)) langs.push('🇮🇳 Tamil');
+  if (/\btelugu\b|\btel\b/i.test(text)) langs.push('🇮🇳 Telugu');
+  if (/\benglish\b|\beng\b/i.test(text)) langs.push('🇬🇧 English');
+  if (/dual[- ]?audio/i.test(text)) langs.push('🌐 Dual-Audio');
+  if (/multi[- ]?audio/i.test(text)) langs.push('🌐 Multi-Audio');
+  var uniqueLangs = Array.from(new Set(langs));
+
+  var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+ ?[GM]B)(?:\]|\b)/i);
+  var size = sizeMatch ? sizeMatch[1].toUpperCase() : (opt.size || '');
+
+  var nameParts = [opt.provider || 'Stream'];
+  if (opt.server) nameParts.push('🏷️ ' + opt.server);
+  if (res) nameParts.push(res);
+  if (uniqueLangs.some(function(l) { return l.indexOf('Dual') !== -1 || l.indexOf('Multi') !== -1; })) nameParts.push('Dual-Audio');
+  var nameLine = nameParts.join(' • ');
+
+  var specTags = [res, source].concat(codecs).filter(Boolean);
+  var seasonEp = (opt.season && opt.episode) ? (' • S' + String(opt.season).padStart(2, '0') + 'E' + String(opt.episode).padStart(2, '0')) : '';
+  var line1 = '🎬 ' + (opt.title || 'Unknown') + (opt.year ? (' (' + opt.year + ')') : '') + seasonEp + (specTags.length ? (' [' + specTags.join(' • ') + ']') : '');
+  
+  var filename = (opt.filename || '').trim();
+  if (!filename || filename === opt.title) {
+    var baseTitle = (opt.title || 'Video').replace(/[^a-zA-Z0-9]+/g, '.');
+    var yr = opt.year ? ('.' + opt.year) : '';
+    var se = (opt.season && opt.episode) ? ('.S' + String(opt.season).padStart(2, '0') + 'E' + String(opt.episode).padStart(2, '0')) : '';
+    var r = res ? ('.' + res.replace(/\s+/g, '.')) : '';
+    var s = source ? ('.' + source) : '';
+    var c = codecs.length ? ('.' + codecs.join('.')) : '';
+    var a = audio.length ? ('.' + audio[0].replace(/[^a-zA-Z0-9]+/g, '.')) : '';
+    var g = opt.server ? ('-' + opt.server.replace(/[\s\-_]+/g, '')) : ('-' + (opt.provider || 'Release'));
+    filename = baseTitle + yr + se + r + s + c + a + g + '.mkv';
+  }
+  var line2 = '📄 ' + filename;
+
+  var av = hdr.concat(audio);
+  var line3 = av.length ? ('💎 ' + av.join(' • ')) : '';
+  var line4 = uniqueLangs.length ? ('🌐 ' + uniqueLangs.join(' • ')) : '';
+
+  var meta = [];
+  if (size) meta.push('📦 ' + size);
+  if (opt.server) meta.push('🏷️ ' + opt.server);
+  meta.push('🔗 ' + (opt.provider || 'Stream'));
+  var line5 = meta.join(' • ');
+
+  var body = [line1, line2, line3, line4, line5].filter(Boolean).join('\n');
+  return {
+    name: nameLine,
+    title: body,
+    quality: res.toLowerCase().replace(' uhd', '').replace(' fhd', '').replace(' hd', '')
+  };
+}
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var TMDB_BASE_URL = "https://api.tmdb.org/3";
 var MAIN_URL = "https://new1.hdhub4u.free";
@@ -833,11 +921,21 @@ function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) 
         } else if (typeof link.quality === "string") {
           qualityStr = link.quality;
         }
+        const card = formatCholeCard({
+          provider: "HDHub4u",
+          title: mediaInfo.title,
+          year: mediaInfo.year || "",
+          season: mediaType === "tv" ? season : null,
+          episode: mediaType === "tv" ? episode : null,
+          filename: (link.fileName && link.fileName !== "Unknown") ? link.fileName : (selectedMedia.title || ""),
+          server: serverName,
+          quality: qualityStr,
+          size: formatBytes(link.size),
+          url: link.url
+        });
         return {
-          name: `HDHub4u [${serverName}] - ${qualityStr.toUpperCase()}`,
-          title: `${mediaTitle}\n💾 ${formatBytes(link.size)}`,
+          ...card,
           url: link.url,
-          quality: qualityStr.toLowerCase(),
           size: formatBytes(link.size),
           headers: link.headers || void 0,
           provider: "hdhub4u"
