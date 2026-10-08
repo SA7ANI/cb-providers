@@ -65,7 +65,7 @@ async function buildProvider(providerName, options = {}) {
             outfile: outFile,
             format: 'cjs',              // CommonJS for module.exports compatibility
             platform: 'neutral',        // Works in both browser and node-like environments
-            target: 'es2016',           // Transpile async/await to generators for Hermes
+            target: 'es2020',           // ES2020 natively supported by modern Nuvio Hermes runtime
             minify: options.minify || false, // Minify if --minify flag is set
             sourcemap: false,
             external: EXTERNAL_MODULES,
@@ -107,7 +107,7 @@ async function transpileSingleFile(filename) {
     try {
         const result = await esbuild.transform(originalContent, {
             loader: 'js',
-            target: 'es2016',           // Transpile async/await to generators
+            target: 'es2020',           // ES2020 natively supported by modern Nuvio Hermes runtime
             format: 'cjs'
         });
 

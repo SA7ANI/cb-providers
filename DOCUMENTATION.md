@@ -29,12 +29,14 @@ A **Nuvio Provider** is a JavaScript module responsible for finding video stream
 
 Providers run locally on the user's device. The Nuvio app uses the **Hermes** JavaScript engine.
 
-**Crucial Limitation:** Hermes does not natively support `async/await` syntax inside dynamically loaded code (plugins).
-**Our Solution:** We provide a build script that automatically transpiles your modern `async/await` code into generator functions that Hermes can execute safely.
+**Modern Runtime Capabilities (ES2020 & Timers):**
+- **Native ES2020 Support:** Modern Nuvio Hermes natively supports ECMAScript 2020 features, including native `async/await`, optional chaining (`?.`), nullish coalescing (`??`), and `Promise.allSettled`.
+- **Native Timers:** Nuvio injects `setTimeout` and `clearTimeout` into the provider sandbox scope, allowing native request timeouts, abort timers, and async delays.
+- **The Build System:** While modern Nuvio can execute native `async/await`, our `build.js` provides automated bundling from `src/`, CommonJS compatibility, dependency resolution, and optional minification targeting `es2020`.
 
 **Also Important (Runtime Differences):** Local Node.js tests can pass even when the provider fails in-app.
-The Nuvio runtime is React Native + Hermes, so many Node-specific APIs/modules are not available (for example Node built-ins like `crypto`, and some crypto libraries that assume a Node/browser environment such as `node-forge`).
-If your provider uses encryption/decryption or heavy parsing dependencies, always test it in the Nuvio app (Plugin Tester) even if it works locally.
+The Nuvio runtime is React Native + Hermes, so Node-specific built-in modules (`fs`, `http`, native `crypto`, `child_process`) are not available.
+If your provider uses encryption/decryption or heavy parsing dependencies, ensure you use pure JS libraries (e.g. `crypto-js`) and test it in the Nuvio app (Plugin Tester) even if it works locally in Node.
 
 ---
 
@@ -119,9 +121,10 @@ If you have a simple script or are porting a provider from another project, you 
 
 ## 5. The Build System
 
-The `build.js` script is your primary tool. It handles two main jobs:
-1.  **Bundling**: Combines multiple files from `src/` into one.
-2.  **Transpiling**: Converts ES2017+ async/await into ES2016 Generators.
+The `build.js` script is your primary tool. It handles:
+1.  **Bundling**: Combines multiple source files from `src/` into a single production bundle.
+2.  **ES2020 Standardization**: Bundles dependencies and formats code for CommonJS targeting `es2020` (natively supported by Nuvio's modern Hermes engine).
+3.  **Minification**: Optionally minifies code to minimize network payload and speed up evaluation in the app.
 
 ### Bundling Source Providers
 
@@ -135,19 +138,19 @@ Usage: `node build.js [provider_names...]`
 
 **Output**: Creates `providers/<name>.js`.
 
-### Transpiling Async/Await (Single Files)
+### Bundling & Transpiling Single Files
 
-If you have a standalone file in `providers/` that uses `async/await`, you must transpile it.
+If you have standalone single-file providers in `providers/`, you can format and validate them with:
 
 Usage: `node build.js --transpile [filenames...]`
 
 | Command | Description |
 |---------|-------------|
-| `node build.js --transpile` | Scans `providers/` for single files using async and transpiles them all. |
-| `node build.js --transpile old-scraper` | Transpiles `providers/old-scraper.js` in-place. |
+| `node build.js --transpile` | Scans `providers/` for single files and validates/transpiles them targeting ES2020. |
+| `node build.js --transpile myprovider` | Transpiles `providers/myprovider.js` in-place. |
 | `node build.js --transpile file1 file2` | Transpiles multiple specific files. |
 
-**Note**: This overwrites the file with the transpiled version. The original source is lost unless you keep a backup or use Git. This is why **Workflow A (src folder)** is recommended, as it keeps your source code separate from the build artifact.
+**Note**: This processes the file with esbuild targeting ES2020. Native `async/await` syntax is preserved directly. This is why **Workflow A (src folder)** is recommended if you maintain multi-file dependencies.
 
 ### Watch Mode
 
@@ -322,11 +325,12 @@ Users can then use your raw GitHub repository URL to load the plugins in Nuvio.
 
 ## 9. FAQ & Troubleshooting
 
-### Error: `SyntaxError: async functions are unsupported`
-**Cause**: The app running on Hermes cannot execute `async function` directly in plugins.
-**Fix**: You forgot to build/transpile.
-- If using `src/`: Run `node build.js myprovider`.
-- If using single file: Run `node build.js --transpile myprovider.js`.
+### Error: `SyntaxError: Unexpected token` or Unsupported Syntax
+**Cause**: The provider uses ECMAScript features beyond ES2020 (such as ES2022+ class fields, decorators, or unbundled ESM imports) or relies on unsupported Node.js native bindings.
+**Fix**:
+- Ensure your code targets ES2020 or below.
+- If using multi-file architectures in `src/`, run `node build.js myprovider`.
+- Test using the Plugin Tester in Nuvio to verify Hermes execution.
 
 ### Error: `fetch is not defined` (in local testing)
 **Cause**: Node.js (before v18) doesn't have native `fetch`.
