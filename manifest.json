@@ -664,6 +664,50 @@
         "en",
         "hi"
       ]
+    },
+    {
+      "id": "anizen",
+      "name": "AniZen",
+      "description": "AniZen / Anikoto anime provider with MegaPlay, Vidstream & multi-subtitles (SUB/DUB)",
+      "version": "2.1.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv",
+        "anime"
+      ],
+      "filename": "providers/anizen.js",
+      "enabled": true,
+      "formats": [
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=anizen.site&sz=128",
+      "contentLanguage": [
+        "ja",
+        "en"
+      ]
+    },
+    {
+      "id": "cinefreak",
+      "name": "CineFreak",
+      "description": "CineFreak high-speed streaming via CineCloud with 4K, 1080p, 720p dual-audio support",
+      "version": "2.1.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/cinefreak.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=cinefreak.net&sz=128",
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
     }
   ],
   "providers": [
@@ -1324,6 +1368,50 @@
       "logo": "https://www.google.com/s2/favicons?domain=animesalt.cam&sz=128",
       "contentLanguage": [
         "ja",
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "anizen",
+      "name": "AniZen",
+      "description": "AniZen / Anikoto anime provider with MegaPlay, Vidstream & multi-subtitles (SUB/DUB)",
+      "version": "2.1.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv",
+        "anime"
+      ],
+      "filename": "providers/anizen.js",
+      "enabled": true,
+      "formats": [
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=anizen.site&sz=128",
+      "contentLanguage": [
+        "ja",
+        "en"
+      ]
+    },
+    {
+      "id": "cinefreak",
+      "name": "CineFreak",
+      "description": "CineFreak high-speed streaming via CineCloud with 4K, 1080p, 720p dual-audio support",
+      "version": "2.1.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/cinefreak.js",
+      "enabled": true,
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=cinefreak.net&sz=128",
+      "contentLanguage": [
         "en",
         "hi"
       ]
