@@ -409,7 +409,8 @@ typeof module !== "undefined" && module[_0x580258(514)] ? module[_0x580258(514)]
     else if (res.indexOf("480") !== -1)
       qualitySlug = "480p";
     return {
-      name: opt.provider || "Stream",
+      name: body,
+    description: body,
       title: body,
       quality: qualitySlug,
       size: size || ""

@@ -89,7 +89,8 @@ function formatCholeCard(opt) {
   else if (res.indexOf("480") !== -1) qualitySlug = "480p";
 
   return {
-    name: opt.provider || "AnimeSalt",
+    name: body,
+    description: body,
     title: body,
     quality: qualitySlug,
     size: opt.size || ""
@@ -258,7 +259,7 @@ async function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
                   defaultLang: langEmoji
                 });
                 finalStreams.push({
-                  name: "AnimeSalt",
+                  name: card.title,
                   title: card.title,
                   quality: card.quality,
                   size: card.size,

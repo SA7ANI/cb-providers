@@ -214,7 +214,8 @@ function getStreams(tmdbId, mediaType, season, episode) {
       var line5 = metaParts.join(" • ");
       var cardTitle = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
       results.push({
-        name: PROVIDER_NAME,
+        name: cardTitle,
+        description: cardTitle,
         title: cardTitle,
         quality: quality === "2160p" ? "4k" : quality,
         size: size || "P2P",

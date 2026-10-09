@@ -207,7 +207,7 @@ function formatCholeCard(meta) {
   if (meta.audioLabel)
     display += ` | \u{1F50A} ${meta.audioLabel}`;
   return {
-    name: "CineFreak",
+    name: `${display} 🎬 ${cleanTitle}`,
     title: `${display} 🎬 ${cleanTitle}`,
     quality: cleanQuality
   };

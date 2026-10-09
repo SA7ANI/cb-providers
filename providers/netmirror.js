@@ -181,7 +181,8 @@ function formatCholeCard(opt) {
   var line5 = meta.join(" • ");
   var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
   return {
-    name: "NetMirror",
+    name: body,
+    description: body,
     title: body,
     quality: "1080p",
     format: "m3u8",

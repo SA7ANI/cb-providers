@@ -571,7 +571,8 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
     else if (res.indexOf("480") !== -1)
       qualitySlug = "480p";
     return {
-      name: opt.provider || "Stream",
+      name: body,
+    description: body,
       title: body,
       quality: qualitySlug,
       size: size || ""

@@ -382,7 +382,8 @@ typeof module !== _0x2a35f6(149) && module[_0x2a35f6(178)] ? module["exports"] =
     else if (res.indexOf("480") !== -1)
       qualitySlug = "480p";
     return {
-      name: opt.provider || "Stream",
+      name: body,
+    description: body,
       title: body,
       quality: qualitySlug,
       size: size || ""
