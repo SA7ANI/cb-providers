@@ -245,19 +245,10 @@ function formatCholeCard(opt) {
   };
 }
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
-var cachedDomain = "";
+var cachedDomain = "https://moviesmod.ai.in";
 function getMainUrl() {
   return __async(this, null, function* () {
-    if (cachedDomain)
-      return cachedDomain;
-    try {
-      const response = yield fetch(DOMAINS_URL);
-      const data = yield response.json();
-      cachedDomain = data.moviesmod || FALLBACK_DOMAIN;
-      return cachedDomain;
-    } catch (e) {
-      return FALLBACK_DOMAIN;
-    }
+    return cachedDomain;
   });
 }
 function getBaseUrl(url) {
@@ -565,13 +556,13 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       const searchRes = yield fetch(searchUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }), cfKiller: true });
       const searchHtml = yield searchRes.text();
       const $search = import_cheerio_without_node_native2.default.load(searchHtml);
-      let targetUrl = $search("#content_box article > a").first().attr("href") || $search("#content_box article a").first().attr("href");
+      let targetUrl = $search("article a").first().attr("href") || $search("#content_box article a").first().attr("href");
       if (!targetUrl && details.imdbId && details.title) {
         const fallbackQuery = mediaType === "movie" ? `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(details.title)}` : `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(details.title)} ${seasonNum}`;
         const fallbackRes = yield fetch(fallbackQuery, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }), cfKiller: true });
         const fallbackHtml = yield fallbackRes.text();
         const $fallback = import_cheerio_without_node_native2.default.load(fallbackHtml);
-        targetUrl = $fallback("#content_box article > a").first().attr("href") || $fallback("#content_box article a").first().attr("href");
+        targetUrl = $fallback("article a").first().attr("href") || $fallback("#content_box article a").first().attr("href");
       }
       if (!targetUrl) {
         console.log("[MoviesMod] No search result found");

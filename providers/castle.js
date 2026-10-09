@@ -1,3 +1,6 @@
+var __defProps = Object.defineProperties;
+var __getOwnPropDescs = Object.getOwnPropertyDescriptors;
+var __spreadProps = (a, b) => __defProps(a, __getOwnPropDescs(b));
 "use strict";
 var __defProp = Object.defineProperty;
 var __getOwnPropSymbols = Object.getOwnPropertySymbols;
@@ -304,70 +307,95 @@ function decryptCastle(encryptedB64, securityKeyB64) {
   return __async(this, null, function* () {
     console.log("[Castle] Starting local AES-CBC decryption...");
     try {
-      const CryptoJS = require("crypto-js");
-      if (typeof __crypto_aes_decrypt_raw !== "undefined") {
-        const originalDecrypt = CryptoJS.AES.decrypt;
-        CryptoJS.AES.decrypt = function(cipher, key, options) {
-          try {
-            const wordArrayToBytes = (wordArray) => {
-              const bytes = new Uint8Array(wordArray.sigBytes);
-              for (let i = 0; i < wordArray.sigBytes; i++) {
-                bytes[i] = wordArray.words[i >>> 2] >>> 24 - i % 4 * 8 & 255;
-              }
-              return bytes;
-            };
-            const toUint8Array = (data2) => {
-              if (data2 instanceof Uint8Array)
-                return data2;
-              if (data2 instanceof ArrayBuffer)
-                return new Uint8Array(data2);
-              if (data2 && typeof data2.length === "number")
-                return new Uint8Array(Array.prototype.slice.call(data2));
-              return new Uint8Array(0);
-            };
-            const data = typeof cipher === "string" ? new Uint8Array(Array.from(atob(cipher), (c) => c.charCodeAt(0))) : cipher.ciphertext ? wordArrayToBytes(cipher.ciphertext) : toUint8Array(cipher);
-            const kBytes = wordArrayToBytes(key);
-            const ivBytes = options && options.iv ? wordArrayToBytes(options.iv) : new Uint8Array(0);
-            const mode = options && options.mode || "AES-CBC";
-            const keyArg = typeof Int8Array !== "undefined" ? new Int8Array(kBytes.buffer) : kBytes;
-            const ivArg = typeof Int8Array !== "undefined" ? new Int8Array(ivBytes.buffer) : ivBytes;
-            const dataArg = typeof Int8Array !== "undefined" ? new Int8Array(data.buffer) : data;
-            const resBytes = __crypto_aes_decrypt_raw(mode, keyArg, ivArg, dataArg);
-            const plain = new TextDecoder().decode(resBytes);
-            return { toString: function() {
-              return plain;
-            } };
-          } catch (err) {
-            console.error("[Castle JNI Patch] Decrypt failed, falling back:", err);
-            return originalDecrypt.call(CryptoJS.AES, cipher, key, options);
+      let CryptoJS = typeof global !== "undefined" && global.CryptoJS ? global.CryptoJS : null;
+      if (!CryptoJS) {
+        try {
+          CryptoJS = require("crypto-js");
+        } catch (_) {}
+      }
+
+      if (CryptoJS) {
+        if (typeof __crypto_aes_decrypt_raw !== "undefined") {
+          const originalDecrypt = CryptoJS.AES.decrypt;
+          CryptoJS.AES.decrypt = function(cipher, key, options) {
+            try {
+              const wordArrayToBytes = (wordArray) => {
+                const bytes = new Uint8Array(wordArray.sigBytes);
+                for (let i = 0; i < wordArray.sigBytes; i++) {
+                  bytes[i] = wordArray.words[i >>> 2] >>> 24 - i % 4 * 8 & 255;
+                }
+                return bytes;
+              };
+              const toUint8Array = (data2) => {
+                if (data2 instanceof Uint8Array)
+                  return data2;
+                if (data2 instanceof ArrayBuffer)
+                  return new Uint8Array(data2);
+                if (data2 && typeof data2.length === "number")
+                  return new Uint8Array(Array.prototype.slice.call(data2));
+                return new Uint8Array(0);
+              };
+              const data = typeof cipher === "string" ? new Uint8Array(Array.from(atob(cipher), (c) => c.charCodeAt(0))) : cipher.ciphertext ? wordArrayToBytes(cipher.ciphertext) : toUint8Array(cipher);
+              const kBytes = wordArrayToBytes(key);
+              const ivBytes = options && options.iv ? wordArrayToBytes(options.iv) : new Uint8Array(0);
+              const mode = options && options.mode || "AES-CBC";
+              const keyArg = typeof Int8Array !== "undefined" ? new Int8Array(kBytes.buffer) : kBytes;
+              const ivArg = typeof Int8Array !== "undefined" ? new Int8Array(ivBytes.buffer) : ivBytes;
+              const dataArg = typeof Int8Array !== "undefined" ? new Int8Array(data.buffer) : data;
+              const resBytes = __crypto_aes_decrypt_raw(mode, keyArg, ivArg, dataArg);
+              const plain = new TextDecoder().decode(resBytes);
+              return { toString: function() {
+                return plain;
+              } };
+            } catch (err) {
+              console.error("[Castle JNI Patch] Decrypt failed, falling back:", err);
+              return originalDecrypt.call(CryptoJS.AES, cipher, key, options);
+            }
+          };
+        }
+        const CASTLE_SUFFIX = "T!BgJB";
+        const securityKeyWords = CryptoJS.enc.Base64.parse(securityKeyB64);
+        const suffixWords = CryptoJS.enc.Utf8.parse(CASTLE_SUFFIX);
+        const keyMaterial = securityKeyWords.concat(suffixWords);
+        let finalKey;
+        if (keyMaterial.sigBytes < 16) {
+          const padding = CryptoJS.lib.WordArray.create(new Array(16 - keyMaterial.sigBytes).fill(0));
+          finalKey = keyMaterial.concat(padding);
+        } else if (keyMaterial.sigBytes > 16) {
+          finalKey = CryptoJS.lib.WordArray.create(keyMaterial.words.slice(0, 4), 16);
+        } else {
+          finalKey = keyMaterial;
+        }
+        const iv = finalKey;
+        const decrypted = CryptoJS.AES.decrypt(encryptedB64, finalKey, {
+          iv,
+          mode: CryptoJS.mode.CBC,
+          padding: CryptoJS.pad.Pkcs7
+        });
+        const result = decrypted.toString(CryptoJS.enc.Utf8);
+        if (result) {
+          console.log("[Castle] Local decryption successful");
+          return result;
+        }
+      }
+
+      if (typeof require === "function") {
+        try {
+          const nodeCrypto = require("crypto");
+          const keyBuf = Buffer.concat([Buffer.from(securityKeyB64, "base64"), Buffer.from("T!BgJB", "utf8")]);
+          let finalKeyBuf = Buffer.alloc(16, 0);
+          keyBuf.copy(finalKeyBuf, 0, 0, Math.min(16, keyBuf.length));
+          const decipher = nodeCrypto.createDecipheriv("aes-128-cbc", finalKeyBuf, finalKeyBuf);
+          let plain = decipher.update(encryptedB64, "base64", "utf8");
+          plain += decipher.final("utf8");
+          if (plain) {
+            console.log("[Castle] Local Node crypto decryption successful");
+            return plain;
           }
-        };
+        } catch (_) {}
       }
-      const CASTLE_SUFFIX = "T!BgJB";
-      const securityKeyWords = CryptoJS.enc.Base64.parse(securityKeyB64);
-      const suffixWords = CryptoJS.enc.Utf8.parse(CASTLE_SUFFIX);
-      const keyMaterial = securityKeyWords.concat(suffixWords);
-      let finalKey;
-      if (keyMaterial.sigBytes < 16) {
-        const padding = CryptoJS.lib.WordArray.create(new Array(16 - keyMaterial.sigBytes).fill(0));
-        finalKey = keyMaterial.concat(padding);
-      } else if (keyMaterial.sigBytes > 16) {
-        finalKey = CryptoJS.lib.WordArray.create(keyMaterial.words.slice(0, 4), 16);
-      } else {
-        finalKey = keyMaterial;
-      }
-      const iv = finalKey;
-      const decrypted = CryptoJS.AES.decrypt(encryptedB64, finalKey, {
-        iv,
-        mode: CryptoJS.mode.CBC,
-        padding: CryptoJS.pad.Pkcs7
-      });
-      const result = decrypted.toString(CryptoJS.enc.Utf8);
-      if (!result) {
-        throw new Error("Decryption resulted in empty string (possible key/IV mismatch)");
-      }
-      console.log("[Castle] Local decryption successful");
-      return result;
+
+      throw new Error("No cryptographic decryptor available or decryption failed");
     } catch (error) {
       console.error(`[Castle] Local decryption failed: ${error.message}`);
       throw error;

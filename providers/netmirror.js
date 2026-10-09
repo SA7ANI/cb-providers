@@ -167,9 +167,30 @@ async function getMediaMetadata(rawId, mediaType) {
   }
   return { title: cleanId, year: null };
 }
-function cleanTitleForCompare(str) {
-  return (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
+function formatCholeCard(opt) {
+  var specTags = ["1080p FHD", "WEB-DL", "HLS"];
+  var yr = opt.year ? " (" + opt.year + ")" : "";
+  var seasonEp = opt.season && opt.episode ? " • S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : "";
+  var line1 = "🎬 " + (opt.title || "Unknown") + yr + seasonEp + " [" + specTags.join(" • ") + "]";
+  var cleanTitle = (opt.title || "Video").replace(/[^a-zA-Z0-9]+/g, ".");
+  var filename = `${cleanTitle}${seasonEp ? seasonEp.replace(/[^a-zA-Z0-9]/g, ".") : ""}.1080p.HLS-NetMirror.mkv`;
+  var line2 = "📄 " + filename;
+  var line3 = "💎 Dolby Digital • Multi-Audio";
+  var line4 = "🌐 🇮🇳 Hindi • 🇬🇧 English • Multi";
+  var meta = ["📦 Adaptive HLS", "🏷️ " + (opt.server || "NetMirror"), "🔗 NetMirror"];
+  var line5 = meta.join(" • ");
+  var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+  return {
+    name: `NetMirror [${opt.server || "Stream"}]`,
+    title: body,
+    quality: "1080p",
+    format: "m3u8",
+    type: "m3u8",
+    size: "Adaptive HLS",
+    provider: "netmirror"
+  };
 }
+
 async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum = 1) {
   const isSeries = mediaType === "series" || mediaType === "tv";
   const season = parseInt(seasonNum, 10) || 1;
@@ -223,13 +244,18 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
           timeout: 4500
         });
         if (playerRes && playerRes.video_link) {
+          const card = formatCholeCard({
+            title: playerRes.title || match.t,
+            year: year || playerRes.ep,
+            server: ott.label
+          });
           return [{
-            name: `NetMirror • 1080p • HLS [${ott.label}]`,
-            title: `🎬 ${playerRes.title || match.t} (${year || playerRes.ep || "Movie"})\n⚡ 1080p FHD • Multi-Audio • Stream`,
-            quality: "1080p",
+            name: card.name,
+            title: card.title,
+            quality: card.quality,
             format: "m3u8",
             url: playerRes.video_link,
-            size: "Adaptive HLS",
+            size: card.size,
             type: "m3u8",
             provider: "netmirror",
             headers: {
@@ -302,13 +328,20 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
               timeout: 4500
             });
             if (playerRes && playerRes.video_link) {
+              const card = formatCholeCard({
+                title: playerRes.title || match.t,
+                year: year || playerRes.ep,
+                season: season,
+                episode: episode,
+                server: ott.label
+              });
               return [{
-                name: `NetMirror • 1080p • HLS [${ott.label}]`,
-                title: `🎬 ${playerRes.title || match.t} • S${season}E${episode} (${epName})\n⚡ 1080p FHD • Multi-Audio • Stream`,
-                quality: "1080p",
+                name: card.name,
+                title: card.title,
+                quality: card.quality,
                 format: "m3u8",
                 url: playerRes.video_link,
-                size: "Adaptive HLS",
+                size: card.size,
                 type: "m3u8",
                 provider: "netmirror",
                 headers: {

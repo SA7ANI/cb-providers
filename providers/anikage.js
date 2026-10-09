@@ -19,12 +19,9 @@ async function httpGet(url, customHeaders = {}) {
         return await res.json();
       }
       return await res.text();
-    } catch (e) {
-      // Fallback below
-    }
+    } catch (e) {}
   }
 
-  // Node.js fallback
   try {
     const https = require("https");
     const http = require("http");
@@ -61,47 +58,60 @@ async function getMediaMeta(id, type) {
   }
 
   const tmdbType = (type === "movie" || type === "movies") ? "movie" : "tv";
-  const apiKey = "1865f43a0549ae50d7878097d6244770";
-  const urls = [
-    `https://worker.zendax.me/api/fetch?url=https://api.themoviedb.org/3/${tmdbType}/${id}?api_key=${apiKey}`,
-    `https://api.themoviedb.org/3/${tmdbType}/${id}?api_key=${apiKey}`
+  const apiKeys = [
+    "439c478a771f35c05022f9feabcca01c",
+    "1865f43a0549ae50d7878097d6244770",
+    "b025d23315a6b0c266cc6cb221a68134",
+    "847a158b5489812f851da8cf02476566"
   ];
 
-  for (const u of urls) {
-    try {
-      const d = await httpGet(u);
-      if (d && typeof d === "object") {
-        const title = d.name || d.title || d.original_name || d.original_title;
-        if (title) {
-          return {
-            title: title,
-            year: (d.first_air_date || d.release_date || "").substring(0, 4)
-          };
+  for (const key of apiKeys) {
+    const rawTmdbUrl = `https://api.themoviedb.org/3/${tmdbType}/${id}?api_key=${key}`;
+    const urls = [
+      `https://worker.zendax.me/api/fetch?url=${encodeURIComponent(rawTmdbUrl)}`,
+      rawTmdbUrl
+    ];
+
+    for (const u of urls) {
+      try {
+        const d = await httpGet(u);
+        if (d && typeof d === "object") {
+          const title = d.name || d.title || d.original_name || d.original_title;
+          if (title) {
+            return {
+              title: title,
+              year: (d.first_air_date || d.release_date || "").substring(0, 4)
+            };
+          }
         }
-      }
-    } catch (e) {}
+      } catch (e) {}
+    }
   }
 
   return null;
 }
 
-function formatStreamCard(opt) {
+function formatCholeCard(opt) {
   const audio = opt.audio || "SUB";
   const server = opt.server || "Koto";
   const title = opt.title || "Anime";
-  const ep = opt.episode ? `Ep ${opt.episode}` : "Movie";
-  const subsCount = opt.subtitles && opt.subtitles.length ? `${opt.subtitles.length} Subs` : "Softsub";
-
-  const name = `AniKage • ${audio} • ${server}`;
-  const cardTitle = [
-    `🎬 ${title} • ${ep}`,
-    `⚡ 1080p FHD • HLS (m3u8) • ${subsCount}`,
-    `💎 Multi-Subtitles • High Speed`
-  ].join("\n");
-
+  const yr = opt.year ? " (" + opt.year + ")" : "";
+  const seasonEp = opt.season && opt.episode ? " • S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : (opt.episode ? " • Ep " + opt.episode : "");
+  const specTags = ["1080p FHD", "WEB-DL", "HLS"];
+  
+  const line1 = "🎬 " + title + yr + seasonEp + " [" + specTags.join(" • ") + "]";
+  const cleanTitle = (opt.title || "Anime").replace(/[^a-zA-Z0-9]+/g, ".");
+  const filename = `${cleanTitle}${seasonEp ? seasonEp.replace(/[^a-zA-Z0-9]/g, ".") : ""}.1080p.HLS.${audio}-AniKage.mkv`;
+  const line2 = "📄 " + filename;
+  const line3 = "💎 AAC 2.0 • Softsub";
+  const line4 = audio === "DUB" ? "🌐 🇬🇧 English DUB" : "🌐 🇯🇵 Japanese SUB • Multi-Subs";
+  const meta = ["📦 Adaptive HLS", "🏷️ " + server, "🔗 AniKage"];
+  const line5 = meta.join(" • ");
+  
+  const body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
   return {
-    name: name,
-    title: cardTitle,
+    name: `AniKage • ${audio} • ${server}`,
+    title: body,
     quality: "1080p",
     format: "m3u8",
     type: "m3u8",
@@ -110,7 +120,7 @@ function formatStreamCard(opt) {
   };
 }
 
-async function getStreams(tmdbId, mediaType, seasonNum, episodeNum) {
+async function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
   try {
     const meta = await getMediaMeta(tmdbId, mediaType);
     if (!meta || !meta.title) return [];
@@ -123,7 +133,6 @@ async function getStreams(tmdbId, mediaType, seasonNum, episodeNum) {
     const results = sData.data || sData.results || [];
     if (!results.length) return [];
 
-    // Best match by title
     const cleanQ = query.toLowerCase();
     const anime = results.find(r => {
       const eng = (r.title?.english || "").toLowerCase();
@@ -135,9 +144,25 @@ async function getStreams(tmdbId, mediaType, seasonNum, episodeNum) {
     if (!slug) return [];
 
     const animeTitle = anime.title?.english || anime.title?.romaji || meta.title;
-    const targetEp = (mediaType === "movie" || !episodeNum) ? 1 : Number(episodeNum);
+    const reqSeason = Number(seasonNum) || 1;
+    const reqEpisode = (mediaType === "movie" || !episodeNum) ? 1 : (Number(episodeNum) || 1);
 
-    const srvUrl = `${ANIKAGE_BASE}/api/media/anime/${slug}/episodes/${targetEp}/servers`;
+    // Fetch episodes list to resolve exact episode number
+    let targetEpNum = reqEpisode;
+    try {
+      const epData = await httpGet(`${ANIKAGE_BASE}/api/media/anime/${slug}/episodes`, { "Referer": `${ANIKAGE_BASE}/anime/watch/${slug}` });
+      const epList = Array.isArray(epData) ? epData : (epData && epData.episodes ? epData.episodes : []);
+      if (epList.length > 0) {
+        const matchedEp = epList.find(e => (Number(e.seasonNumber) === reqSeason && Number(e.episodeInSeason) === reqEpisode))
+          || epList.find(e => Number(e.number) === reqEpisode)
+          || epList[0];
+        if (matchedEp && matchedEp.number !== undefined) {
+          targetEpNum = Number(matchedEp.number);
+        }
+      }
+    } catch (e) {}
+
+    const srvUrl = `${ANIKAGE_BASE}/api/media/anime/${slug}/episodes/${targetEpNum}/servers`;
     const srvData = await httpGet(srvUrl, { "Referer": `${ANIKAGE_BASE}/anime/watch/${slug}` });
     if (!srvData || !Array.isArray(srvData.servers) || !srvData.servers.length) return [];
 
@@ -148,7 +173,7 @@ async function getStreams(tmdbId, mediaType, seasonNum, episodeNum) {
       const subTypes = Array.isArray(s.subTypes) && s.subTypes.length ? s.subTypes : ["sub"];
       for (const subType of subTypes) {
         try {
-          const srcUrl = `${ANIKAGE_BASE}/api/media/anime/${slug}/episodes/${targetEp}/sources?provider=${encodeURIComponent(s.id)}`;
+          const srcUrl = `${ANIKAGE_BASE}/api/media/anime/${slug}/episodes/${targetEpNum}/sources?provider=${encodeURIComponent(s.id)}`;
           const srcData = await httpGet(srcUrl, { "Referer": `${ANIKAGE_BASE}/anime/watch/${slug}` });
           if (!srcData || !Array.isArray(srcData.sources) || !srcData.sources.length) continue;
 
@@ -175,11 +200,13 @@ async function getStreams(tmdbId, mediaType, seasonNum, episodeNum) {
             };
           }).filter(sub => sub.file);
 
-          const card = formatStreamCard({
+          const card = formatCholeCard({
             audio: subType.toUpperCase(),
             server: (s.label || s.id).toUpperCase(),
             title: animeTitle,
-            episode: targetEp,
+            year: meta.year,
+            season: reqSeason,
+            episode: targetEpNum,
             subtitles: subs
           });
 

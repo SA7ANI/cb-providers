@@ -234,20 +234,45 @@ function getTMDBDetails(tmdbId, mediaType) {
   return __async(this, null, function* () {
     const isSeries = mediaType === "tv" || mediaType === "series";
     const endpoint = isSeries ? "tv" : "movie";
-    for (const apiKey of TMDB_API_KEYS) {
+    const isImdb = typeof tmdbId === "string" && tmdbId.startsWith("tt");
+    if (isImdb) {
       try {
-        const res = yield fetch(`${TMDB_BASE_URL}/${endpoint}/${tmdbId}?api_key=${apiKey}`, {
-          headers: { "Accept": "application/json" }
-        });
-        if (res.ok) {
-          const data = yield res.json();
-          return {
-            title: data.name || data.title || "",
-            originalTitle: data.original_name || data.original_title || "",
-            year: (data.first_air_date || data.release_date || "").split("-")[0]
-          };
+        const cRes = yield fetch(`https://v3-cinemeta.strem.io/meta/${isSeries ? "series" : "movie"}/${tmdbId}.json`);
+        if (cRes.ok) {
+          const cData = yield cRes.json();
+          if (cData && cData.meta && cData.meta.name) {
+            return {
+              title: cData.meta.name,
+              originalTitle: cData.meta.name,
+              year: cData.meta.year || ""
+            };
+          }
         }
-      } catch (_) {
+      } catch (_) {}
+    }
+    for (const apiKey of TMDB_API_KEYS) {
+      const rawUrl = `https://api.themoviedb.org/3/${endpoint}/${tmdbId}?api_key=${apiKey}`;
+      const urls = [
+        `https://worker.zendax.me/api/fetch?url=${encodeURIComponent(rawUrl)}`,
+        rawUrl
+      ];
+      for (const u of urls) {
+        try {
+          const res = yield fetch(u, {
+            headers: { "Accept": "application/json", "User-Agent": "Mozilla/5.0" }
+          });
+          if (res.ok) {
+            const data = yield res.json();
+            const title = data.name || data.title || "";
+            if (title) {
+              return {
+                title: title,
+                originalTitle: data.original_name || data.original_title || title,
+                year: (data.first_air_date || data.release_date || "").split("-")[0]
+              };
+            }
+          }
+        } catch (_) {}
       }
     }
     return { title: "", originalTitle: "", year: "" };

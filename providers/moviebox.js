@@ -258,7 +258,19 @@ var PACKAGE_INFO = {
   version_name: "4.0.03.0920.03",
   version_code: 50020130
 };
-var import_crypto_js = __toESM(require("crypto-js"));
+var _crypto_js_lib = null;
+try {
+  _crypto_js_lib = require("crypto-js");
+} catch (_) {
+  try {
+    _crypto_js_lib = require("../../chole_bhature-metasorter-addon/node_modules/crypto-js");
+  } catch (_2) {
+    if (typeof global !== "undefined" && global.CryptoJS) {
+      _crypto_js_lib = global.CryptoJS;
+    }
+  }
+}
+var import_crypto_js = __toESM(_crypto_js_lib || {});
 var SECRET_KEY_DEFAULT = import_crypto_js.default.enc.Base64.parse(
   import_crypto_js.default.enc.Base64.parse(KEY_B64_DEFAULT).toString(import_crypto_js.default.enc.Utf8)
 );

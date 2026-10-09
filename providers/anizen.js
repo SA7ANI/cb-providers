@@ -612,6 +612,36 @@ function fetchTMDBDetails(tmdbId, mediaType) {
     return null;
   });
 }
+function formatCholeCard(opt) {
+  var res = opt.quality ? String(opt.quality).trim() : "1080p FHD";
+  var audio = opt.audioLabel || "SUB";
+  var server = opt.server || "Stream";
+  var provider = opt.provider || "AniZen";
+
+  var seasonEp = opt.season && opt.episode ? " • S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : (opt.episode ? " • Ep " + opt.episode : "");
+  var specTags = [res, "WEB-DL", "HLS"].filter(Boolean);
+
+  var line1 = "🎬 " + (opt.title || "Anime") + seasonEp + " [" + specTags.join(" • ") + "]";
+  var cleanTitle = (opt.title || "Anime").replace(/[^a-zA-Z0-9]+/g, ".");
+  var filename = `${cleanTitle}${seasonEp ? seasonEp.replace(/[^a-zA-Z0-9]/g, ".") : ""}.1080p.HLS.${audio}-${provider}.mkv`;
+  var line2 = "📄 " + filename;
+  var line3 = "💎 AAC 2.0 • Softsub";
+  var line4 = audio === "DUB" ? "🌐 🇬🇧 English DUB" : "🌐 🇯🇵 Japanese SUB • Multi-Subs";
+  var metaArr = ["📦 Adaptive HLS", "🏷️ " + server, "🔗 " + provider];
+  var line5 = metaArr.join(" • ");
+
+  var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+  return {
+    name: `${provider} • ${audio} • ${server}`,
+    title: body,
+    quality: "1080p",
+    format: "m3u8",
+    type: "m3u8",
+    size: "Adaptive HLS",
+    provider: provider.toLowerCase()
+  };
+}
+
 function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
   return __async(this, null, function* () {
     try {

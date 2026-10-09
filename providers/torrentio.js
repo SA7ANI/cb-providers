@@ -196,15 +196,29 @@ function getStreams(tmdbId, mediaType, season, episode) {
           sourceGroup = "TGX";
       }
       var streamUrl = stream.url || (stream.infoHash ? buildMagnet(stream.infoHash) : "");
-      var headerLine = isSeries ? "\u{1F3AC} " + title + " | S" + (season || 1) + " E" + (episode || 1) : "\u{1F3AC} " + title + " - " + year;
-      var formatLine = qualityIcon + " " + quality + " | " + tagsLine;
-      var metaLine = "\u{1F465} " + seeders + " | \u{1F4BE} " + size + " | \u2699\uFE0F " + sourceGroup;
-      var cardTitle = headerLine + "\n" + formatLine + "\n" + metaLine;
+      var rawFilename = (stream.title || "").split("\n")[0].trim() || (title + ".mkv");
+      var seasonEp = isSeries && season && episode ? " • S" + String(season).padStart(2, "0") + "E" + String(episode).padStart(2, "0") : "";
+      var resBadge = quality === "2160p" ? "4K UHD" : quality === "1080p" ? "1080p FHD" : quality === "720p" ? "720p HD" : "480p SD";
+      var specTags = [resBadge].concat(tags.filter(function(t) { return t !== lang; })).filter(Boolean);
+      var line1 = "🎬 " + title + (year ? " (" + year + ")" : "") + seasonEp + (specTags.length ? " [" + specTags.join(" • ") + "]" : "");
+      var line2 = "📄 " + rawFilename;
+      var av = tags.filter(function(t) { return /dv|hdr|atmos|dts|dd/i.test(t); });
+      var line3 = av.length ? "💎 " + av.join(" • ") : "";
+      var langTag = lang === "Dual-Audio" ? "🌐 Dual-Audio" : lang === "Multi-Audio" ? "🌐 Multi-Audio" : lang === "English" ? "🌐 🇬🇧 English" : "🌐 " + lang;
+      var line4 = langTag;
+      var metaParts = [];
+      if (size) metaParts.push("📦 " + size);
+      if (seeders && seeders !== "0") metaParts.push("👥 " + seeders + " Seeders");
+      if (sourceGroup) metaParts.push("🏷️ " + sourceGroup);
+      metaParts.push("🔗 " + PROVIDER_NAME);
+      var line5 = metaParts.join(" • ");
+      var cardTitle = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
       results.push({
-        name: PROVIDER_NAME + " | \u{1F464} " + seeders + " | " + quality.toUpperCase(),
+        name: PROVIDER_NAME + " • " + resBadge + " • " + (sourceGroup || "Torrent") + (seeders ? " • 👥 " + seeders : ""),
         title: cardTitle,
-        size: cardTitle,
-        description: cardTitle,
+        quality: quality === "2160p" ? "4k" : quality,
+        size: size || "P2P",
+        provider: "torrentio",
         url: streamUrl
       });
     }

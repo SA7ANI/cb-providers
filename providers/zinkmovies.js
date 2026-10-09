@@ -1,3 +1,4 @@
+var __spreadValues = (a, b) => Object.assign({}, a, b);
 var __async = (__this, __arguments, generator) => {
   return new Promise((resolve, reject) => {
     var fulfilled = (value) => {

@@ -15,8 +15,7 @@ async function httpGet(url, options = {}) {
     try {
       const res = await axios.get(url, { headers, timeout });
       return res.data;
-    } catch (_) {
-    }
+    } catch (_) {}
   }
   if (typeof require === "function") {
     try {
@@ -25,8 +24,7 @@ async function httpGet(url, options = {}) {
         const res = await ax.get(url, { headers, timeout });
         return res.data;
       }
-    } catch (_) {
-    }
+    } catch (_) {}
   }
   if (typeof fetch === "function") {
     const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
@@ -37,8 +35,7 @@ async function httpGet(url, options = {}) {
         headers,
         signal: controller ? controller.signal : void 0
       });
-      if (timer)
-        clearTimeout(timer);
+      if (timer) clearTimeout(timer);
       const text = await res.text();
       try {
         return JSON.parse(text);
@@ -46,160 +43,200 @@ async function httpGet(url, options = {}) {
         return text;
       }
     } catch (e) {
-      if (timer)
-        clearTimeout(timer);
+      if (timer) clearTimeout(timer);
       throw e;
     }
   }
   throw new Error("No HTTP client available");
 }
-async function getImdbId(id, mediaType = "tv") {
-  if (String(id).startsWith("tt"))
-    return id;
-  const endpoint = mediaType === "tv" || mediaType === "series" ? "tv" : "movie";
+
+async function getMediaMeta(id, mediaType = "tv") {
+  const isImdb = typeof id === "string" && id.startsWith("tt");
+  const stremioType = (mediaType === "tv" || mediaType === "series") ? "series" : "movie";
+  if (isImdb) {
+    try {
+      const d = await httpGet(`https://v3-cinemeta.strem.io/meta/${stremioType}/${id}.json`);
+      if (d && d.meta && d.meta.name) {
+        return {
+          imdbId: id,
+          title: d.meta.name,
+          year: d.meta.year || ""
+        };
+      }
+    } catch (_) {}
+  }
+
+  const endpoint = (mediaType === "tv" || mediaType === "series") ? "tv" : "movie";
   for (const key of TMDB_API_KEYS) {
     try {
-      const url = `https://api.themoviedb.org/3/${endpoint}/${id}/external_ids?api_key=${key}`;
+      const url = `https://api.themoviedb.org/3/${endpoint}/${id}?api_key=${key}&append_to_response=external_ids`;
       const data = await httpGet(url, {
         headers: { "User-Agent": "Mozilla/5.0" },
         timeout: 4e3
       });
-      if (data && data.imdb_id)
-        return data.imdb_id;
-    } catch (_) {
-    }
+      if (data) {
+        const imdbId = (data.external_ids && data.external_ids.imdb_id) || (String(id).startsWith("tt") ? id : null);
+        const title = data.name || data.title || data.original_name || data.original_title || "";
+        const year = (data.first_air_date || data.release_date || "").split("-")[0];
+        if (imdbId) {
+          return { imdbId, title, year };
+        }
+      }
+    } catch (_) {}
   }
-  return null;
+  return { imdbId: isImdb ? id : null, title: "", year: "" };
 }
-function parseStreamMeta(title) {
-  const raw = String(title || "");
-  let quality = "1080p";
-  let resBadge = "1080p FHD";
-  if (/2160p|4k|uhd/i.test(raw)) {
-    quality = "4k";
-    resBadge = "4K UHD";
-  } else if (/720p/i.test(raw)) {
-    quality = "720p";
-    resBadge = "720p HD";
-  } else if (/480p/i.test(raw)) {
-    quality = "480p";
-    resBadge = "480p";
+
+function formatCholeCard(opt) {
+  var raw = [opt.filename || "", opt.rawText || "", opt.server || "", opt.quality || "", opt.size || "", opt.title || ""].join(" ");
+  var text = raw.trim();
+
+  var res = "";
+  var qCheck = opt.quality ? String(opt.quality).trim() : "";
+  if (/\b(?:2160p|4k|uhd)\b/i.test(qCheck) || /\b(?:2160p|4k|uhd)\b/i.test(text)) res = "4K UHD";
+  else if (/\b(?:1080p|fhd)\b/i.test(qCheck) || /\b(?:1080p|fhd)\b/i.test(text)) res = "1080p FHD";
+  else if (/\b(?:720p|hd)\b/i.test(qCheck) || /\b(?:720p|hd)\b/i.test(text)) res = "720p HD";
+  else if (/\b(?:480p|sd)\b/i.test(qCheck) || /\b(?:480p|sd)\b/i.test(text)) res = "480p SD";
+  else res = "1080p FHD";
+
+  var source = "";
+  if (/\bremux\b/i.test(text)) source = "REMUX";
+  else if (/\bbluray|blu-ray\b/i.test(text)) source = "BluRay";
+  else if (/\bweb-?dl|webrip\b/i.test(text)) source = "WEB-DL";
+  else if (/\bhdtv\b/i.test(text)) source = "HDTV";
+
+  var codecs = [];
+  if (/\b(?:hevc|x265|h\.?265|10bit)\b/i.test(text)) codecs.push("HEVC");
+  else if (/\b(?:avc|x264|h\.?264)\b/i.test(text)) codecs.push("AVC");
+
+  var hdr = [];
+  if (/\b(?:dolby\s*vision|dv)\b/i.test(text)) hdr.push("Dolby Vision");
+  if (/\bhdr10\+\b/i.test(text)) hdr.push("HDR10+");
+  else if (/\b(?:hdr10|hdr)\b/i.test(text)) hdr.push("HDR");
+
+  var audio = [];
+  if (/\b(?:atmos|ddpa)\b/i.test(text)) audio.push("Dolby Atmos 5.1");
+  else if (/\btruehd\b/i.test(text)) audio.push("TrueHD 5.1");
+  else if (/\bdts-?hd(?:\s*ma)?\b/i.test(text)) audio.push("DTS-HD MA 5.1");
+  else if (/\bdts\b/i.test(text)) audio.push("DTS 5.1");
+  else if (/\b(?:ddp|dd\+|eac3)\b/i.test(text)) audio.push("DDP 5.1");
+  else if (/\b(?:dd|ac3)\b/i.test(text)) audio.push("DD 5.1");
+  else if (/\baac\b/i.test(text)) audio.push("AAC");
+
+  var langs = [];
+  if (/\b(?:hindi|hin)\b/i.test(text)) langs.push("🇮🇳 Hindi");
+  if (/\b(?:tamil|tam)\b/i.test(text)) langs.push("🇮🇳 Tamil");
+  if (/\b(?:telugu|tel)\b/i.test(text)) langs.push("🇮🇳 Telugu");
+  if (/\b(?:english|eng)\b/i.test(text)) langs.push("🇬🇧 English");
+  if (/\b(?:japanese|jap|jpn)\b/i.test(text)) langs.push("🇯🇵 Japanese");
+  if (/\bdual[- ]?audio\b/i.test(text)) langs.push("🌐 Dual-Audio");
+  if (/\bmulti[- ]?audio\b/i.test(text)) langs.push("🌐 Multi-Audio");
+  if (langs.length === 0) langs.push("🌐 Multi-Audio");
+  var uniqueLangs = Array.from(new Set(langs));
+
+  var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
+  var rawSize = opt.size || (sizeMatch ? sizeMatch[1] : "");
+  var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "";
+
+  var server = opt.server || "DahmerMovies";
+  var provider = opt.provider || "DahmerMovies-TV";
+
+  var nameParts = [provider];
+  if (server && server !== provider) nameParts.push("🏷️ " + server);
+  if (res) nameParts.push(res);
+  if (source) nameParts.push(source);
+  if (codecs.length) nameParts.push(codecs.join(" "));
+  if (hdr.length) nameParts.push(hdr.join(" "));
+  if (audio.length) nameParts.push(audio[0]);
+  if (uniqueLangs.length) nameParts.push(uniqueLangs.slice(0, 2).join(" + "));
+  var nameLine = nameParts.join(" • ");
+
+  var filename = (opt.filename || "").trim();
+  if (!filename || filename === opt.title) {
+    var baseTitle = (opt.title || "Video").replace(/[^a-zA-Z0-9]+/g, ".");
+    var yr = opt.year ? "." + opt.year : "";
+    var se = opt.season && opt.episode ? ".S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : "";
+    var r = res ? "." + res.replace(/\s+/g, ".") : "";
+    var s = source ? "." + source : "";
+    var c = codecs.length ? "." + codecs.join(".") : "";
+    var a = audio.length ? "." + audio[0].replace(/[^a-zA-Z0-9]+/g, ".") : "";
+    var g = "-" + provider;
+    filename = baseTitle + yr + se + r + s + c + a + g + ".mkv";
   }
-  let source = "";
-  if (/remux/i.test(raw))
-    source = "REMUX";
-  else if (/bluray|blu-ray/i.test(raw))
-    source = "BluRay";
-  else if (/web-dl|webdl|webrip/i.test(raw))
-    source = "WEB-DL";
-  else if (/hdtv/i.test(raw))
-    source = "HDTV";
-  const codecs = [];
-  if (/hevc|x265|h\.265/i.test(raw))
-    codecs.push("HEVC");
-  else if (/avc|x264|h\.264/i.test(raw))
-    codecs.push("AVC");
-  if (/10bit|10-bit/i.test(raw))
-    codecs.push("10-Bit");
-  const hdr = [];
-  if (/dv|dolby\s*vision/i.test(raw))
-    hdr.push("Dolby Vision");
-  if (/hdr10\+|hdr10plus/i.test(raw))
-    hdr.push("HDR10+");
-  else if (/hdr/i.test(raw))
-    hdr.push("HDR");
-  const audio = [];
-  if (/atmos/i.test(raw))
-    audio.push("Atmos");
-  if (/truehd/i.test(raw))
-    audio.push("TrueHD");
-  else if (/dts-hd|dts\s*hd/i.test(raw))
-    audio.push("DTS-HD");
-  else if (/ddp|dd\+|eac3/i.test(raw))
-    audio.push("DDP 5.1");
-  const langs = [];
-  if (/hindi|hin/i.test(raw))
-    langs.push("\u{1F1EE}\u{1F1F3} Hindi");
-  if (/english|eng/i.test(raw))
-    langs.push("\u{1F1EC}\u{1F1E7} English");
-  if (/tamil|tam/i.test(raw))
-    langs.push("Tamil");
-  if (/telugu|tel/i.test(raw))
-    langs.push("Telugu");
-  if (langs.length === 0)
-    langs.push("\u{1F310} Multi-Audio");
-  let size = "";
-  const sizeMatch = raw.match(/\[(?:[A-Z0-9]+\s+)?([0-9.]+\s*[KMGT]B)\]/i);
-  if (sizeMatch)
-    size = sizeMatch[1];
-  const filename = raw.replace(/\s*\[.*?\]\s*$/, "").trim();
+
+  var specTags = [res, source].concat(codecs).filter(Boolean);
+  var seasonEp = opt.season && opt.episode ? " • S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : "";
+  var line1 = "🎬 " + (opt.title || "Unknown") + (opt.year ? " (" + opt.year + ")" : "") + seasonEp + (specTags.length ? " [" + specTags.join(" • ") + "]" : "");
+  var line2 = "📄 " + filename;
+  var av = hdr.concat(audio);
+  var line3 = av.length ? "💎 " + av.join(" • ") : "";
+  var line4 = uniqueLangs.length ? "🌐 " + uniqueLangs.join(" • ") : "";
+  var metaArr = [];
+  if (size) metaArr.push("📦 " + size);
+  if (server) metaArr.push("🏷️ " + server);
+  metaArr.push("🔗 " + provider);
+  var line5 = metaArr.join(" • ");
+
+  var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+  var qualitySlug = "1080p";
+  if (res.indexOf("4K") !== -1 || res.indexOf("2160") !== -1) qualitySlug = "4k";
+  else if (res.indexOf("1080") !== -1) qualitySlug = "1080p";
+  else if (res.indexOf("720") !== -1) qualitySlug = "720p";
+  else if (res.indexOf("480") !== -1) qualitySlug = "480p";
+
   return {
-    quality,
-    resBadge,
-    source,
-    codecs,
-    hdr,
-    audio,
-    langs,
-    size,
-    filename
+    name: nameLine,
+    title: body,
+    quality: qualitySlug,
+    size: size || "Direct",
+    provider: provider.toLowerCase()
   };
 }
+
 async function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
   const sNum = parseInt(season, 10) || 1;
   const epNum = parseInt(episode, 10) || 1;
-  const imdbId = await getImdbId(tmdbId, "tv");
-  if (!imdbId)
-    return [];
+
+  const mediaMeta = await getMediaMeta(tmdbId, "tv");
+  if (!mediaMeta || !mediaMeta.imdbId) return [];
+
   const streams = [];
   for (const tag of CONFIG_TAGS) {
     try {
-      const url = `https://st.111477.xyz/config/${tag}/stream/series/${imdbId}:${sNum}:${epNum}.json`;
+      const url = `https://st.111477.xyz/config/${tag}/stream/series/${mediaMeta.imdbId}:${sNum}:${epNum}.json`;
       const data = await httpGet(url, {
         headers: { "User-Agent": "Mozilla/5.0" },
         timeout: 5e3
       });
-      const rawStreams = data && data.streams || [];
-      if (!Array.isArray(rawStreams) || rawStreams.length === 0)
-        continue;
+      const rawStreams = (data && data.streams) || [];
+      if (!Array.isArray(rawStreams) || rawStreams.length === 0) continue;
+
       for (const s of rawStreams) {
-        if (!s || !s.url)
-          continue;
-        const meta = parseStreamMeta(s.title);
-        const nameTags = ["\u{1F7E2} Dahmermovies-TV", meta.resBadge];
-        if (meta.source)
-          nameTags.push(meta.source);
-        if (meta.hdr.length > 0)
-          nameTags.push(meta.hdr[0]);
-        if (meta.audio.length > 0)
-          nameTags.push(meta.audio[0]);
-        if (meta.langs.length > 0)
-          nameTags.push(meta.langs[0]);
-        const line1 = `\u{1F3AC} TV Series \u2022 S${sNum}E${epNum} [${meta.resBadge}${meta.source ? " \u2022 " + meta.source : ""}]`;
-        const line2 = `\u{1F4C4} ${meta.filename}`;
-        const line3 = meta.hdr.concat(meta.audio).length > 0 ? `\u{1F48E} ${meta.hdr.concat(meta.audio).join(" \u2022 ")}` : "";
-        const line4 = `\u{1F310} ${meta.langs.join(" \u2022 ")}`;
-        const line5 = [meta.size ? `\u{1F4E6} ${meta.size}` : "", "\u{1F517} Dahmermovies-TV"].filter(Boolean).join(" \u2022 ");
-        const formattedTitle = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
-        streams.push({
-          name: nameTags.join(" \u2022 "),
-          title: formattedTitle,
-          quality: meta.quality,
-          size: meta.size || "Direct",
+        if (!s || !s.url) continue;
+        const card = formatCholeCard({
+          title: mediaMeta.title,
+          year: mediaMeta.year,
+          season: sNum,
+          episode: epNum,
+          filename: s.title ? s.title.replace(/\s*\[.*?\]\s*$/, "").trim() : "",
+          rawText: s.title || "",
+          server: "DahmerMovies",
+          provider: "Dahmermovies-TV"
+        });
+
+        streams.push(Object.assign({}, card, {
           url: s.url,
-          provider: "dahmermovies-tv",
           headers: {
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36"
           }
-        });
+        }));
       }
-      if (streams.length > 0)
-        break;
-    } catch (_) {
-    }
+      if (streams.length > 0) break;
+    } catch (_) {}
   }
   return streams;
 }
+
 module.exports = {
   getStreams
 };
