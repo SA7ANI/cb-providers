@@ -1,733 +1,22 @@
 {
   "manifestVersion": 1,
   "name": "CB Provider Repo",
-  "version": "2.3.0",
+  "version": "1.0.0",
   "description": "Auto-generated Nuvio provider plugin managed by Chole Bhature Ecosystem.",
-  "scrapers": [
-    {
-      "id": "moviesdrive",
-      "name": "MoviesDrive",
-      "description": "MoviesDrive provider for Nuvio with HubCloud and Google Drive extraction",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/moviesdrive.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=moviesdrives.my&sz=128",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "4khdhub",
-      "name": "4KHDHub",
-      "description": "4KHDHub provider for Nuvio with 4K and 1080p high speed links",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/4khdhub.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=4khdhub.one&sz=128",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "hdhub4u",
-      "name": "HDHub4u",
-      "description": "Direct links from HDHub4u with high-speed download support",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/hdhub4u.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=new6.hdhub4u.fo&sz=128",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "vegamovies",
-      "name": "VegaMovies",
-      "description": "VegaMovies provider for Nuvio with V-Cloud / G-Direct links",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vegamovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=vegamovies.im&sz=128",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "castle",
-      "name": "Castle",
-      "description": "Castle Multi-Language streaming provider with local AES decryption",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/castle.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://static.hbayy.com/simple-blog-13/prod/_nuxt/big-logo.DESZ4mBj.png",
-      "contentLanguage": [
-        "en",
-        "hi",
-        "ta",
-        "te",
-        "ml",
-        "kn"
-      ]
-    },
-    {
-      "id": "redflix",
-      "name": "RedFlix",
-      "description": "RedFlix multi-server HD streaming provider for Nuvio",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/redflix.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=redflix.biz&sz=128",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "movieblast",
-      "name": "MovieBlast",
-      "description": "Direct links via MovieBlast API with multi-language support",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/movieblast.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/Icons/movieblast.png",
-      "contentLanguage": [
-        "te",
-        "hi",
-        "en"
-      ]
-    },
-    {
-      "id": "kurage",
-      "name": "Kurage",
-      "description": "Kurage.live anime streaming with high-fidelity anime sync and subtitles",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
-      "filename": "providers/kurage.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://kurage.live/favicon.ico",
-      "contentLanguage": [
-        "en",
-        "ja"
-      ]
-    },
-    {
-      "id": "vidnest",
-      "name": "Vidnest",
-      "description": "Vidnest multi-server streaming with local cipher decoding",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vidnest.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://vidnest.fun/favicon.ico",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "anizone",
-      "name": "AniZone",
-      "description": "AniZone anime streaming with multi-audio and soft subtitles",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
-      "filename": "providers/anizone.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://anizone.to/favicon.ico",
-      "contentLanguage": [
-        "en",
-        "ja"
-      ]
-    },
-    {
-      "id": "animedekho",
-      "name": "AnimeDekho",
-      "description": "AnimeDekho streaming anime series and movies with Hindi dub, multi-audio and high-speed multi-server support",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
-      "filename": "providers/animedekho.js",
-      "enabled": true,
-      "formats": [
-        "m3u8",
-        "mp4"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=animedekho.app&sz=128",
-      "contentLanguage": [
-        "hi",
-        "en",
-        "ja"
-      ]
-    },
-    {
-      "id": "desiflix",
-      "name": "DesiFlix",
-      "description": "Bollywood, Hollywood, and South Indian movies, in Dual Language",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/desiflix.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/Vvs4fmwM/desiflix.png",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "dahmermovies",
-      "name": "Dahmermovies",
-      "description": "1080p Movies from Dahmermovies",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/dahmermovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/hGt3dV6Z/dhamermovies.png",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "dahmermovies-tv",
-      "name": "Dahmermovies-TV",
-      "description": "Only works on Android TV",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/dahmermovies-4k.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/hGt3dV6Z/dhamermovies.png",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "einthusan",
-      "name": "Einthustan",
-      "description": "1080p Movies in Multi-Lang",
-      "version": "2.1.0",
-      "author": "✮☆[D3ADLY]☆✮",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/einthusan.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/QCFYLyRR/einthusan.png",
-      "contentLanguage": [
-        "hi",
-        "ta",
-        "te",
-        "ba"
-      ]
-    },
-    {
-      "id": "moviebox",
-      "name": "MovieBox",
-      "description": "MovieBox streaming with multiple language support (DASH + MP4)",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/moviebox.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mpd"
-      ],
-      "logo": "https://moviebox.ph/favicon.ico",
-      "contentLanguage": [
-        "hi",
-        "en",
-        "ta",
-        "te"
-      ]
-    },
-    {
-      "id": "moviesmod",
-      "name": "MoviesMod",
-      "description": "Movie and TV show streams from MoviesMod with multiple quality options",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/moviesmod.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=moviesmod.farm&sz=128",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "movix",
-      "name": "Movix VF",
-      "description": "Movies and TV series in English & French (dubbed/subtitled)",
-      "version": "2.1.0",
-      "author": "wooodyhood",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/movix.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/XYrPQm87/movix.png",
-      "contentLanguage": [
-        "en",
-        "fr"
-      ]
-    },
-    {
-      "id": "persianstremio",
-      "name": "PersianStremio",
-      "description": "Persian Stremio plugin for movies, series,and Persian media content in Iranian & English.",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/persianstremio.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/qq6V2fTL/persian.png",
-      "contentLanguage": [
-        "en",
-        "pe"
-      ]
-    },
-    {
-      "id": "playimdb",
-      "name": "PlayIMDb",
-      "description": "High-Speed Direct Streaming for Movies (IMDb ID Extract)",
-      "version": "2.1.0",
-      "author": "PirateZoro9",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/playimdb.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/KzjPtYWY/imdb.png",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "purstream",
-      "name": "Purstream",
-      "description": "Films and series in French (VF) / subtitled French (VOSTFR) / multi-language (MULTI) from purstream.art.",
-      "version": "2.1.0",
-      "author": "wooodyhood",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/purstream.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/7L5shxmC/purstream.png",
-      "contentLanguage": [
-        "en",
-        "fr"
-      ]
-    },
-    {
-      "id": "topcartoons",
-      "name": "TopCartoons",
-      "description": "Popular cartoons streaming",
-      "version": "2.1.0",
-      "author": "Phisher",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
-      "filename": "providers/topcartoons.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/3xVsbwp8/topcartoons.png",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "torrentio",
-      "name": "Torrentio",
-      "description": "Torrentio – Torrent streaming. Supports optional debrid services.",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/torrentio.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/ZRYTCy0T/torrentio.png",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "vidrock",
-      "name": "VidRock",
-      "description": "VidRock - 1080p 480p and 360p",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vidrock.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/brxL7qg3/multivid.png",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "uhdmovies",
-      "name": "UHDMovies",
-      "description": "UHD Movies streaming with multiple resolution",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/uhdmovies.js",
-      "enabled": true,
-      "formats": [
-        "mkv"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=uhdmovies.pink&sz=128",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "zinkmovies",
-      "name": "ZinkMovies",
-      "description": "Bollywood Movies, Hollywood Movies, South Indian Movies, Hindi Dubbed Movies, Web Series, OTT Releases, & Trending Cinema",
-      "version": "2.1.0",
-      "author": "Kabir",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/zinkmovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/XqCZyCgp/zinkmovies.png",
-      "contentLanguage": [
-        "en",
-        "hi",
-        "ta",
-        "te"
-      ]
-    },
-    {
-      "id": "reanime",
-      "name": "Reanime",
-      "description": "Reanime anime streaming with automated AniList mapping and subtitle support",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
-      "filename": "providers/reanime.js",
-      "enabled": true,
-      "formats": [
-        "mkv",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=reanime.to&sz=128",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "animeworld",
-      "name": "AnimeWorld",
-      "description": "Best Source for Hindi, Tamil, Telugu, and English Multi-Audio Anime and Cartoons",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "anime",
-        "tv",
-        "movie"
-      ],
-      "filename": "providers/animeworld.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=watchanimeworld.one&sz=128",
-      "contentLanguage": [
-        "hi",
-        "ta",
-        "te",
-        "en",
-        "ja"
-      ]
-    },
-    {
-      "id": "animesalt",
-      "name": "AnimeSalt",
-      "description": "High-speed anime streaming with Multi-Server failover (Abyss, VidMoly, Videasy)",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "anime",
-        "tv",
-        "movie"
-      ],
-      "filename": "providers/animesalt.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=animesalt.cam&sz=128",
-      "contentLanguage": [
-        "ja",
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "anizen",
-      "name": "AniZen",
-      "description": "AniZen / Anikoto anime provider with MegaPlay, Vidstream & multi-subtitles (SUB/DUB)",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
-      "filename": "providers/anizen.js",
-      "enabled": true,
-      "formats": [
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=anizen.site&sz=128",
-      "contentLanguage": [
-        "ja",
-        "en"
-      ]
-    },
-    {
-      "id": "cinefreak",
-      "name": "CineFreak",
-      "description": "CineFreak high-speed streaming via CineCloud with 4K, 1080p, 720p dual-audio support",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/cinefreak.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=cinefreak.net&sz=128",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    }
-  ],
   "providers": [
     {
       "id": "moviesdrive",
       "name": "MoviesDrive",
-      "description": "MoviesDrive provider for Nuvio with HubCloud and Google Drive extraction",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
+      "filename": "providers/moviesdrive.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/moviesdrive.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=moviesdrives.my&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -736,20 +25,16 @@
     {
       "id": "4khdhub",
       "name": "4KHDHub",
-      "description": "4KHDHub provider for Nuvio with 4K and 1080p high speed links",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
+      "filename": "providers/4khdhub.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/4khdhub.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=4khdhub.one&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -758,20 +43,16 @@
     {
       "id": "hdhub4u",
       "name": "HDHub4u",
-      "description": "Direct links from HDHub4u with high-speed download support",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
+      "filename": "providers/hdhub4u.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/hdhub4u.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=new6.hdhub4u.fo&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -780,20 +61,16 @@
     {
       "id": "vegamovies",
       "name": "VegaMovies",
-      "description": "VegaMovies provider for Nuvio with V-Cloud / G-Direct links",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
+      "filename": "providers/vegamovies.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/vegamovies.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=vegamovies.im&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -802,46 +79,34 @@
     {
       "id": "castle",
       "name": "Castle",
-      "description": "Castle Multi-Language streaming provider with local AES decryption",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
+      "filename": "providers/castle.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/castle.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://static.hbayy.com/simple-blog-13/prod/_nuxt/big-logo.DESZ4mBj.png",
       "contentLanguage": [
         "en",
-        "hi",
-        "ta",
-        "te",
-        "ml",
-        "kn"
+        "hi"
       ]
     },
     {
       "id": "redflix",
       "name": "RedFlix",
-      "description": "RedFlix multi-server HD streaming provider for Nuvio",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
+      "filename": "providers/redflix.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/redflix.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=redflix.biz&sz=128",
       "contentLanguage": [
         "en"
       ]
@@ -849,66 +114,53 @@
     {
       "id": "movieblast",
       "name": "MovieBlast",
-      "description": "Direct links via MovieBlast API with multi-language support",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
+      "filename": "providers/movieblast.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/movieblast.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/Icons/movieblast.png",
       "contentLanguage": [
-        "te",
-        "hi",
-        "en"
+        "en",
+        "hi"
       ]
     },
     {
       "id": "kurage",
       "name": "Kurage",
-      "description": "Kurage.live anime streaming with high-fidelity anime sync and subtitles",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
       "filename": "providers/kurage.js",
       "enabled": true,
+      "supportedTypes": [
+        "anime",
+        "movie",
+        "tv"
+      ],
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://kurage.live/favicon.ico",
       "contentLanguage": [
-        "en",
-        "ja"
+        "ja",
+        "en"
       ]
     },
     {
       "id": "vidnest",
       "name": "Vidnest",
-      "description": "Vidnest multi-server streaming with local cipher decoding",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
+      "filename": "providers/vidnest.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/vidnest.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://vidnest.fun/favicon.ico",
       "contentLanguage": [
         "en"
       ]
@@ -916,68 +168,55 @@
     {
       "id": "anizone",
       "name": "AniZone",
-      "description": "AniZone anime streaming with multi-audio and soft subtitles",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
       "filename": "providers/anizone.js",
       "enabled": true,
+      "supportedTypes": [
+        "anime",
+        "movie",
+        "tv"
+      ],
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://anizone.to/favicon.ico",
       "contentLanguage": [
-        "en",
-        "ja"
+        "ja",
+        "en"
       ]
     },
     {
       "id": "animedekho",
       "name": "AnimeDekho",
-      "description": "AnimeDekho streaming anime series and movies with Hindi dub, multi-audio and high-speed multi-server support",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
       "filename": "providers/animedekho.js",
       "enabled": true,
-      "formats": [
-        "m3u8",
-        "mp4"
+      "supportedTypes": [
+        "anime",
+        "movie",
+        "tv"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=animedekho.app&sz=128",
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
       "contentLanguage": [
         "hi",
-        "en",
-        "ja"
+        "ja",
+        "en"
       ]
     },
     {
       "id": "desiflix",
       "name": "DesiFlix",
-      "description": "Bollywood, Hollywood, and South Indian movies, in Dual Language",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
+      "filename": "providers/desiflix.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/desiflix.js",
-      "enabled": true,
       "formats": [
         "mp4",
-        "mkv",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/Vvs4fmwM/desiflix.png",
       "contentLanguage": [
         "en",
         "hi"
@@ -986,21 +225,15 @@
     {
       "id": "dahmermovies",
       "name": "Dahmermovies",
-      "description": "1080p Movies from Dahmermovies",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
       "filename": "providers/dahmermovies.js",
       "enabled": true,
+      "supportedTypes": [
+        "movie"
+      ],
       "formats": [
         "mp4",
-        "mkv",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/hGt3dV6Z/dhamermovies.png",
       "contentLanguage": [
         "en"
       ]
@@ -1008,158 +241,121 @@
     {
       "id": "dahmermovies-tv",
       "name": "Dahmermovies-TV",
-      "description": "Only works on Android TV",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
       "filename": "providers/dahmermovies-4k.js",
       "enabled": true,
+      "supportedTypes": [
+        "tv"
+      ],
       "formats": [
         "mp4",
-        "mkv",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/hGt3dV6Z/dhamermovies.png",
       "contentLanguage": [
         "en"
       ]
     },
     {
-      "id": "einthusan",
+      "id": "einthustan",
       "name": "Einthustan",
-      "description": "1080p Movies in Multi-Lang",
-      "version": "2.1.0",
-      "author": "✮☆[D3ADLY]☆✮",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
       "filename": "providers/einthusan.js",
       "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://i.postimg.cc/QCFYLyRR/einthusan.png",
-      "contentLanguage": [
-        "hi",
-        "ta",
-        "te",
-        "ba"
-      ]
-    },
-    {
-      "id": "moviebox",
-      "name": "MovieBox",
-      "description": "MovieBox streaming with multiple language support (DASH + MP4)",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/moviebox.js",
-      "enabled": true,
       "formats": [
         "mp4",
-        "mpd"
-      ],
-      "logo": "https://moviebox.ph/favicon.ico",
-      "contentLanguage": [
-        "hi",
-        "en",
-        "ta",
-        "te"
-      ]
-    },
-    {
-      "id": "moviesmod",
-      "name": "MoviesMod",
-      "description": "Movie and TV show streams from MoviesMod with multiple quality options",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/moviesmod.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "mkv",
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=moviesmod.farm&sz=128",
       "contentLanguage": [
         "en",
         "hi"
       ]
     },
     {
-      "id": "movix",
-      "name": "Movix VF",
-      "description": "Movies and TV series in English & French (dubbed/subtitled)",
-      "version": "2.1.0",
-      "author": "wooodyhood",
+      "id": "moviebox",
+      "name": "MovieBox",
+      "filename": "providers/moviebox.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/movix.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/XYrPQm87/movix.png",
       "contentLanguage": [
         "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "moviesmod",
+      "name": "MoviesMod",
+      "filename": "providers/moviesmod.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "movix-vf",
+      "name": "Movix VF",
+      "filename": "providers/movix.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "mp4",
+        "m3u8"
+      ],
+      "contentLanguage": [
         "fr"
       ]
     },
     {
       "id": "persianstremio",
       "name": "PersianStremio",
-      "description": "Persian Stremio plugin for movies, series,and Persian media content in Iranian & English.",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
+      "filename": "providers/persianstremio.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/persianstremio.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/qq6V2fTL/persian.png",
       "contentLanguage": [
-        "en",
-        "pe"
+        "fa",
+        "en"
       ]
     },
     {
       "id": "playimdb",
       "name": "PlayIMDb",
-      "description": "High-Speed Direct Streaming for Movies (IMDb ID Extract)",
-      "version": "2.1.0",
-      "author": "PirateZoro9",
+      "filename": "providers/playimdb.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/playimdb.js",
-      "enabled": true,
       "formats": [
         "mp4",
-        "mkv",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/KzjPtYWY/imdb.png",
       "contentLanguage": [
         "en",
         "hi"
@@ -1168,43 +364,33 @@
     {
       "id": "purstream",
       "name": "Purstream",
-      "description": "Films and series in French (VF) / subtitled French (VOSTFR) / multi-language (MULTI) from purstream.art.",
-      "version": "2.1.0",
-      "author": "wooodyhood",
+      "filename": "providers/purstream.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/purstream.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/7L5shxmC/purstream.png",
       "contentLanguage": [
-        "en",
-        "fr"
+        "en"
       ]
     },
     {
       "id": "topcartoons",
       "name": "TopCartoons",
-      "description": "Popular cartoons streaming",
-      "version": "2.1.0",
-      "author": "Phisher",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
       "filename": "providers/topcartoons.js",
       "enabled": true,
+      "supportedTypes": [
+        "anime",
+        "tv"
+      ],
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/3xVsbwp8/topcartoons.png",
       "contentLanguage": [
         "en"
       ]
@@ -1212,20 +398,16 @@
     {
       "id": "torrentio",
       "name": "Torrentio",
-      "description": "Torrentio – Torrent streaming. Supports optional debrid services.",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
+      "filename": "providers/torrentio.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/torrentio.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/ZRYTCy0T/torrentio.png",
       "contentLanguage": [
         "en",
         "hi"
@@ -1234,20 +416,16 @@
     {
       "id": "vidrock",
       "name": "VidRock",
-      "description": "VidRock - 1080p 480p and 360p",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
+      "filename": "providers/vidrock.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/vidrock.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/brxL7qg3/multivid.png",
       "contentLanguage": [
         "en"
       ]
@@ -1255,19 +433,16 @@
     {
       "id": "uhdmovies",
       "name": "UHDMovies",
-      "description": "UHD Movies streaming with multiple resolution",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
+      "filename": "providers/uhdmovies.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/uhdmovies.js",
-      "enabled": true,
       "formats": [
-        "mkv"
+        "mp4",
+        "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=uhdmovies.pink&sz=128",
       "contentLanguage": [
         "en",
         "hi"
@@ -1276,119 +451,91 @@
     {
       "id": "zinkmovies",
       "name": "ZinkMovies",
-      "description": "Bollywood Movies, Hollywood Movies, South Indian Movies, Hindi Dubbed Movies, Web Series, OTT Releases, & Trending Cinema",
-      "version": "2.1.0",
-      "author": "Kabir",
+      "filename": "providers/zinkmovies.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/zinkmovies.js",
-      "enabled": true,
       "formats": [
         "mp4",
-        "mkv",
         "m3u8"
       ],
-      "logo": "https://i.postimg.cc/XqCZyCgp/zinkmovies.png",
       "contentLanguage": [
         "en",
-        "hi",
-        "ta",
-        "te"
+        "hi"
       ]
     },
     {
       "id": "reanime",
       "name": "Reanime",
-      "description": "Reanime anime streaming with automated AniList mapping and subtitle support",
-      "version": "2.1.0",
-      "author": "Nuvio Team",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
       "filename": "providers/reanime.js",
       "enabled": true,
+      "supportedTypes": [
+        "anime",
+        "movie",
+        "tv"
+      ],
       "formats": [
-        "mkv",
+        "mp4",
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=reanime.to&sz=128",
       "contentLanguage": [
+        "ja",
         "en"
       ]
     },
     {
       "id": "animeworld",
       "name": "AnimeWorld",
-      "description": "Best Source for Hindi, Tamil, Telugu, and English Multi-Audio Anime and Cartoons",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "anime",
-        "tv",
-        "movie"
-      ],
       "filename": "providers/animeworld.js",
       "enabled": true,
+      "supportedTypes": [
+        "anime",
+        "movie",
+        "tv"
+      ],
       "formats": [
         "mp4",
-        "mkv",
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=watchanimeworld.one&sz=128",
       "contentLanguage": [
-        "hi",
-        "ta",
-        "te",
-        "en",
-        "ja"
+        "ja",
+        "en"
       ]
     },
     {
       "id": "animesalt",
       "name": "AnimeSalt",
-      "description": "High-speed anime streaming with Multi-Server failover (Abyss, VidMoly, Videasy)",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "anime",
-        "tv",
-        "movie"
-      ],
       "filename": "providers/animesalt.js",
       "enabled": true,
+      "supportedTypes": [
+        "anime",
+        "movie",
+        "tv"
+      ],
       "formats": [
         "mp4",
-        "mkv",
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=animesalt.cam&sz=128",
       "contentLanguage": [
         "ja",
-        "en",
-        "hi"
+        "en"
       ]
     },
     {
       "id": "anizen",
       "name": "AniZen",
-      "description": "AniZen / Anikoto anime provider with MegaPlay, Vidstream & multi-subtitles (SUB/DUB)",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv",
-        "anime"
-      ],
       "filename": "providers/anizen.js",
       "enabled": true,
+      "supportedTypes": [
+        "anime",
+        "movie",
+        "tv"
+      ],
       "formats": [
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=anizen.site&sz=128",
       "contentLanguage": [
         "ja",
         "en"
@@ -1397,20 +544,33 @@
     {
       "id": "cinefreak",
       "name": "CineFreak",
-      "description": "CineFreak high-speed streaming via CineCloud with 4K, 1080p, 720p dual-audio support",
-      "version": "2.1.0",
-      "author": "Chole Bhature",
+      "filename": "providers/cinefreak.js",
+      "enabled": true,
       "supportedTypes": [
         "movie",
         "tv"
       ],
-      "filename": "providers/cinefreak.js",
-      "enabled": true,
       "formats": [
         "mp4",
         "m3u8"
       ],
-      "logo": "https://www.google.com/s2/favicons?domain=cinefreak.net&sz=128",
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "netmirror",
+      "name": "NetMirror",
+      "filename": "providers/netmirror.js",
+      "enabled": true,
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "formats": [
+        "m3u8"
+      ],
       "contentLanguage": [
         "en",
         "hi"

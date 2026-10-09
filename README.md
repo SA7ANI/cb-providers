@@ -1,12 +1,12 @@
 # 🌶️ CB Providers
 
-[![Providers](https://img.shields.io/badge/Active_Providers-29_Verified-emerald?style=for-the-badge&logo=fastapi)](manifest.json)
+[![Providers](https://img.shields.io/badge/Active_Providers-32_Verified-emerald?style=for-the-badge&logo=fastapi)](manifest.json)
 [![Platform](https://img.shields.io/badge/Platform-Nuvio_App-blue?style=for-the-badge)](https://github.com/yoruix/nuvio-providers)
 [![License](https://img.shields.io/badge/License-GNU_GPLv3-orange?style=for-the-badge)](LICENSE)
 
 A curated, high-performance collection of streaming and scraper plugins built for the **Nuvio App**.
 
-All 29 providers are **tested, live-verified**, and optimized for fast stream extraction across 4K UHD, 1080p, Multi-Audio (Hindi, English, Japanese, Tamil, Telugu), and Anime.
+All 32 providers are **tested, live-verified**, and optimized for fast stream extraction across 4K UHD, 1080p, Multi-Audio (Hindi, English, Japanese, Tamil, Telugu), and Anime.
 
 ---
 
@@ -17,12 +17,12 @@ All 29 providers are **tested, live-verified**, and optimized for fast stream ex
    ```text
    https://raw.githubusercontent.com/SA7ANI/cb-providers/main/manifest.json
    ```
-3. Tap **Add** / **Refresh** to load all 29 active modules.
+3. Tap **Add** / **Refresh** to load all 32 active modules.
 4. Toggle your desired providers and prioritize as needed.
 
 ---
 
-## 🚀 Active Provider Fleet (29 Verified Modules)
+## 🚀 Active Provider Fleet (32 Verified Modules)
 
 | # | Provider Name | ID | Supported Media | Content Languages | Description |
 |---|---|---|---|---|---|
@@ -55,6 +55,9 @@ All 29 providers are **tested, live-verified**, and optimized for fast stream ex
 | 27 | **🌸 PersianStremio** | `persianstremio` | Movies, TV | `fa`, `en` | Multi-source streams with Persian support |
 | 28 | **AnimeWorld** | `animeworld` | Anime, TV, Movies | `hi`, `ta`, `te`, `en`, `ja` | Multi-Language Indian & Global Anime: Hindi, Tamil, Telugu, English, Japanese |
 | 29 | **AnimeSalt** | `animesalt` | Anime, TV, Movies | `ja`, `en`, `hi` | High-speed anime streaming with Multi-Server failover (Abyss, VidMoly, Videasy) |
+| 30 | **AniZen** | `anizen` | Anime, Movies, TV | `ja`, `en` | Pure AES decrypted MegaPlay/Vidstream anime streams |
+| 31 | **CineFreak** | `cinefreak` | Movies, TV | `en`, `hi` | Typesense-powered Indian & Hollywood direct streams |
+| 32 | **NetMirror** | `netmirror` | Movies, TV | `en`, `hi` | Multi-OTT direct HLS streaming across Netflix, Prime Video & Hotstar |
 
 ---
 
