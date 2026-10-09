@@ -703,6 +703,27 @@
         "en",
         "hi"
       ]
+    },
+    {
+      "id": "anikage",
+      "name": "AniKage",
+      "description": "AniKage anime streaming with multi-subtitles and multi-servers",
+      "version": "2.4.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/anikage.js",
+      "enabled": true,
+      "formats": [
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=anikage.cc&sz=128",
+      "contentLanguage": [
+        "en",
+        "ja"
+      ]
     }
   ],
   "scrapers": [
@@ -1404,6 +1425,27 @@
       "contentLanguage": [
         "en",
         "hi"
+      ]
+    },
+    {
+      "id": "anikage",
+      "name": "AniKage",
+      "description": "AniKage anime streaming with multi-subtitles and multi-servers",
+      "version": "2.4.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/anikage.js",
+      "enabled": true,
+      "formats": [
+        "m3u8"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=anikage.cc&sz=128",
+      "contentLanguage": [
+        "en",
+        "ja"
       ]
     }
   ],

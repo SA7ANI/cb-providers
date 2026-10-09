@@ -224,12 +224,12 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
         });
         if (playerRes && playerRes.video_link) {
           return [{
-            name: `NetMirror [${ott.label}]`,
-            title: `NetMirror | 1080p FHD | \u26A1 HLS \u2022 Multi-Audio
-\u{1F3AC} ${playerRes.title || match.t} (${year || playerRes.ep || "Movie"})`,
+            name: `NetMirror • 1080p • HLS [${ott.label}]`,
+            title: `🎬 ${playerRes.title || match.t} (${year || playerRes.ep || "Movie"})\n⚡ 1080p FHD • Multi-Audio • Stream`,
             quality: "1080p",
+            format: "m3u8",
             url: playerRes.video_link,
-            size: "Auto HLS",
+            size: "Adaptive HLS",
             type: "m3u8",
             provider: "netmirror",
             headers: {
@@ -303,12 +303,12 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
             });
             if (playerRes && playerRes.video_link) {
               return [{
-                name: `NetMirror [${ott.label}]`,
-                title: `NetMirror | 1080p FHD | \u26A1 HLS \u2022 Multi-Audio
-\u{1F3AC} ${playerRes.title || match.t} \u2022 S${season}E${episode} (${epName})`,
+                name: `NetMirror • 1080p • HLS [${ott.label}]`,
+                title: `🎬 ${playerRes.title || match.t} • S${season}E${episode} (${epName})\n⚡ 1080p FHD • Multi-Audio • Stream`,
                 quality: "1080p",
+                format: "m3u8",
                 url: playerRes.video_link,
-                size: "Auto HLS",
+                size: "Adaptive HLS",
                 type: "m3u8",
                 provider: "netmirror",
                 headers: {
