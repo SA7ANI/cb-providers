@@ -23,14 +23,48 @@ const NEWTV_HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64; rv:136.0) Gecko/20100101 Firefox/136.0 /OS.GatuNewTV v1.0",
   "Accept": "application/json, text/plain, */*"
 };
+function b64Decode(str) {
+  if (typeof atob === "function") {
+    try {
+      return atob(str);
+    } catch (_) {
+    }
+  }
+  if (typeof Buffer !== "undefined") {
+    try {
+      return Buffer.from(str, "base64").toString("utf8");
+    } catch (_) {
+    }
+  }
+  const b64chars = "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789+/";
+  let res = "";
+  let enc1, enc2, enc3, enc4;
+  let i = 0;
+  const clean = String(str || "").replace(/[^A-Za-z0-9+/=]/g, "");
+  while (i < clean.length) {
+    enc1 = b64chars.indexOf(clean.charAt(i++));
+    enc2 = b64chars.indexOf(clean.charAt(i++));
+    enc3 = b64chars.indexOf(clean.charAt(i++));
+    enc4 = b64chars.indexOf(clean.charAt(i++));
+    const chr1 = enc1 << 2 | enc2 >> 4;
+    const chr2 = (enc2 & 15) << 4 | enc3 >> 2;
+    const chr3 = (enc3 & 3) << 6 | enc4;
+    res += String.fromCharCode(chr1);
+    if (enc3 !== 64 && enc3 !== -1)
+      res += String.fromCharCode(chr2);
+    if (enc4 !== 64 && enc4 !== -1)
+      res += String.fromCharCode(chr3);
+  }
+  return res;
+}
 async function httpGet(url, options = {}) {
   const headers = options.headers || {};
-  const timeout = options.timeout || 6e3;
+  const timeout = options.timeout || 5e3;
   if (typeof axios !== "undefined" && axios && axios.get) {
     try {
       const res = await axios.get(url, { headers, timeout });
       return res.data;
-    } catch (e) {
+    } catch (_) {
     }
   }
   if (typeof require === "function") {
@@ -66,36 +100,7 @@ async function httpGet(url, options = {}) {
       throw e;
     }
   }
-  if (typeof require === "function") {
-    try {
-      const axios2 = require("axios");
-      const res = await axios2.get(url, { headers, timeout });
-      return res.data;
-    } catch (_) {
-    }
-    const https = require("https");
-    const http = require("http");
-    return new Promise((resolve, reject) => {
-      const client = url.startsWith("https") ? https : http;
-      const req = client.get(url, { headers, timeout }, (res) => {
-        let data = "";
-        res.on("data", (chunk) => data += chunk);
-        res.on("end", () => {
-          try {
-            resolve(JSON.parse(data));
-          } catch (_) {
-            resolve(data);
-          }
-        });
-      });
-      req.on("error", reject);
-      req.on("timeout", () => {
-        req.destroy();
-        reject(new Error("Request timeout"));
-      });
-    });
-  }
-  throw new Error("No HTTP client available in this environment");
+  throw new Error("No HTTP client available");
 }
 async function resolveApiBase() {
   const now = Date.now();
@@ -104,14 +109,9 @@ async function resolveApiBase() {
   }
   for (const d of DISCOVERY_DOMAINS) {
     try {
-      const res = await httpGet(`${d}/checknewtv.php`, { headers: NEWTV_HEADERS, timeout: 3500 });
+      const res = await httpGet(`${d}/checknewtv.php`, { headers: NEWTV_HEADERS, timeout: 2500 });
       if (res && res.token_hash) {
-        let decoded = "";
-        if (typeof atob === "function") {
-          decoded = atob(res.token_hash);
-        } else if (typeof Buffer !== "undefined") {
-          decoded = Buffer.from(res.token_hash, "base64").toString("utf8");
-        }
+        const decoded = b64Decode(res.token_hash);
         if (decoded && decoded.startsWith("http")) {
           cachedApiBase = decoded.trim();
           lastApiResolveTime = now;
@@ -123,22 +123,38 @@ async function resolveApiBase() {
   }
   return cachedApiBase || "https://tv.imgcdn.kim";
 }
-async function getMediaMetadata(tmdbId, mediaType) {
-  const type = mediaType === "series" || mediaType === "tv" ? "tv" : "movie";
-  const isId = /^\d+$/.test(String(tmdbId));
+async function getMediaMetadata(rawId, mediaType) {
+  const cleanId = String(rawId || "").replace(/^(?:tmdb|movie|tv)[:\-_]/i, "").trim();
+  const isSeries = mediaType === "series" || mediaType === "tv";
+  const type = isSeries ? "tv" : "movie";
+  if (cleanId.startsWith("tt")) {
+    try {
+      const cType = isSeries ? "series" : "movie";
+      const cinemetaUrl = `https://v3-cinemeta.strem.io/meta/${cType}/${cleanId}.json`;
+      const data = await httpGet(cinemetaUrl, { timeout: 3e3 });
+      if (data && data.meta && data.meta.name) {
+        return {
+          title: data.meta.name,
+          year: (data.meta.year || "").split("-")[0]
+        };
+      }
+    } catch (_) {
+    }
+  }
+  const isNumeric = /^\d+$/.test(cleanId);
   for (const key of TMDB_API_KEYS) {
     try {
-      const url = isId ? `https://api.themoviedb.org/3/${type}/${tmdbId}?api_key=${key}` : `https://api.themoviedb.org/3/find/${tmdbId}?api_key=${key}&external_source=imdb_id`;
-      const res = await httpGet(url, { timeout: 4e3 });
+      const url = isNumeric ? `https://api.themoviedb.org/3/${type}/${cleanId}?api_key=${key}` : `https://api.themoviedb.org/3/find/${cleanId}?api_key=${key}&external_source=imdb_id`;
+      const res = await httpGet(url, { timeout: 3500 });
       if (res) {
-        if (isId) {
+        if (isNumeric && (res.title || res.name)) {
           return {
             title: res.title || res.name,
             year: (res.release_date || res.first_air_date || "").split("-")[0]
           };
-        } else {
+        } else if (!isNumeric) {
           const results = type === "tv" ? res.tv_results : res.movie_results;
-          if (results && results.length > 0) {
+          if (results && results[0]) {
             return {
               title: results[0].title || results[0].name,
               year: (results[0].release_date || results[0].first_air_date || "").split("-")[0]
@@ -149,7 +165,7 @@ async function getMediaMetadata(tmdbId, mediaType) {
     } catch (_) {
     }
   }
-  return { title: null, year: null };
+  return { title: cleanId, year: null };
 }
 function cleanTitleForCompare(str) {
   return (str || "").toLowerCase().replace(/[^a-z0-9]/g, "");
@@ -169,7 +185,7 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
   } catch (_) {
   }
   if (!title) {
-    title = String(tmdbId);
+    title = String(tmdbId || "").replace(/^(?:tmdb|movie|tv)[:\-_]/i, "").trim();
   }
   const apiBase = await resolveApiBase();
   const ottList = [
@@ -177,31 +193,37 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
     { key: "pv", label: "Prime Video" },
     { key: "hs", label: "Hotstar" }
   ];
-  const streams = [];
   const normalizedTarget = cleanTitleForCompare(title);
-  for (const ott of ottList) {
+  const searchPromises = ottList.map(async (ott) => {
     try {
       const searchUrl = `${apiBase}/newtv/search.php?s=${encodeURIComponent(title)}&t=${Date.now()}`;
       const searchRes = await httpGet(searchUrl, {
         headers: { ...NEWTV_HEADERS, Ott: ott.key },
         timeout: 4500
       });
-      const results = searchRes && searchRes.searchResult || [];
-      if (!Array.isArray(results) || results.length === 0)
-        continue;
-      let match = results.find((r) => cleanTitleForCompare(r.t) === normalizedTarget);
+      const results2 = searchRes && searchRes.searchResult || [];
+      if (!Array.isArray(results2) || results2.length === 0)
+        return [];
+      let match = results2.find((r) => cleanTitleForCompare(r.t) === normalizedTarget);
       if (!match) {
-        match = results.find((r) => cleanTitleForCompare(r.t).includes(normalizedTarget) || normalizedTarget.includes(cleanTitleForCompare(r.t)));
+        match = results2.find((r) => {
+          const rNorm = cleanTitleForCompare(r.t);
+          return rNorm.includes(normalizedTarget) || normalizedTarget.includes(rNorm);
+        });
+      }
+      if (!match && results2.length > 0) {
+        if (results2.length === 1)
+          match = results2[0];
       }
       if (!match || !match.id)
-        continue;
+        return [];
       if (!isSeries) {
         const playerRes = await httpGet(`${apiBase}/newtv/player.php?id=${match.id}`, {
           headers: { ...NEWTV_HEADERS, Ott: ott.key },
           timeout: 4500
         });
         if (playerRes && playerRes.video_link) {
-          streams.push({
+          return [{
             name: `NetMirror [${ott.label}]`,
             title: `NetMirror | 1080p FHD | \u26A1 HLS \u2022 Multi-Audio
 \u{1F3AC} ${playerRes.title || match.t} (${year || playerRes.ep || "Movie"})`,
@@ -215,7 +237,7 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
               "Referer": playerRes.referer || "https://net52.cc",
               "Origin": "https://net52.cc"
             }
-          });
+          }];
         }
       } else {
         const postRes = await httpGet(`${apiBase}/newtv/post.php?id=${match.id}`, {
@@ -226,10 +248,13 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
           let epId = null;
           let epName = `Episode ${episode}`;
           const seasons = postRes.season || [];
-          const targetSeason = seasons.find((s) => {
+          let targetSeason = seasons.find((s) => {
             const sStr = (s.s || "").toLowerCase();
-            return sStr.includes(`season ${season}`) || sStr.includes(`s${season}`);
+            return sStr.includes(`season ${season}`) || sStr.includes(`s${season}`) || sStr.includes(`season 0${season}`) || sStr.includes(`s0${season}`) || sStr.startsWith(`${season}`) || sStr.includes(`(${season})`);
           });
+          if (!targetSeason && seasons[season - 1]) {
+            targetSeason = seasons[season - 1];
+          }
           if (targetSeason && !targetSeason.selected) {
             const epRes = await httpGet(`${apiBase}/newtv/episodes.php?id=${targetSeason.id}`, {
               headers: { ...NEWTV_HEADERS, Ott: ott.key },
@@ -240,10 +265,13 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
               if (parseInt(e.ep, 10) === episode)
                 return true;
               if (Array.isArray(e.info)) {
-                return e.info.some((i) => (i || "").toLowerCase() === `e${episode}`);
+                return e.info.some((i) => {
+                  const iStr = (i || "").toLowerCase();
+                  return iStr === `e${episode}` || iStr === `e0${episode}` || iStr === `${episode}`;
+                });
               }
               return false;
-            });
+            }) || eps[episode - 1];
             if (epMatch) {
               epId = epMatch.id;
               if (epMatch.t)
@@ -251,7 +279,17 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
             }
           } else {
             const eps = (postRes.episodes || []).filter(Boolean);
-            const epMatch = eps.find((e) => parseInt(e.ep, 10) === episode);
+            const epMatch = eps.find((e) => {
+              if (parseInt(e.ep, 10) === episode)
+                return true;
+              if (Array.isArray(e.info)) {
+                return e.info.some((i) => {
+                  const iStr = (i || "").toLowerCase();
+                  return iStr === `e${episode}` || iStr === `e0${episode}`;
+                });
+              }
+              return false;
+            }) || eps[episode - 1];
             if (epMatch) {
               epId = epMatch.id;
               if (epMatch.t)
@@ -264,10 +302,10 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
               timeout: 4500
             });
             if (playerRes && playerRes.video_link) {
-              streams.push({
+              return [{
                 name: `NetMirror [${ott.label}]`,
                 title: `NetMirror | 1080p FHD | \u26A1 HLS \u2022 Multi-Audio
-\u{1F3AC} ${postRes.title || match.t} (S${season} E${episode} - ${epName})`,
+\u{1F3AC} ${playerRes.title || match.t} \u2022 S${season}E${episode} (${epName})`,
                 quality: "1080p",
                 url: playerRes.video_link,
                 size: "Auto HLS",
@@ -278,12 +316,21 @@ async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum
                   "Referer": playerRes.referer || "https://net52.cc",
                   "Origin": "https://net52.cc"
                 }
-              });
+              }];
             }
           }
         }
       }
+      return [];
     } catch (_) {
+      return [];
+    }
+  });
+  const results = await Promise.allSettled(searchPromises);
+  const streams = [];
+  for (const r of results) {
+    if (r.status === "fulfilled" && Array.isArray(r.value)) {
+      streams.push(...r.value);
     }
   }
   return streams;
