@@ -1,7 +1,7 @@
 {
   "manifestVersion": 1,
   "name": "CB Provider Repo",
-  "version": "1.0.0",
+  "version": "2.4.0",
   "description": "Auto-generated Nuvio provider plugin managed by Chole Bhature Ecosystem.",
   "providers": [
     {
