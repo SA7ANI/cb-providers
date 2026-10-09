@@ -202,7 +202,7 @@ function formatCholeCard(opt) {
   meta.push('🔗 ' + (opt.provider || 'Stream'));
   var line5 = meta.join(' • ');
 
-  var body = [line1, line2, line3, line4, line5].filter(Boolean).join('\n');
+  var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
 
   var qualitySlug = '1080p';
   if (res.indexOf('4K') !== -1 || res.indexOf('2160') !== -1) qualitySlug = '4k';
@@ -211,7 +211,7 @@ function formatCholeCard(opt) {
   else if (res.indexOf('480') !== -1) qualitySlug = '480p';
 
   return {
-    name: nameLine,
+    name: opt.provider || "Stream",
     title: body,
     quality: qualitySlug,
     size: size || ''

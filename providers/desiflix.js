@@ -199,7 +199,7 @@ function buildDropdownMetadata(_0x3da196, _0x32fbf3, _0x103e2a, _0x4c6362, _0xae
     }
   }
   var _0x18afa2 = _0x2f930f + _0x45e741(_0x1614b3._0x39eb40) + _0x83022b + _0x45e741(542) + _0x4fac72, _0x30e4f1 = "\u{1F4CE} " + PROVIDER_NAME;
-  return _0x59c9bb + "\n" + _0x430b04 + "\n" + _0x4831c7 + "\n" + _0x18afa2 + "\n" + _0x30e4f1;
+  return _0x59c9bb + " " + _0x430b04 + " " + _0x4831c7 + " " + _0x18afa2 + " " + _0x30e4f1;
 }
 function getStreams(_0x151035, _0x1d5d5f, _0x4a4a6f, _0xe39a47) {
   var _0x1d3ba2 = { _0x376f8b: 574, _0x3e88d4: 550, _0x234014: 571, _0x5f2b9a: 548, _0x5036b8: 499, _0x5a64b4: 492, _0xe7a027: 562, _0x537b91: 514 }, _0x2bcd9a = { _0x3f06da: 515 }, _0x29df05 = { _0x448346: 572, _0x266da8: 572 };
@@ -359,7 +359,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
     }
     var uniqueLangs = Array.from(new Set(langs));
     var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
-    var rawSize = opt.size || (sizeMatch ? sizeMatch[1] : "");
+    var rawSize = (opt.size && !opt.size.includes("\n")) ? opt.size : (sizeMatch ? sizeMatch[1] : "");
     var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "";
     var server = opt.server || "";
     if (!server) {
@@ -424,7 +424,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
       meta.push("\u{1F3F7}\uFE0F " + server);
     meta.push("\u{1F517} " + (opt.provider || "Stream"));
     var line5 = meta.join(" \u2022 ");
-    var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+    var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
     var qualitySlug = "1080p";
     if (res.indexOf("4K") !== -1 || res.indexOf("2160") !== -1)
       qualitySlug = "4k";
@@ -435,7 +435,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
     else if (res.indexOf("480") !== -1)
       qualitySlug = "480p";
     return {
-      name: nameLine,
+      name: opt.provider || "Stream",
       title: body,
       quality: qualitySlug,
       size: size || ""
@@ -547,7 +547,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
         });
         return Object.assign({}, s, {
           name: card.name,
-          title: card.title,
+          title: card.title.replace(/[\r\n]+/g, " "), size: (card.size || "").replace(/[\r\n]+/g, " "), description: card.title.replace(/[\r\n]+/g, " "),
           quality: card.quality || s.quality,
           provider: PROVIDER_ID
         });

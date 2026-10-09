@@ -296,7 +296,7 @@ typeof module !== _0x52744c(171) && module[_0x52744c(159)] && (module[_0x52744c(
       meta.push("\u{1F3F7}\uFE0F " + server);
     meta.push("\u{1F517} " + (opt.provider || "Stream"));
     var line5 = meta.join(" \u2022 ");
-    var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+    var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
     var qualitySlug = "1080p";
     if (res.indexOf("4K") !== -1 || res.indexOf("2160") !== -1)
       qualitySlug = "4k";
@@ -307,7 +307,7 @@ typeof module !== _0x52744c(171) && module[_0x52744c(159)] && (module[_0x52744c(
     else if (res.indexOf("480") !== -1)
       qualitySlug = "480p";
     return {
-      name: nameLine,
+      name: opt.provider || "Stream",
       title: body,
       quality: qualitySlug,
       size: size || ""

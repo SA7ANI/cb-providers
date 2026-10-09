@@ -227,7 +227,7 @@ function buildDropdownMetadata(_0x1b2034, _0x1685fb, _0x30ab22, _0x380bec, _0x12
   }
   const _0x155180 = _0x30ab22[_0x4c827d(_0x2c6b10._0x4fa76a)] || "90 min", _0x2af7d0 = _0x1951dd[_0x4c827d(447)](".m3u8") ? "\u{1F4E1} M3U8" : "\u{1F39E}\uFE0F MP4", _0x27642e = getProviderEmoji(_0x23f32a), _0x5118c3 = _0x30ab22[_0x4c827d(517)] ? "(" + _0x30ab22[_0x4c827d(_0x2c6b10._0x224d91)] + ")" : _0x4c827d(474);
   let _0x37c442 = _0x4c827d(499) + (_0x30ab22["title"] || _0x4c827d(459)) + _0x4c827d(523) + _0x5118c3;
-  return _0x380bec && _0x122369 && (_0x37c442 += " | S" + _0x380bec + "E" + _0x122369), _0x37c442 + "\n" + _0x4bce57 + " | \u{1F30D} Original Audio | \u{1F3A7} AAC\n" + _0x2af7d0 + _0x4c827d(_0x2c6b10._0x3d649c) + _0x155180 + "\n" + _0x27642e + " " + _0x23f32a + " | \u{1F517} Provider: VidRock";
+  return _0x380bec && _0x122369 && (_0x37c442 += " | S" + _0x380bec + "E" + _0x122369), _0x37c442 + " " + _0x4bce57 + " | \u{1F30D} Original Audio | \u{1F3A7} AAC\n" + _0x2af7d0 + _0x4c827d(_0x2c6b10._0x3d649c) + _0x155180 + " " + _0x27642e + " " + _0x23f32a + " | \u{1F517} Provider: VidRock";
 }
 function fetchTmdbDetails(_0x414fc0, _0x4b28e9, _0x5a3c22, _0x43e357) {
   const _0x17568a = { _0x7c037e: 461, _0x20009e: 481, _0x4dacb6: 474, _0x87ea79: 489, _0x4b27d4: 486, _0x1f1961: 488, _0x49f6cc: 489 };
@@ -495,7 +495,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
     }
     var uniqueLangs = Array.from(new Set(langs));
     var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
-    var rawSize = opt.size || (sizeMatch ? sizeMatch[1] : "");
+    var rawSize = (opt.size && !opt.size.includes("\n")) ? opt.size : (sizeMatch ? sizeMatch[1] : "");
     var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "";
     var server = opt.server || "";
     if (!server) {
@@ -560,7 +560,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
       meta.push("\u{1F3F7}\uFE0F " + server);
     meta.push("\u{1F517} " + (opt.provider || "Stream"));
     var line5 = meta.join(" \u2022 ");
-    var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+    var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
     var qualitySlug = "1080p";
     if (res.indexOf("4K") !== -1 || res.indexOf("2160") !== -1)
       qualitySlug = "4k";
@@ -571,7 +571,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
     else if (res.indexOf("480") !== -1)
       qualitySlug = "480p";
     return {
-      name: nameLine,
+      name: opt.provider || "Stream",
       title: body,
       quality: qualitySlug,
       size: size || ""
@@ -683,7 +683,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
         });
         return Object.assign({}, s, {
           name: card.name,
-          title: card.title,
+          title: card.title.replace(/[\r\n]+/g, " "), size: (card.size || "").replace(/[\r\n]+/g, " "), description: card.title.replace(/[\r\n]+/g, " "),
           quality: card.quality || s.quality,
           provider: PROVIDER_ID
         });

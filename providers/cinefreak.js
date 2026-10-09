@@ -206,14 +206,9 @@ function formatCholeCard(meta) {
     display += ` | \u{1F4BE} ${meta.size}`;
   if (meta.audioLabel)
     display += ` | \u{1F50A} ${meta.audioLabel}`;
-  let streamName = `CineFreak [${cleanQuality}]`;
-  if (meta.episode) {
-    streamName += ` E${meta.episode}`;
-  }
   return {
-    name: streamName,
-    title: `${display}
-\u{1F3AC} ${cleanTitle}`,
+    name: "CineFreak",
+    title: `${display} 🎬 ${cleanTitle}`,
     quality: cleanQuality
   };
 }

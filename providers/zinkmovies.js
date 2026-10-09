@@ -243,7 +243,7 @@ function buildDropdownMetadata(_0x4cbaeb, _0x181f17, _0x44c943, _0x49284a, _0x13
       _0x22cd83 = _0x518b84(188);
   }
   const _0x58211f = _0x283f75 + _0x22cd83, _0x119fab = "\u{1F517} " + _0x1f07e9;
-  return _0x107fd7 + "\n" + _0x39a0c5 + "\n" + _0x4f7bc5 + "\n" + _0x58211f + "\n" + _0x119fab;
+  return _0x107fd7 + " " + _0x39a0c5 + " " + _0x4f7bc5 + " " + _0x58211f + " " + _0x119fab;
 }
 function makeStream(_0x485b11, _0xce794a, _0x28a8cd, _0xd77dc5, _0x2afeb2, _0x1cfaa6, _0x475586, _0x4c08ed) {
   const _0x456dde = { _0x5e489d: 202, _0x4ac45a: 172, _0x1c459d: 123, _0x23a8e1: 146, _0x18646c: 175 }, _0xb2c16f = _0x4e9a2b, _0x171381 = _0x28a8cd[_0xb2c16f(202)](), _0x47d84e = buildDropdownMetadata(_0x485b11, _0x171381, _0x1cfaa6, _0x475586, _0x4c08ed, _0xd77dc5, _0xce794a, _0x2afeb2);
@@ -619,7 +619,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
     }
     var uniqueLangs = Array.from(new Set(langs));
     var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
-    var rawSize = opt.size || (sizeMatch ? sizeMatch[1] : "");
+    var rawSize = (opt.size && !opt.size.includes("\n")) ? opt.size : (sizeMatch ? sizeMatch[1] : "");
     var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "";
     var server = opt.server || "";
     if (!server) {
@@ -684,7 +684,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
       meta.push("\u{1F3F7}\uFE0F " + server);
     meta.push("\u{1F517} " + (opt.provider || "Stream"));
     var line5 = meta.join(" \u2022 ");
-    var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+    var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
     var qualitySlug = "1080p";
     if (res.indexOf("4K") !== -1 || res.indexOf("2160") !== -1)
       qualitySlug = "4k";
@@ -695,7 +695,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
     else if (res.indexOf("480") !== -1)
       qualitySlug = "480p";
     return {
-      name: nameLine,
+      name: opt.provider || "Stream",
       title: body,
       quality: qualitySlug,
       size: size || ""
@@ -807,7 +807,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
         });
         return Object.assign({}, s, {
           name: card.name,
-          title: card.title,
+          title: card.title.replace(/[\r\n]+/g, " "), size: (card.size || "").replace(/[\r\n]+/g, " "), description: card.title.replace(/[\r\n]+/g, " "),
           quality: card.quality || s.quality,
           provider: PROVIDER_ID
         });

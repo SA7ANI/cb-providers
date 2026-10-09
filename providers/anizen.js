@@ -630,9 +630,9 @@ function formatCholeCard(opt) {
   var metaArr = ["📦 Adaptive HLS", "🏷️ " + server, "🔗 " + provider];
   var line5 = metaArr.join(" • ");
 
-  var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+  var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
   return {
-    name: `${provider} • ${audio} • ${server}`,
+    name: provider,
     title: body,
     quality: "1080p",
     format: "m3u8",

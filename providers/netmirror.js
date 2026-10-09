@@ -179,9 +179,9 @@ function formatCholeCard(opt) {
   var line4 = "🌐 🇮🇳 Hindi • 🇬🇧 English • Multi";
   var meta = ["📦 Adaptive HLS", "🏷️ " + (opt.server || "NetMirror"), "🔗 NetMirror"];
   var line5 = meta.join(" • ");
-  var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+  var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
   return {
-    name: `NetMirror [${opt.server || "Stream"}]`,
+    name: "NetMirror",
     title: body,
     quality: "1080p",
     format: "m3u8",

@@ -78,7 +78,7 @@ function buildTitle(_0x48dfca, _0x31f40c, _0x2fe997, _0x4e3592, _0xbff04c, _0x55
   var _0x5da3b7 = _0x2dd22d + " " + _0x146172 + " | \u{1F4AC} " + _0x519a57 + _0x2f90bf(133) + _0x23f645, _0x39586b = (_0x4e3592 || "M3U8")["toUpperCase"](), _0x2f4914 = _0x2f90bf(191);
   (_0x4482f7["indexOf"]("HEVC") !== -1 || _0x4482f7[_0x2f90bf(_0x1a8d32._0x2d40ad)]("X265") !== -1 || _0x4482f7[_0x2f90bf(188)]("H265") !== -1) && (_0x2f4914 = "H.265");
   var _0x271807 = _0x2c55a6 && _0x2c55a6[_0x2f90bf(_0x1a8d32._0x3d4541)] ? _0x2c55a6[_0x2f90bf(_0x1a8d32._0x7edcb0)] : _0x48dfca[_0x2f90bf(_0x1a8d32._0x2889ba)], _0x242352 = _0x271807 ? " | " + _0x271807 : "", _0x3fd813 = "\u{1F4BF} " + _0x39586b + " \u2022 " + _0x2f4914 + " | \u{1F3A7} AAC" + _0x242352;
-  return _0x3edf99 + "\n" + _0x5da3b7 + "\n" + _0x3fd813;
+  return _0x3edf99 + " " + _0x5da3b7 + " " + _0x3fd813;
 }
 function _0x2bf8(_0x2113e7, _0x127d42) {
   _0x2113e7 = _0x2113e7 - 126;
@@ -306,7 +306,7 @@ typeof module !== _0x2a35f6(149) && module[_0x2a35f6(178)] ? module["exports"] =
     }
     var uniqueLangs = Array.from(new Set(langs));
     var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
-    var rawSize = opt.size || (sizeMatch ? sizeMatch[1] : "");
+    var rawSize = (opt.size && !opt.size.includes("\n")) ? opt.size : (sizeMatch ? sizeMatch[1] : "");
     var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "";
     var server = opt.server || "";
     if (!server) {
@@ -371,7 +371,7 @@ typeof module !== _0x2a35f6(149) && module[_0x2a35f6(178)] ? module["exports"] =
       meta.push("\u{1F3F7}\uFE0F " + server);
     meta.push("\u{1F517} " + (opt.provider || "Stream"));
     var line5 = meta.join(" \u2022 ");
-    var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+    var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
     var qualitySlug = "1080p";
     if (res.indexOf("4K") !== -1 || res.indexOf("2160") !== -1)
       qualitySlug = "4k";
@@ -382,7 +382,7 @@ typeof module !== _0x2a35f6(149) && module[_0x2a35f6(178)] ? module["exports"] =
     else if (res.indexOf("480") !== -1)
       qualitySlug = "480p";
     return {
-      name: nameLine,
+      name: opt.provider || "Stream",
       title: body,
       quality: qualitySlug,
       size: size || ""
@@ -494,7 +494,7 @@ typeof module !== _0x2a35f6(149) && module[_0x2a35f6(178)] ? module["exports"] =
         });
         return Object.assign({}, s, {
           name: card.name,
-          title: card.title,
+          title: card.title.replace(/[\r\n]+/g, " "), size: (card.size || "").replace(/[\r\n]+/g, " "), description: card.title.replace(/[\r\n]+/g, " "),
           quality: card.quality || s.quality,
           provider: PROVIDER_ID
         });

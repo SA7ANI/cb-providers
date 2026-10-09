@@ -79,7 +79,7 @@ function buildPurstreamTitle(_0x24c2f6, _0x310b87, _0x2a3025, _0x3c8c25, _0x159a
   var _0x555470 = _0x201113 + " " + _0x33741f + " | \u{1F50A} " + _0x31c5b6 + _0xdadf3c(547) + _0x4ca89f, _0x176d23 = (_0x3c8c25 || _0xdadf3c(_0x4f39b4._0xcb2aa9))[_0xdadf3c(_0x4f39b4._0x354e3a)](), _0x41647d = _0xdadf3c(_0x4f39b4._0x3b9acf);
   (_0x13dd2c["indexOf"]("HEVC") !== -1 || _0x13dd2c["indexOf"](_0xdadf3c(508)) !== -1 || _0x13dd2c[_0xdadf3c(_0x4f39b4._0x470736)]("H265") !== -1) && (_0x41647d = _0xdadf3c(_0x4f39b4._0x4b0b3a));
   var _0x3109f5 = _0x3e322a && _0x3e322a[_0xdadf3c(515)] ? _0x3e322a[_0xdadf3c(_0x4f39b4._0x24c330)] : _0x24c2f6[_0xdadf3c(_0x4f39b4._0x24c330)], _0x446916 = _0x3109f5 ? _0xdadf3c(_0x4f39b4._0x4a70af) + _0x3109f5 : "", _0x2ba5be = "\u{1F3AF} " + _0x176d23 + _0xdadf3c(_0x4f39b4._0xa79864) + _0x41647d + " | \u{1F3A7} AAC" + _0x446916;
-  return _0x4b9c9f + "\n" + _0x555470 + "\n" + _0x2ba5be;
+  return _0x4b9c9f + " " + _0x555470 + " " + _0x2ba5be;
 }
 function detectPurstreamDomain() {
   var _0x27cee8 = { _0x2cecd8: 523, _0x278a89: 541 }, _0x3a49ed = { _0x53d990: 562, _0x35f2c1: 498, _0x132ccc: 548 }, _0x37cf5b = _0x580258;
@@ -333,7 +333,7 @@ typeof module !== "undefined" && module[_0x580258(514)] ? module[_0x580258(514)]
     }
     var uniqueLangs = Array.from(new Set(langs));
     var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
-    var rawSize = opt.size || (sizeMatch ? sizeMatch[1] : "");
+    var rawSize = (opt.size && !opt.size.includes("\n")) ? opt.size : (sizeMatch ? sizeMatch[1] : "");
     var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "";
     var server = opt.server || "";
     if (!server) {
@@ -398,7 +398,7 @@ typeof module !== "undefined" && module[_0x580258(514)] ? module[_0x580258(514)]
       meta.push("\u{1F3F7}\uFE0F " + server);
     meta.push("\u{1F517} " + (opt.provider || "Stream"));
     var line5 = meta.join(" \u2022 ");
-    var body = [line1, line2, line3, line4, line5].filter(Boolean).join("\n");
+    var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
     var qualitySlug = "1080p";
     if (res.indexOf("4K") !== -1 || res.indexOf("2160") !== -1)
       qualitySlug = "4k";
@@ -409,7 +409,7 @@ typeof module !== "undefined" && module[_0x580258(514)] ? module[_0x580258(514)]
     else if (res.indexOf("480") !== -1)
       qualitySlug = "480p";
     return {
-      name: nameLine,
+      name: opt.provider || "Stream",
       title: body,
       quality: qualitySlug,
       size: size || ""
@@ -521,7 +521,7 @@ typeof module !== "undefined" && module[_0x580258(514)] ? module[_0x580258(514)]
         });
         return Object.assign({}, s, {
           name: card.name,
-          title: card.title,
+          title: card.title.replace(/[\r\n]+/g, " "), size: (card.size || "").replace(/[\r\n]+/g, " "), description: card.title.replace(/[\r\n]+/g, " "),
           quality: card.quality || s.quality,
           provider: PROVIDER_ID
         });
