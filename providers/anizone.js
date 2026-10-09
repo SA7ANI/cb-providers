@@ -153,13 +153,14 @@ function normalize(str) {
 }
 
 function getTMDBDetails(tmdbId, mediaType) {
-    const endpoint = mediaType === 'tv' ? 'tv' : 'movie';
+    const isTv = mediaType === 'tv' || mediaType === 'series';
+    const endpoint = isTv ? 'tv' : 'movie';
     const url = `${TMDB_BASE_URL}/${endpoint}/${tmdbId}?api_key=${TMDB_API_KEY}`;
     
     return fetch(url, { headers: HEADERS })
         .then(res => res.json())
         .then(data => {
-            const title = mediaType === 'tv' ? (data.name || data.original_name) : (data.title || data.original_title);
+            const title = isTv ? (data.name || data.original_name) : (data.title || data.original_title);
             const originalTitle = data.original_name || data.original_title || '';
             return { title: title || '', originalTitle };
         })
@@ -182,7 +183,8 @@ function matchCard(items, targetTitle, originalTitle, mediaType, season) {
         return Array.from(set);
     };
 
-    if (mediaType === 'movie') {
+    const isTv = mediaType === 'tv' || mediaType === 'series';
+    if (!isTv) {
         for (const item of items) {
             const titles = getTitles(item);
             for (const t of titles) {

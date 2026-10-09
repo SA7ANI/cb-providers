@@ -191,6 +191,11 @@ function formatCholeCard(opt) {
   };
 }
 
+function cleanTitleForCompare(str) {
+  if (!str) return "";
+  return String(str).toLowerCase().replace(/[^a-z0-9]/g, "");
+}
+
 async function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum = 1) {
   const isSeries = mediaType === "series" || mediaType === "tv";
   const season = parseInt(seasonNum, 10) || 1;

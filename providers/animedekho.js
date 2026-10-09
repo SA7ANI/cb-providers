@@ -665,8 +665,9 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
         return [];
       }
       let targetUrl = bestMatch.href;
-      const mediaTypeVal = mediaType === "movie" ? 1 : 2;
-      if (mediaType === "tv") {
+      const isTv = mediaType === "tv" || mediaType === "series";
+      const mediaTypeVal = !isTv ? 1 : 2;
+      if (isTv) {
         const seriesRes = yield fetch(bestMatch.href, {
           headers: __spreadProps(__spreadValues({}, HEADERS), {
             "Cookie": "toronites_server=vidstream"

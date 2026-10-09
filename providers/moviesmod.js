@@ -548,8 +548,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
     if (!details)
       return [];
     const mainUrl = yield getMainUrl();
-    console.log(`[MoviesMod] Main URL: ${mainUrl}`);
-    const query = details.imdbId ? details.imdbId : details.title;
+    const query = details.title || details.imdbId;
     const searchUrl = mediaType === "movie" ? `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(query)}` : `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(query)} ${seasonNum}`;
     try {
       console.log(`[MoviesMod] Searching at: ${searchUrl}`);
@@ -557,8 +556,8 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       const searchHtml = yield searchRes.text();
       const $search = import_cheerio_without_node_native2.default.load(searchHtml);
       let targetUrl = $search("article a").first().attr("href") || $search("#content_box article a").first().attr("href");
-      if (!targetUrl && details.imdbId && details.title) {
-        const fallbackQuery = mediaType === "movie" ? `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(details.title)}` : `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(details.title)} ${seasonNum}`;
+      if (!targetUrl && details.imdbId && details.imdbId !== query) {
+        const fallbackQuery = mediaType === "movie" ? `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(details.imdbId)}` : `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(details.imdbId)} ${seasonNum}`;
         const fallbackRes = yield fetch(fallbackQuery, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }), cfKiller: true });
         const fallbackHtml = yield fallbackRes.text();
         const $fallback = import_cheerio_without_node_native2.default.load(fallbackHtml);
