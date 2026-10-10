@@ -58,7 +58,7 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
-var MAIN_URL = "https://animedekho.app";
+var MAIN_URL = "https://animedekho.tv";
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var TMDB_BASE_URL = "https://api.tmdb.org/3";
 var USER_AGENT = "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36";
@@ -308,7 +308,7 @@ function isRealStreamUrl(url) {
   if (!url.startsWith("http://") && !url.startsWith("https://"))
     return false;
   const lowercase = url.toLowerCase();
-  if (lowercase.includes("/embed/") || lowercase.includes("/embed-") || lowercase.includes("/e/") || lowercase.includes("/play.php") || lowercase.includes("/player.php") || lowercase.includes("abyssplayer.com") || lowercase.includes("short.icu") || lowercase.includes("cloudy.upns.one") || lowercase.includes("vidcloud.upns.ink") || lowercase.includes("filesforever.link") || lowercase.includes("strmup.to") || lowercase.includes("emturbovid.com") || lowercase.includes("animedekho.app") || lowercase.includes("animesalt.cx") || lowercase.includes("youtube.com") || lowercase.includes("youtu.be") || lowercase.includes("vimeo.com") || lowercase.includes(".html") || lowercase.includes(".htm") || lowercase.includes(".php") || lowercase.includes("#")) {
+  if (lowercase.includes("/embed/") || lowercase.includes("/embed-") || lowercase.includes("/e/") || lowercase.includes("/play.php") || lowercase.includes("/player.php") || lowercase.includes("abyssplayer.com") || lowercase.includes("short.icu") || lowercase.includes("cloudy.upns.one") || lowercase.includes("vidcloud.upns.ink") || lowercase.includes("filesforever.link") || lowercase.includes("strmup.to") || lowercase.includes("emturbovid.com") || lowercase.includes("animedekho.tv") || lowercase.includes("animedekho.app") || lowercase.includes("animesalt.cx") || lowercase.includes("youtube.com") || lowercase.includes("youtu.be") || lowercase.includes("vimeo.com") || lowercase.includes(".html") || lowercase.includes(".htm") || lowercase.includes(".php") || lowercase.includes("#")) {
     return false;
   }
   const isHls = lowercase.includes(".m3u8");
@@ -391,7 +391,7 @@ function extractVidmoly(url) {
     try {
       const res = yield fetch(url, {
         headers: __spreadProps(__spreadValues({}, HEADERS), {
-          "Referer": "https://animedekho.app/"
+          "Referer": "https://animedekho.tv/"
         })
       });
       if (!res.ok)
@@ -719,7 +719,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
         const src = $page(el).attr("src");
         if (src && !src.startsWith("about:") && !src.startsWith("javascript:")) {
           const fullSrc = src.startsWith("//") ? `https:${src}` : src.startsWith("http") ? src : `${MAIN_URL}${src}`;
-          if (fullSrc.includes("animedekho.app/embed/")) {
+          if (fullSrc.includes("animedekho.tv/embed/") || fullSrc.includes("animedekho.app/embed/")) {
             serverPromises.push(
               fetch(fullSrc, { headers: HEADERS }).then((r) => __async(this, null, function* () {
                 if (!r.ok)

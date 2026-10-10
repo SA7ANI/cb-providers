@@ -397,28 +397,7 @@
         "fr"
       ]
     },
-    {
-      "id": "persianstremio",
-      "name": "PersianStremio",
-      "description": "PersianStremio stream provider",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/persianstremio.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "",
-      "contentLanguage": [
-        "fa",
-        "en"
-      ]
-    },
+
     {
       "id": "playimdb",
       "name": "PlayIMDb",
