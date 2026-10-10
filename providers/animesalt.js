@@ -264,6 +264,11 @@ async function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
                   quality: card.quality,
                   size: card.size,
                   url: ds.url,
+                  headers: {
+                    "Referer": "https://playhydrax.com/",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+                  },
+                  type: ds.url.includes(".m3u8") ? "m3u8" : "mp4",
                   provider: "animesalt"
                 });
               }

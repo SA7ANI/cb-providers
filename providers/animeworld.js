@@ -453,6 +453,11 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
                   title: card.title,
                   quality: card.quality,
                   url: ds.url,
+                  headers: {
+                    "Referer": "https://playhydrax.com/",
+                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+                  },
+                  type: ds.url.includes(".m3u8") ? "m3u8" : "mp4",
                   provider: "animeworld"
                 });
               }
@@ -469,11 +474,20 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
               quality: "1080p",
               defaultLang: src.lang
             });
+            const isAbyssStream = src.url.includes("sssrr.org") || src.url.includes("abyss");
             finalStreams.push({
               name: card.name,
               title: card.title,
               quality: card.quality,
               url: src.url,
+              headers: isAbyssStream ? {
+                "Referer": "https://playhydrax.com/",
+                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+              } : {
+                "Referer": `${BASE_URL}/`,
+                "User-Agent": DEFAULT_HEADERS["User-Agent"]
+              },
+              type: src.url.includes(".m3u8") ? "m3u8" : "mp4",
               provider: "animeworld"
             });
           }
@@ -489,11 +503,20 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
             quality: "1080p",
             defaultLang: src.lang
           });
+          const isAbyssStream = src.url.includes("sssrr.org") || src.url.includes("abyss");
           finalStreams.push({
             name: card.name,
             title: card.title,
             quality: card.quality,
             url: src.url,
+            headers: isAbyssStream ? {
+              "Referer": "https://playhydrax.com/",
+              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+            } : {
+              "Referer": `${BASE_URL}/`,
+              "User-Agent": DEFAULT_HEADERS["User-Agent"]
+            },
+            type: src.url.includes(".m3u8") ? "m3u8" : "mp4",
             provider: "animeworld"
           });
         }

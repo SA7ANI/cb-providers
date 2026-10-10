@@ -682,6 +682,8 @@ function extractFlixCloudDownload(embedUrl) {
         }
       } catch (_) {
       }
+      if (!ready)
+        return null;
       const fileUrl = `${base}/download/${fileId}?token=${token}`;
       return {
         url: fileUrl,

@@ -456,7 +456,6 @@ function extractAbyss(url, langName = "Default") {
           quality,
           headers: {
             "Referer": "https://playhydrax.com/",
-            "Origin": "https://playhydrax.com",
             "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
           },
           type: s.url.includes(".m3u8") ? "m3u8" : "mp4"
