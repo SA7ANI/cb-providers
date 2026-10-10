@@ -472,7 +472,11 @@ function extractAwsStream(url) {
       if (!hash)
         return null;
       const origin = new URL(url).origin;
-      const res = yield fetch(url, { headers: HEADERS });
+      const res = yield fetch(url, {
+        headers: __spreadProps(__spreadValues({}, HEADERS), {
+          "Referer": "https://animedekho.tv/"
+        })
+      });
       if (!res.ok)
         return null;
       const html = yield res.text();
@@ -494,16 +498,24 @@ function extractAwsStream(url) {
       if (!m3u8)
         return null;
       let subtitle = null;
-      const packedMatch = html.match(/eval\(function\(p,a,c,k,e,d\)[\s\S]*?\.split\(['"]\|['"]\)\)/);
-      if (packedMatch) {
-        const unpacked = unpack(packedMatch[0]);
-        const subMatch = unpacked.match(/"kind":\s*"captions"\s*,\s*"file":\s*"(https?:\/\/[^"]+)"/);
-        if (subMatch) {
-          subtitle = subMatch[1].replace(/\\/g, "");
+      const subDirect = html.match(/playerjsSubtitle\s*=\s*["']\[([^\]]+)\](https?:\/\/[^"']+)["']/);
+      if (subDirect) {
+        subtitle = subDirect[2];
+      }
+      if (!subtitle) {
+        const packedMatch = html.match(/eval\(function\(p,a,c,k,e,d\)[\s\S]*?\.split\(['"]\|['"]\)/);
+        if (packedMatch) {
+          const unpacked = unpack(packedMatch[0]);
+          const subMatch = unpacked.match(/"kind":\s*"captions"\s*,\s*"file":\s*"(https?:\/\/[^"]+)"/);
+          if (subMatch) {
+            subtitle = subMatch[1].replace(/\\/g, "");
+          }
         }
       }
+      const isRavok = url.includes("ravok");
+      const serverLabel = isRavok ? "Ravok" : "AWSStream";
       return {
-        name: "AnimeDekho [AWSStream] (Auto M3U8)",
+        name: `AnimeDekho [${serverLabel}] (Auto M3U8)`,
         url: m3u8,
         quality: "1080p",
         headers: {
@@ -721,7 +733,11 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
           const fullSrc = src.startsWith("//") ? `https:${src}` : src.startsWith("http") ? src : `${MAIN_URL}${src}`;
           if (fullSrc.includes("animedekho.tv/embed/") || fullSrc.includes("animedekho.app/embed/")) {
             serverPromises.push(
-              fetch(fullSrc, { headers: HEADERS }).then((r) => __async(this, null, function* () {
+              fetch(fullSrc, {
+                headers: __spreadProps(__spreadValues({}, HEADERS), {
+                  "Referer": "https://animedekho.tv/"
+                })
+              }).then((r) => __async(this, null, function* () {
                 if (!r.ok)
                   return;
                 const h = yield r.text();
@@ -748,7 +764,11 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
         for (let i = 0; i <= 10; i++) {
           const trUrl = `${MAIN_URL}/?trdekho=${i}&trid=${termId}&trtype=${mediaTypeVal}`;
           trdekhoPromises.push(
-            fetch(trUrl, { headers: HEADERS }).then((r) => __async(this, null, function* () {
+            fetch(trUrl, {
+              headers: __spreadProps(__spreadValues({}, HEADERS), {
+                "Referer": "https://animedekho.tv/"
+              })
+            }).then((r) => __async(this, null, function* () {
               if (!r.ok)
                 return;
               const h = yield r.text();
@@ -756,7 +776,25 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
               const iSrc = $tr("iframe").attr("src");
               if (iSrc && !iSrc.startsWith("about:")) {
                 const full = iSrc.startsWith("//") ? `https:${iSrc}` : iSrc.startsWith("http") ? iSrc : `${MAIN_URL}${iSrc}`;
-                iframeUrls.add(full);
+                if (full.includes("animedekho.tv/embed/") || full.includes("animedekho.app/embed/")) {
+                  try {
+                    const embRes = yield fetch(full, {
+                      headers: __spreadProps(__spreadValues({}, HEADERS), {
+                        "Referer": "https://animedekho.tv/"
+                      })
+                    });
+                    if (embRes.ok) {
+                      const embH = yield embRes.text();
+                      const $emb = import_cheerio_without_node_native2.default.load(embH);
+                      $emb("iframe[src]").each((_3, eEl) => {
+                        const eSrc = $emb(eEl).attr("src");
+                        if (eSrc && !eSrc.startsWith("about:")) iframeUrls.add(eSrc);
+                      });
+                    }
+                  } catch (_) {}
+                } else {
+                  iframeUrls.add(full);
+                }
               }
             })).catch(() => {
             })
@@ -788,7 +826,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
                 streams.push(...res);
             })
           );
-        } else if (iframeUrl.includes("as-cdn") || iframeUrl.includes("awstream") || iframeUrl.includes("zephyrflick")) {
+        } else if (iframeUrl.includes("as-cdn") || iframeUrl.includes("awstream") || iframeUrl.includes("zephyrflick") || iframeUrl.includes("ravok")) {
           extractPromises.push(
             extractAwsStream(iframeUrl).then((s) => {
               if (s)
@@ -830,7 +868,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
             year: details.year || "",
             season: mediaType === "tv" ? seasonNum : null,
             episode: mediaType === "tv" ? episodeNum : null,
-            filename: `${details.title} S${String(seasonNum || 1).padStart(2, "0")}E${String(episodeNum || 1).padStart(2, "0")} [${s.name || "Hindi Dub"}]`,
+            filename: `${details.title} ${mediaType === "tv" ? `S${String(seasonNum || 1).padStart(2, "0")}E${String(episodeNum || 1).padStart(2, "0")}` : ""} [${s.name || "Hindi Dub"}]`.replace(/\s+/g, " ").trim(),
             server: s.name || "FastServer",
             quality: s.quality || "1080p",
             url: s.url
