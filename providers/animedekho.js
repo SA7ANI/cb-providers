@@ -57,7 +57,10 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
+var _rawCheerio = require("cheerio-without-node-native");
+var _cheerioObj = (_rawCheerio && _rawCheerio.default && typeof _rawCheerio.default.load === "function") ? _rawCheerio.default : _rawCheerio;
+var import_cheerio_without_node_native2 = { default: _cheerioObj };
+var import_cheerio_without_node_native = { default: _cheerioObj };
 var MAIN_URL = "https://animedekho.tv";
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var TMDB_BASE_URL = "https://api.tmdb.org/3";
@@ -340,7 +343,6 @@ function isPlayableStream(stream) {
     }
   });
 }
-var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
 function extractStreamRuby(url) {
   return __async(this, null, function* () {
     try {
