@@ -299,11 +299,17 @@ function hubCloudExtractor(url, referer) {
       const links = [];
       const elements = $("a.btn").get();
       for (const element of elements) {
-        const link = $(element).attr("href");
+        let link = $(element).attr("href");
         const text = $(element).text().toLowerCase();
         if (link && !link.includes("telegram") && !link.startsWith("#")) {
+          if (link.includes("pixel.hubcloud.ist") || link.includes("pixeldrain.dev") || link.includes("mega.nz") || link.includes("gamerxyt.com")) {
+            continue;
+          }
+          if (link.includes("pixeldrain.com/u/")) {
+            link = link.replace("pixeldrain.com/u/", "pixeldrain.com/api/file/");
+          }
           let label = "HubCloud";
-          if (link.includes("r2.dev"))
+          if (link.includes("r2.dev") || link.includes("cloudflarestorage"))
             label = "Direct R2";
           else if (link.includes("workers.dev"))
             label = "ZipDisk Server";
@@ -311,8 +317,8 @@ function hubCloudExtractor(url, referer) {
             label = "PixelServer";
           else if (link.includes("gpdl") || text.includes("10gbps"))
             label = "HubCloud - 10Gbps";
-          else if (text.includes("fsl server"))
-            label = "HubCloud - FSL";
+          else if (text.includes("fsl server") || text.includes("download file"))
+            label = "HubCloud - Direct";
           else if (text.includes("s3 server"))
             label = "HubCloud - S3";
           else if (text.includes("fslv2"))

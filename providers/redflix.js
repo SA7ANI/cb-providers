@@ -400,6 +400,7 @@ function extractMovieStreams(pageUrl, mediaInfo) {
       const url = $(el).attr("data-url");
       const name = $(el).attr("data-name") || $(el).text().trim() || `Server ${i + 1}`;
       if (url && url.startsWith("http")) {
+        const isEmbed = url.includes("/embed/") || url.includes("/e/") || url.includes("primesrc.") || url.includes("xpass.") || url.includes("vidrock.") || url.includes("moviesapi.") || url.includes("vaplayer.");
         const card = formatCholeCard({
           provider: "RedFlix",
           title: mediaInfo.title,
@@ -409,14 +410,19 @@ function extractMovieStreams(pageUrl, mediaInfo) {
           quality: "1080p",
           url
         });
-        streams.push(__spreadProps(__spreadValues({}, card), {
-          url,
+        const streamItem = __spreadProps(__spreadValues({}, card), {
           headers: {
             "Referer": pageUrl,
             "User-Agent": DEFAULT_HEADERS["User-Agent"]
           },
           provider: "redflix"
-        }));
+        });
+        if (isEmbed) {
+          streamItem.externalUrl = url;
+        } else {
+          streamItem.url = url;
+        }
+        streams.push(streamItem);
       }
     });
     return streams;
@@ -445,6 +451,7 @@ function extractTVStreams(baseUrl, pageUrl, season, episode, mediaInfo) {
         data.playerSources.forEach((src, idx) => {
           if (src.url && src.url.startsWith("http")) {
             const serverName = src.name || `Server ${idx + 1}`;
+            const isEmbed = src.url.includes("/embed/") || src.url.includes("/e/") || src.url.includes("primesrc.") || src.url.includes("xpass.") || src.url.includes("vidrock.") || src.url.includes("moviesapi.") || src.url.includes("vaplayer.");
             const card = formatCholeCard({
               provider: "RedFlix",
               title: mediaInfo.title,
@@ -456,14 +463,19 @@ function extractTVStreams(baseUrl, pageUrl, season, episode, mediaInfo) {
               quality: "1080p",
               url: src.url
             });
-            streams.push(__spreadProps(__spreadValues({}, card), {
-              url: src.url,
+            const streamItem = __spreadProps(__spreadValues({}, card), {
               headers: {
                 "Referer": pageUrl,
                 "User-Agent": DEFAULT_HEADERS["User-Agent"]
               },
               provider: "redflix"
-            }));
+            });
+            if (isEmbed) {
+              streamItem.externalUrl = src.url;
+            } else {
+              streamItem.url = src.url;
+            }
+            streams.push(streamItem);
           }
         });
         if (streams.length > 0)

@@ -534,16 +534,21 @@ function extractHubCloud(hubCloudUrl, baseMeta) {
     });
     $("a").each((_, el) => {
       const text = $(el).text().trim();
-      const href = $(el).attr("href");
-      if (!href)
+      let href = $(el).attr("href");
+      if (!href || href.startsWith("#") || href.includes("telegram"))
         return;
+      if (href.includes("pixel.hubcloud.ist") || href.includes("pixeldrain.dev") || href.includes("mega.nz") || href.includes("gamerxyt.com"))
+        return;
+      if (href.includes("pixeldrain.com/u/")) {
+        href = href.replace("pixeldrain.com/u/", "pixeldrain.com/api/file/");
+      }
       if (text.includes("10Gbps") || text.includes("PixelServer") || href.includes("hubcloud.cx")) {
         results.push({
           source: "HubCloud 10Gbps",
           url: href,
           meta: currentMeta
         });
-      } else if (text.includes("Download File") || href.includes("r2.dev")) {
+      } else if (text.includes("Download File") || href.includes("r2.dev") || href.includes("cloudflarestorage")) {
         results.push({
           source: "Direct R2",
           url: href,

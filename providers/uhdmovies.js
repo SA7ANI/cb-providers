@@ -633,7 +633,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
                 provider: "uhdmovies"
               }));
             }
-          } else {
+          } else if (finalLink && (finalLink.endsWith(".mkv") || finalLink.endsWith(".mp4") || finalLink.includes(".m3u8") || finalLink.includes("video-downloads") || finalLink.includes("pixeldrain.com/api/file/"))) {
             const card = formatCholeCard({
               provider: "UHDMovies",
               title: details.title,

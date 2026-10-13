@@ -689,15 +689,18 @@ function hubCloudExtractor(url, referer) {
       for (const element of elements) {
         const link = $(element).attr("href");
         const text = $(element).text().toLowerCase();
+        if (!link || link.startsWith("#") || link.includes("telegram") || link.includes("pixel.hubcloud.ist") || link.includes("pixeldrain.dev") || link.includes("gamerxyt.com")) {
+          continue;
+        }
         const fileName = header || headerDetails || "Unknown";
-        if (text.includes("download file") || text.includes("fsl server") || text.includes("s3 server") || text.includes("fslv2") || text.includes("mega server") || link && link.includes("r2.dev")) {
+        if (text.includes("download file") || text.includes("fsl server") || text.includes("s3 server") || text.includes("fslv2") || text.includes("mega server") || link && (link.includes("r2.dev") || link.includes("cloudflarestorage"))) {
           let label = "HubCloud";
-          if (link && link.includes("r2.dev"))
+          if (link && (link.includes("r2.dev") || link.includes("cloudflarestorage")))
             label = "Direct R2";
           else if (link && link.includes("workers.dev"))
             label = "ZipDisk Server";
-          else if (text.includes("fsl server"))
-            label = "HubCloud - FSL";
+          else if (text.includes("fsl server") || text.includes("download file"))
+            label = "HubCloud - Direct";
           else if (text.includes("s3 server"))
             label = "HubCloud - S3";
           else if (text.includes("fslv2"))
@@ -717,7 +720,7 @@ function hubCloudExtractor(url, referer) {
             }
           } catch (e) {
           }
-        } else if (text.includes("10gbps") || link && link.includes("hubcloud.cx")) {
+        } else if ((text.includes("10gbps") || link && link.includes("hubcloud.cx")) && !link.includes("pixel.hubcloud.ist")) {
           let targetUrl = link;
           if (link && !link.includes("hubcloud.cx")) {
             try {
@@ -729,7 +732,9 @@ function hubCloudExtractor(url, referer) {
             } catch (e) {
             }
           }
-          links.push({ source: `HubCloud - 10Gbps ${labelExtras}`, quality, url: targetUrl, size: sizeInBytes, fileName });
+          if (targetUrl && !targetUrl.includes("pixel.hubcloud.ist")) {
+            links.push({ source: `HubCloud - 10Gbps ${labelExtras}`, quality, url: targetUrl, size: sizeInBytes, fileName });
+          }
         } else if (text.includes("zipdisk") || link && link.includes("workers.dev")) {
           links.push({ source: `ZipDisk Server ${labelExtras}`, quality, url: link, size: sizeInBytes, fileName });
         } else if (link && link.includes("pixeldra")) {
