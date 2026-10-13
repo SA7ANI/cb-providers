@@ -631,21 +631,26 @@ function extractVidStack(url) {
 function searchAnimeDekho(query) {
   return __async(this, null, function* () {
     try {
-      const url = `${MAIN_URL}/?s=${encodeURIComponent(query)}`;
-      const res = yield fetch(url, { headers: HEADERS });
-      if (!res.ok)
-        return [];
-      const html = yield res.text();
-      const $ = import_cheerio_without_node_native2.default.load(html);
-      const results = [];
-      $("ul[data-results] li article, article.post, article").each((_, el) => {
-        const title = $(el).find("header h2, h2").text().trim();
-        const href = $(el).find("a.lnk-blk, a").first().attr("href");
-        if (title && href) {
-          results.push({ title, href });
-        }
-      });
-      return results;
+      const urlsToTry = [
+        `${MAIN_URL}/browse/?q=${encodeURIComponent(query)}`,
+        `${MAIN_URL}/?s=${encodeURIComponent(query)}`
+      ];
+      for (const url of urlsToTry) {
+        const res = yield fetch(url, { headers: HEADERS });
+        if (!res.ok) continue;
+        const html = yield res.text();
+        const $ = import_cheerio_without_node_native2.default.load(html);
+        const results = [];
+        $("a.dgt-card, ul[data-results] li article, article.post, article").each((_, el) => {
+          const title = $(el).find(".dgt-card__title, header h2, h2").text().trim();
+          const href = $(el).attr("href") || $(el).find("a.lnk-blk, a").first().attr("href");
+          if (title && href) {
+            results.push({ title, href });
+          }
+        });
+        if (results.length > 0) return results;
+      }
+      return [];
     } catch (e) {
       return [];
     }
@@ -681,6 +686,10 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       let targetUrl = bestMatch.href;
       const isTv = mediaType === "tv" || mediaType === "series";
       const mediaTypeVal = !isTv ? 1 : 2;
+
+      let targetPostId = 0;
+      let targetEpisodeId = 0;
+
       if (isTv) {
         const seriesRes = yield fetch(bestMatch.href, {
           headers: __spreadProps(__spreadValues({}, HEADERS), {
@@ -691,32 +700,63 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
           return [];
         const seriesHtml = yield seriesRes.text();
         const $series = import_cheerio_without_node_native2.default.load(seriesHtml);
+        const seriesId = $series("#dgt-title").attr("data-series");
+        const nonce = (seriesHtml.match(/"nonce":"([^"]+)"/) || [])[1] || "";
+
         let targetEpUrl = null;
-        const epElements = $series("ul.seasons-lst li");
-        epElements.each((_, el) => {
-          const epText = $series(el).find("h3.title").text().trim();
-          const epHref = $series(el).find("a").first().attr("href");
-          if (epText && epHref) {
-            const sMatch = epText.match(/S(\d+)[\s-]*E(\d+)/i) || epText.match(/(\d+)x(\d+)/i);
-            if (sMatch) {
-              const s = parseInt(sMatch[1]);
-              const e = parseInt(sMatch[2]);
-              if (s === seasonNum && e === episodeNum) {
-                targetEpUrl = epHref;
+        if (seriesId) {
+          try {
+            const epRes = yield fetch(`${MAIN_URL}/wp-json/dgt/v1/episodes?series=${seriesId}&season=${seasonNum}`, {
+              headers: __spreadProps(__spreadValues({}, HEADERS), {
+                "X-WP-Nonce": nonce
+              })
+            });
+            if (epRes.ok) {
+              const epData = yield epRes.json();
+              const episodes = epData.episodes || [];
+              const foundEp = episodes.find((e) => e.episode === episodeNum) || episodes.find((e) => e.episode == episodeNum) || episodes[episodeNum - 1] || episodes[0];
+              if (foundEp && foundEp.url) {
+                targetEpUrl = foundEp.url;
+                targetEpisodeId = foundEp.id || 0;
+                targetPostId = foundEp.series_id || parseInt(seriesId, 10) || 0;
               }
-            } else if (epText.includes(`E${episodeNum}`) || epText.includes(`Episode ${episodeNum}`)) {
-              if (seasonNum === 1)
-                targetEpUrl = epHref;
             }
-          }
-        });
-        if (!targetEpUrl && epElements.length >= episodeNum && seasonNum === 1) {
-          targetEpUrl = $series(epElements[episodeNum - 1]).find("a").first().attr("href");
+          } catch (_) {}
         }
+
+        if (!targetEpUrl) {
+          const epElements = $series("ul.seasons-lst li");
+          epElements.each((_, el) => {
+            const epText = $series(el).find("h3.title").text().trim();
+            const epHref = $series(el).find("a").first().attr("href");
+            if (epText && epHref) {
+              const sMatch = epText.match(/S(\d+)[\s-]*E(\d+)/i) || epText.match(/(\d+)x(\d+)/i);
+              if (sMatch) {
+                const s = parseInt(sMatch[1]);
+                const e = parseInt(sMatch[2]);
+                if (s === seasonNum && e === episodeNum) {
+                  targetEpUrl = epHref;
+                }
+              } else if (epText.includes(`E${episodeNum}`) || epText.includes(`Episode ${episodeNum}`)) {
+                if (seasonNum === 1)
+                  targetEpUrl = epHref;
+              }
+            }
+          });
+          if (!targetEpUrl && epElements.length >= episodeNum && seasonNum === 1) {
+            targetEpUrl = $series(epElements[episodeNum - 1]).find("a").first().attr("href");
+          }
+        }
+
         if (targetEpUrl) {
           targetUrl = targetEpUrl;
         }
+      } else {
+        if (!targetUrl.includes("?watch=1") && !targetUrl.includes("&watch=1")) {
+          targetUrl = targetUrl.includes("?") ? `${targetUrl}&watch=1` : `${targetUrl}?watch=1`;
+        }
       }
+
       const pageRes = yield fetch(targetUrl, {
         headers: __spreadProps(__spreadValues({}, HEADERS), {
           "Cookie": "toronites_server=vidstream"
@@ -727,6 +767,57 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       const pageHtml = yield pageRes.text();
       const $page = import_cheerio_without_node_native2.default.load(pageHtml);
       const iframeUrls = /* @__PURE__ */ new Set();
+
+      // Check modern DGT /watch API
+      const rootWatch = $page("#dgt-watch");
+      const dgtNonce = (pageHtml.match(/"nonce":"([^"]+)"/) || [])[1] || "";
+      const pId = +rootWatch.attr("data-title") || +$page("#dgt-title").attr("data-series") || targetPostId || 0;
+      const epId = +rootWatch.attr("data-term") || targetEpisodeId || 0;
+
+      if (pId || epId || rootWatch.length > 0) {
+        try {
+          const watchRes = yield fetch(`${MAIN_URL}/wp-json/dgt/v1/watch`, {
+            method: "POST",
+            headers: __spreadProps(__spreadValues({}, HEADERS), {
+              "Content-Type": "application/json",
+              "X-WP-Nonce": dgtNonce,
+              "Referer": targetUrl
+            }),
+            body: JSON.stringify({ post_id: pId, episode_id: epId })
+          });
+          if (watchRes.ok) {
+            const watchData = yield watchRes.json();
+            const sources = watchData.sources || [];
+            const srcPromises = sources.map((s) => __async(this, null, function* () {
+              if (!s || !s.embed) return;
+              if (s.embed.includes("player.php?url=")) {
+                try {
+                  const pr = yield fetch(s.embed, {
+                    headers: __spreadProps(__spreadValues({}, HEADERS), { "Referer": targetUrl })
+                  });
+                  if (pr.ok) {
+                    const pHtml = yield pr.text();
+                    const $p = import_cheerio_without_node_native2.default.load(pHtml);
+                    const ifr = $p("iframe").attr("src");
+                    if (ifr && !ifr.startsWith("about:") && !ifr.startsWith("javascript:")) {
+                      iframeUrls.add(ifr.startsWith("//") ? `https:${ifr}` : ifr);
+                    }
+                  }
+                } catch (_) {}
+              } else if (s.embed.includes("play2.php?id=")) {
+                try {
+                  const b64 = s.embed.split("id=").pop();
+                  const decoded = Buffer.from(b64, "base64").toString("utf8");
+                  if (decoded.startsWith("http")) iframeUrls.add(decoded);
+                } catch (_) {}
+              } else {
+                iframeUrls.add(s.embed);
+              }
+            }));
+            yield Promise.allSettled(srcPromises);
+          }
+        } catch (_) {}
+      }
       const serverPromises = [];
       $page("iframe.serversel[src], iframe[src]").each((_, el) => {
         const src = $page(el).attr("src");

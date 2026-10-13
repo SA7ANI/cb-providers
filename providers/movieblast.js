@@ -432,8 +432,24 @@ function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) 
           provider: "movieblast"
         });
       }).filter((s) => s !== null);
-      console.log(`[MovieBlast] Successfully found ${streams.length} streams.`);
-      return streams;
+      const validStreams = [];
+      for (const s of streams) {
+        try {
+          const u = new URL(s.url);
+          if (typeof require !== "undefined") {
+            try {
+              const dns = require("dns").promises;
+              yield dns.lookup(u.hostname);
+            } catch (_) {
+              console.log(`[MovieBlast] Host ${u.hostname} is dead/unreachable, dropping dead stream.`);
+              continue;
+            }
+          }
+          validStreams.push(s);
+        } catch (_) {}
+      }
+      console.log(`[MovieBlast] Successfully found ${validStreams.length} playable streams.`);
+      return validStreams;
     } catch (error) {
       console.error(`[MovieBlast] Error: ${error.message}`);
       return [];

@@ -317,6 +317,71 @@ function formatCholeCard(opt) {
     size: size || ""
   };
 }
+function resolveVegaLink(linkUrl, referer) {
+  return __async(this, null, function* () {
+    try {
+      if (linkUrl.includes("fastdl")) {
+        const fr = yield fetch(linkUrl, {
+          headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: referer }),
+          signal: AbortSignal.timeout(4000)
+        });
+        if (fr.ok) {
+          const fh = yield fr.text();
+          const m = fh.match(/var\s+reurl\s*=\s*["']([^"']+)["']/i);
+          if (m) {
+            let direct = m[1];
+            if (direct.includes("link=")) {
+              direct = direct.split("link=").pop();
+            }
+            direct = direct.replace(/^\(/, "").replace(/\)$/, "").trim();
+            try {
+              direct = decodeURIComponent(direct);
+            } catch (_) {}
+            if (direct.startsWith("http")) {
+              return direct;
+            }
+          }
+        }
+      } else if (linkUrl.includes("pixeldrain.com/u/")) {
+        const idMatch = linkUrl.match(/pixeldrain\.com\/u\/([a-zA-Z0-9_-]+)/);
+        if (idMatch) {
+          return `https://pixeldrain.com/api/file/${idMatch[1]}`;
+        }
+      } else if (linkUrl.includes("hubcloud")) {
+        let currentUrl = linkUrl.replace(/hubcloud\.(ink|dad|cx|lol|top|rocks|site|buzz)/gi, "hubcloud.ist");
+        const hr = yield fetch(currentUrl, {
+          headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: referer }),
+          signal: AbortSignal.timeout(4000)
+        });
+        if (hr.ok) {
+          const hh = yield hr.text();
+          const m = hh.match(/var\s+url\s*=\s*['"]([^'"]+)['']/i) || hh.match(/id=["']download["'][^>]*href=["']([^"']+)["']/i);
+          if (m) {
+            let nUrl = m[1];
+            if (!nUrl.startsWith("http")) {
+              const uObj = new URL(currentUrl);
+              nUrl = `${uObj.protocol}//${uObj.hostname}/${nUrl.replace(/^\//, "")}`;
+            }
+            const r2 = yield fetch(nUrl, {
+              headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: currentUrl }),
+              signal: AbortSignal.timeout(4000)
+            });
+            if (r2.ok) {
+              const h2 = yield r2.text();
+              const mDirect = [...h2.matchAll(/href=["']([^"']*(?:r2\.dev|workers\.dev|gpdl|pixeldrain)[^"']*)["']/gi)].map((x) => x[1]);
+              if (mDirect.length > 0) {
+                return mDirect[0];
+              }
+            }
+          }
+        }
+      } else if (linkUrl.endsWith(".mkv") || linkUrl.endsWith(".mp4") || linkUrl.includes(".m3u8")) {
+        return linkUrl;
+      }
+    } catch (_) {}
+    return null;
+  });
+}
 function getDownloadLinks(postUrl, postTitle, mediaInfo, mediaType, season, episode) {
   return __async(this, null, function* () {
     try {
@@ -363,7 +428,10 @@ function getDownloadLinks(postUrl, postTitle, mediaInfo, mediaType, season, epis
               continue;
             const nexHtml = yield nexRes.text();
             const finalLinks = [...nexHtml.matchAll(/href="([^"]*(?:fastdl|vcloud|filebee|dgdrive|hubcloud|pixeldrain)[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi)];
-            for (const f of finalLinks) {
+            const resolvePromises = finalLinks.map((f) => __async(this, null, function* () {
+              const rawTarget = f[1];
+              const resolvedUrl = yield resolveVegaLink(rawTarget, link);
+              if (!resolvedUrl) return null;
               const serverName = f[2].replace(/<[^>]+>/g, "").replace(/&#x?[0-9a-f]+;|&[a-z]+;/gi, "").replace(/\s+/g, " ").trim() || "Vega Server";
               const card = formatCholeCard({
                 provider: "VegaMovies",
@@ -375,34 +443,41 @@ function getDownloadLinks(postUrl, postTitle, mediaInfo, mediaType, season, epis
                 server: serverName,
                 quality: qStr,
                 size: sizeStr,
-                url: f[1]
+                url: resolvedUrl
               });
-              streams.push(__spreadProps(__spreadValues({}, card), {
-                url: f[1],
-                provider: "vegamovies",
-                behaviorHints: { notWebReady: true }
-              }));
+              return __spreadProps(__spreadValues({}, card), {
+                url: resolvedUrl,
+                provider: "vegamovies"
+              });
+            }));
+            const resolvedResults = yield Promise.allSettled(resolvePromises);
+            for (const r of resolvedResults) {
+              if (r.status === "fulfilled" && r.value) {
+                streams.push(r.value);
+              }
             }
           } catch (e) {
           }
         } else {
-          const card = formatCholeCard({
-            provider: "VegaMovies",
-            title: mediaInfo && mediaInfo.title || postTitle,
-            year: mediaInfo && mediaInfo.year || "",
-            season: mediaType === "tv" ? season : null,
-            episode: mediaType === "tv" ? episode : null,
-            filename: blockTitle,
-            server: "Direct",
-            quality: qStr,
-            size: sizeStr,
-            url: link
-          });
-          streams.push(__spreadProps(__spreadValues({}, card), {
-            url: link,
-            provider: "vegamovies",
-            behaviorHints: { notWebReady: true }
-          }));
+          const resolvedUrl = yield resolveVegaLink(link, postUrl);
+          if (resolvedUrl) {
+            const card = formatCholeCard({
+              provider: "VegaMovies",
+              title: mediaInfo && mediaInfo.title || postTitle,
+              year: mediaInfo && mediaInfo.year || "",
+              season: mediaType === "tv" ? season : null,
+              episode: mediaType === "tv" ? episode : null,
+              filename: blockTitle,
+              server: "Direct",
+              quality: qStr,
+              size: sizeStr,
+              url: resolvedUrl
+            });
+            streams.push(__spreadProps(__spreadValues({}, card), {
+              url: resolvedUrl,
+              provider: "vegamovies"
+            }));
+          }
         }
       }
       return streams;
