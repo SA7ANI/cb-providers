@@ -359,7 +359,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
     }
     var uniqueLangs = Array.from(new Set(langs));
     var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
-    var rawSize = (opt.size && !opt.size.includes("\n")) ? opt.size : (sizeMatch ? sizeMatch[1] : "");
+    var rawSize = opt.size && !opt.size.includes("\n") ? opt.size : sizeMatch ? sizeMatch[1] : "";
     var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "";
     var server = opt.server || "";
     if (!server) {
@@ -436,7 +436,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
       qualitySlug = "480p";
     return {
       name: body,
-    description: body,
+      description: body,
       title: body,
       quality: qualitySlug,
       size: size || ""
@@ -548,7 +548,9 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
         });
         return Object.assign({}, s, {
           name: card.name,
-          title: card.title.replace(/[\r\n]+/g, " "), size: (card.size || "").replace(/[\r\n]+/g, " "), description: card.title.replace(/[\r\n]+/g, " "),
+          title: card.title.replace(/[\r\n]+/g, " "),
+          size: (card.size || "").replace(/[\r\n]+/g, " "),
+          description: card.title.replace(/[\r\n]+/g, " "),
           quality: card.quality || s.quality,
           provider: PROVIDER_ID
         });

@@ -58,7 +58,7 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 var _rawCheerio = require("cheerio-without-node-native");
-var _cheerioObj = (_rawCheerio && _rawCheerio.default && typeof _rawCheerio.default.load === "function") ? _rawCheerio.default : _rawCheerio;
+var _cheerioObj = _rawCheerio && _rawCheerio.default && typeof _rawCheerio.default.load === "function" ? _rawCheerio.default : _rawCheerio;
 var import_cheerio_without_node_native2 = { default: _cheerioObj };
 var import_cheerio_without_node_native = { default: _cheerioObj };
 var MAIN_URL = "https://animedekho.tv";
@@ -637,7 +637,8 @@ function searchAnimeDekho(query) {
       ];
       for (const url of urlsToTry) {
         const res = yield fetch(url, { headers: HEADERS });
-        if (!res.ok) continue;
+        if (!res.ok)
+          continue;
         const html = yield res.text();
         const $ = import_cheerio_without_node_native2.default.load(html);
         const results = [];
@@ -648,7 +649,8 @@ function searchAnimeDekho(query) {
             results.push({ title, href });
           }
         });
-        if (results.length > 0) return results;
+        if (results.length > 0)
+          return results;
       }
       return [];
     } catch (e) {
@@ -686,10 +688,8 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       let targetUrl = bestMatch.href;
       const isTv = mediaType === "tv" || mediaType === "series";
       const mediaTypeVal = !isTv ? 1 : 2;
-
       let targetPostId = 0;
       let targetEpisodeId = 0;
-
       if (isTv) {
         const seriesRes = yield fetch(bestMatch.href, {
           headers: __spreadProps(__spreadValues({}, HEADERS), {
@@ -702,7 +702,6 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
         const $series = import_cheerio_without_node_native2.default.load(seriesHtml);
         const seriesId = $series("#dgt-title").attr("data-series");
         const nonce = (seriesHtml.match(/"nonce":"([^"]+)"/) || [])[1] || "";
-
         let targetEpUrl = null;
         if (seriesId) {
           try {
@@ -721,9 +720,9 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
                 targetPostId = foundEp.series_id || parseInt(seriesId, 10) || 0;
               }
             }
-          } catch (_) {}
+          } catch (_) {
+          }
         }
-
         if (!targetEpUrl) {
           const epElements = $series("ul.seasons-lst li");
           epElements.each((_, el) => {
@@ -747,7 +746,6 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
             targetEpUrl = $series(epElements[episodeNum - 1]).find("a").first().attr("href");
           }
         }
-
         if (targetEpUrl) {
           targetUrl = targetEpUrl;
         }
@@ -756,7 +754,6 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
           targetUrl = targetUrl.includes("?") ? `${targetUrl}&watch=1` : `${targetUrl}?watch=1`;
         }
       }
-
       const pageRes = yield fetch(targetUrl, {
         headers: __spreadProps(__spreadValues({}, HEADERS), {
           "Cookie": "toronites_server=vidstream"
@@ -767,13 +764,10 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       const pageHtml = yield pageRes.text();
       const $page = import_cheerio_without_node_native2.default.load(pageHtml);
       const iframeUrls = /* @__PURE__ */ new Set();
-
-      // Check modern DGT /watch API
       const rootWatch = $page("#dgt-watch");
       const dgtNonce = (pageHtml.match(/"nonce":"([^"]+)"/) || [])[1] || "";
       const pId = +rootWatch.attr("data-title") || +$page("#dgt-title").attr("data-series") || targetPostId || 0;
       const epId = +rootWatch.attr("data-term") || targetEpisodeId || 0;
-
       if (pId || epId || rootWatch.length > 0) {
         try {
           const watchRes = yield fetch(`${MAIN_URL}/wp-json/dgt/v1/watch`, {
@@ -789,7 +783,8 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
             const watchData = yield watchRes.json();
             const sources = watchData.sources || [];
             const srcPromises = sources.map((s) => __async(this, null, function* () {
-              if (!s || !s.embed) return;
+              if (!s || !s.embed)
+                return;
               if (s.embed.includes("player.php?url=")) {
                 try {
                   const pr = yield fetch(s.embed, {
@@ -803,20 +798,24 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
                       iframeUrls.add(ifr.startsWith("//") ? `https:${ifr}` : ifr);
                     }
                   }
-                } catch (_) {}
+                } catch (_) {
+                }
               } else if (s.embed.includes("play2.php?id=")) {
                 try {
                   const b64 = s.embed.split("id=").pop();
                   const decoded = Buffer.from(b64, "base64").toString("utf8");
-                  if (decoded.startsWith("http")) iframeUrls.add(decoded);
-                } catch (_) {}
+                  if (decoded.startsWith("http"))
+                    iframeUrls.add(decoded);
+                } catch (_) {
+                }
               } else {
                 iframeUrls.add(s.embed);
               }
             }));
             yield Promise.allSettled(srcPromises);
           }
-        } catch (_) {}
+        } catch (_) {
+        }
       }
       const serverPromises = [];
       $page("iframe.serversel[src], iframe[src]").each((_, el) => {
@@ -880,10 +879,12 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
                       const $emb = import_cheerio_without_node_native2.default.load(embH);
                       $emb("iframe[src]").each((_3, eEl) => {
                         const eSrc = $emb(eEl).attr("src");
-                        if (eSrc && !eSrc.startsWith("about:")) iframeUrls.add(eSrc);
+                        if (eSrc && !eSrc.startsWith("about:"))
+                          iframeUrls.add(eSrc);
                       });
                     }
-                  } catch (_) {}
+                  } catch (_) {
+                  }
                 } else {
                   iframeUrls.add(full);
                 }

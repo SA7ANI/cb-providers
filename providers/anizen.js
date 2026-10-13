@@ -617,19 +617,16 @@ function formatCholeCard(opt) {
   var audio = opt.audioLabel || "SUB";
   var server = opt.server || "Stream";
   var provider = opt.provider || "AniZen";
-
-  var seasonEp = opt.season && opt.episode ? " • S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : (opt.episode ? " • Ep " + opt.episode : "");
+  var seasonEp = opt.season && opt.episode ? " \u2022 S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : opt.episode ? " \u2022 Ep " + opt.episode : "";
   var specTags = [res, "WEB-DL", "HLS"].filter(Boolean);
-
-  var line1 = "🎬 " + (opt.title || "Anime") + seasonEp + " [" + specTags.join(" • ") + "]";
+  var line1 = "\u{1F3AC} " + (opt.title || "Anime") + seasonEp + " [" + specTags.join(" \u2022 ") + "]";
   var cleanTitle = (opt.title || "Anime").replace(/[^a-zA-Z0-9]+/g, ".");
   var filename = `${cleanTitle}${seasonEp ? seasonEp.replace(/[^a-zA-Z0-9]/g, ".") : ""}.1080p.HLS.${audio}-${provider}.mkv`;
-  var line2 = "📄 " + filename;
-  var line3 = "💎 AAC 2.0 • Softsub";
-  var line4 = audio === "DUB" ? "🌐 🇬🇧 English DUB" : "🌐 🇯🇵 Japanese SUB • Multi-Subs";
-  var metaArr = ["📦 Adaptive HLS", "🏷️ " + server, "🔗 " + provider];
-  var line5 = metaArr.join(" • ");
-
+  var line2 = "\u{1F4C4} " + filename;
+  var line3 = "\u{1F48E} AAC 2.0 \u2022 Softsub";
+  var line4 = audio === "DUB" ? "\u{1F310} \u{1F1EC}\u{1F1E7} English DUB" : "\u{1F310} \u{1F1EF}\u{1F1F5} Japanese SUB \u2022 Multi-Subs";
+  var metaArr = ["\u{1F4E6} Adaptive HLS", "\u{1F3F7}\uFE0F " + server, "\u{1F517} " + provider];
+  var line5 = metaArr.join(" \u2022 ");
   var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
   return {
     name: body,
@@ -642,7 +639,6 @@ function formatCholeCard(opt) {
     provider: provider.toLowerCase()
   };
 }
-
 function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
   return __async(this, null, function* () {
     try {

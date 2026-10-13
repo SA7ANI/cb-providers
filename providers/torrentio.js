@@ -196,22 +196,29 @@ function getStreams(tmdbId, mediaType, season, episode) {
           sourceGroup = "TGX";
       }
       var streamUrl = stream.url || (stream.infoHash ? buildMagnet(stream.infoHash) : "");
-      var rawFilename = (stream.title || "").split("\n")[0].trim() || (title + ".mkv");
-      var seasonEp = isSeries && season && episode ? " • S" + String(season).padStart(2, "0") + "E" + String(episode).padStart(2, "0") : "";
+      var rawFilename = (stream.title || "").split("\n")[0].trim() || title + ".mkv";
+      var seasonEp = isSeries && season && episode ? " \u2022 S" + String(season).padStart(2, "0") + "E" + String(episode).padStart(2, "0") : "";
       var resBadge = quality === "2160p" ? "4K UHD" : quality === "1080p" ? "1080p FHD" : quality === "720p" ? "720p HD" : "480p SD";
-      var specTags = [resBadge].concat(tags.filter(function(t) { return t !== lang; })).filter(Boolean);
-      var line1 = "🎬 " + title + (year ? " (" + year + ")" : "") + seasonEp + (specTags.length ? " [" + specTags.join(" • ") + "]" : "");
-      var line2 = "📄 " + rawFilename;
-      var av = tags.filter(function(t) { return /dv|hdr|atmos|dts|dd/i.test(t); });
-      var line3 = av.length ? "💎 " + av.join(" • ") : "";
-      var langTag = lang === "Dual-Audio" ? "🌐 Dual-Audio" : lang === "Multi-Audio" ? "🌐 Multi-Audio" : lang === "English" ? "🌐 🇬🇧 English" : "🌐 " + lang;
+      var specTags = [resBadge].concat(tags.filter(function(t) {
+        return t !== lang;
+      })).filter(Boolean);
+      var line1 = "\u{1F3AC} " + title + (year ? " (" + year + ")" : "") + seasonEp + (specTags.length ? " [" + specTags.join(" \u2022 ") + "]" : "");
+      var line2 = "\u{1F4C4} " + rawFilename;
+      var av = tags.filter(function(t) {
+        return /dv|hdr|atmos|dts|dd/i.test(t);
+      });
+      var line3 = av.length ? "\u{1F48E} " + av.join(" \u2022 ") : "";
+      var langTag = lang === "Dual-Audio" ? "\u{1F310} Dual-Audio" : lang === "Multi-Audio" ? "\u{1F310} Multi-Audio" : lang === "English" ? "\u{1F310} \u{1F1EC}\u{1F1E7} English" : "\u{1F310} " + lang;
       var line4 = langTag;
       var metaParts = [];
-      if (size) metaParts.push("📦 " + size);
-      if (seeders && seeders !== "0") metaParts.push("👥 " + seeders + " Seeders");
-      if (sourceGroup) metaParts.push("🏷️ " + sourceGroup);
-      metaParts.push("🔗 " + PROVIDER_NAME);
-      var line5 = metaParts.join(" • ");
+      if (size)
+        metaParts.push("\u{1F4E6} " + size);
+      if (seeders && seeders !== "0")
+        metaParts.push("\u{1F465} " + seeders + " Seeders");
+      if (sourceGroup)
+        metaParts.push("\u{1F3F7}\uFE0F " + sourceGroup);
+      metaParts.push("\u{1F517} " + PROVIDER_NAME);
+      var line5 = metaParts.join(" \u2022 ");
       var cardTitle = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
       results.push({
         name: cardTitle,

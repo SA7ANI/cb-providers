@@ -323,7 +323,7 @@ function resolveVegaLink(linkUrl, referer) {
       if (linkUrl.includes("fastdl")) {
         const fr = yield fetch(linkUrl, {
           headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: referer }),
-          signal: AbortSignal.timeout(4000)
+          signal: AbortSignal.timeout(4e3)
         });
         if (fr.ok) {
           const fh = yield fr.text();
@@ -336,7 +336,8 @@ function resolveVegaLink(linkUrl, referer) {
             direct = direct.replace(/^\(/, "").replace(/\)$/, "").trim();
             try {
               direct = decodeURIComponent(direct);
-            } catch (_) {}
+            } catch (_) {
+            }
             if (direct.startsWith("http")) {
               return direct;
             }
@@ -351,7 +352,7 @@ function resolveVegaLink(linkUrl, referer) {
         let currentUrl = linkUrl.replace(/hubcloud\.(ink|dad|cx|lol|top|rocks|site|buzz)/gi, "hubcloud.ist");
         const hr = yield fetch(currentUrl, {
           headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: referer }),
-          signal: AbortSignal.timeout(4000)
+          signal: AbortSignal.timeout(4e3)
         });
         if (hr.ok) {
           const hh = yield hr.text();
@@ -364,7 +365,7 @@ function resolveVegaLink(linkUrl, referer) {
             }
             const r2 = yield fetch(nUrl, {
               headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: currentUrl }),
-              signal: AbortSignal.timeout(4000)
+              signal: AbortSignal.timeout(4e3)
             });
             if (r2.ok) {
               const h2 = yield r2.text();
@@ -378,7 +379,8 @@ function resolveVegaLink(linkUrl, referer) {
       } else if (linkUrl.endsWith(".mkv") || linkUrl.endsWith(".mp4") || linkUrl.includes(".m3u8")) {
         return linkUrl;
       }
-    } catch (_) {}
+    } catch (_) {
+    }
     return null;
   });
 }
@@ -431,7 +433,8 @@ function getDownloadLinks(postUrl, postTitle, mediaInfo, mediaType, season, epis
             const resolvePromises = finalLinks.map((f) => __async(this, null, function* () {
               const rawTarget = f[1];
               const resolvedUrl = yield resolveVegaLink(rawTarget, link);
-              if (!resolvedUrl) return null;
+              if (!resolvedUrl)
+                return null;
               const serverName = f[2].replace(/<[^>]+>/g, "").replace(/&#x?[0-9a-f]+;|&[a-z]+;/gi, "").replace(/\s+/g, " ").trim() || "Vega Server";
               const card = formatCholeCard({
                 provider: "VegaMovies",

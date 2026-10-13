@@ -446,7 +446,8 @@ function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) 
             }
           }
           validStreams.push(s);
-        } catch (_) {}
+        } catch (_) {
+        }
       }
       console.log(`[MovieBlast] Successfully found ${validStreams.length} playable streams.`);
       return validStreams;

@@ -308,7 +308,7 @@ typeof module !== _0x52744c(171) && module[_0x52744c(159)] && (module[_0x52744c(
       qualitySlug = "480p";
     return {
       name: body,
-    description: body,
+      description: body,
       title: body,
       quality: qualitySlug,
       size: size || ""

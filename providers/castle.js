@@ -312,9 +312,9 @@ function decryptCastle(encryptedB64, securityKeyB64) {
       if (!CryptoJS) {
         try {
           CryptoJS = require("crypto-js");
-        } catch (_) {}
+        } catch (_) {
+        }
       }
-
       if (CryptoJS) {
         if (typeof __crypto_aes_decrypt_raw !== "undefined") {
           const originalDecrypt = CryptoJS.AES.decrypt;
@@ -379,7 +379,6 @@ function decryptCastle(encryptedB64, securityKeyB64) {
           return result;
         }
       }
-
       if (typeof require === "function") {
         try {
           const nodeCrypto = require("crypto");
@@ -393,9 +392,9 @@ function decryptCastle(encryptedB64, securityKeyB64) {
             console.log("[Castle] Local Node crypto decryption successful");
             return plain;
           }
-        } catch (_) {}
+        } catch (_) {
+        }
       }
-
       throw new Error("No cryptographic decryptor available or decryption failed");
     } catch (error) {
       console.error(`[Castle] Local decryption failed: ${error.message}`);

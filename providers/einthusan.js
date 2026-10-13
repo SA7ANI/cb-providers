@@ -474,7 +474,7 @@ typeof module !== "undefined" && module["exports"] ? module["exports"] = { "getS
       qualitySlug = "480p";
     return {
       name: body,
-    description: body,
+      description: body,
       title: body,
       quality: qualitySlug,
       size: size || ""

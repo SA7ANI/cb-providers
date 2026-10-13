@@ -385,7 +385,7 @@ typeof module !== "undefined" && module[_0x591515(183)] ? module[_0x591515(183)]
       qualitySlug = "480p";
     return {
       name: body,
-    description: body,
+      description: body,
       title: body,
       quality: qualitySlug,
       size: size || ""
