@@ -83,7 +83,7 @@ function getMediaMeta(id, type) {
       "847a158b5489812f851da8cf02476566"
     ];
     for (const key of apiKeys) {
-      const rawTmdbUrl = `https://api.themoviedb.org/3/${tmdbType}/${id}?api_key=${key}`;
+      const rawTmdbUrl = `https://api.tmdb.org/3/${tmdbType}/${id}?api_key=${key}`;
       const urls = [
         `https://worker.zendax.me/api/fetch?url=${encodeURIComponent(rawTmdbUrl)}`,
         rawTmdbUrl
@@ -179,7 +179,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       if (!srvData || !Array.isArray(srvData.servers) || !srvData.servers.length)
         return [];
       const streams = [];
-      const serverList = srvData.servers.slice(0, 5);
+      const serverList = srvData.servers.slice(0, 2);
       for (const s of serverList) {
         const subTypes = Array.isArray(s.subTypes) && s.subTypes.length ? s.subTypes : ["sub"];
         for (const subType of subTypes) {

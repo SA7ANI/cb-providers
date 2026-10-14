@@ -98,7 +98,7 @@ function getStreams(_0x492b3c, _0x102a04, _0x3a8ce0, _0x47acce) {
   return __async2(this, null, function* () {
     const _0x188d52 = _0x3235;
     try {
-      const _0xddf9b = _0x188d52(184) + _0x102a04 + "/" + _0x492b3c + _0x188d52(166) + TMDB_API_KEY, _0x3d6784 = yield (yield fetch(_0xddf9b))[_0x188d52(198)](), _0x2d4063 = _0x3d6784[_0x188d52(177)] || _0x3d6784[_0x188d52(156)];
+      const _0xddf9b = "https://api.tmdb.org/3/" + _0x102a04 + "/" + _0x492b3c + _0x188d52(166) + TMDB_API_KEY, _0x3d6784 = yield (yield fetch(_0xddf9b))[_0x188d52(198)](), _0x2d4063 = _0x3d6784[_0x188d52(177)] || _0x3d6784[_0x188d52(156)];
       if (!_0x2d4063)
         return [];
       const _0x1b0164 = BASE_URL + _0x188d52(194) + encodeURIComponent(_0x2d4063), _0x24c27f = yield (yield fetch(_0x1b0164, { "headers": HEADERS }))[_0x188d52(181)](), _0x2f6a4b = cheerio[_0x188d52(201)](_0x24c27f), _0x42c3bf = _0x2f6a4b(_0x188d52(203))[_0x188d52(180)]();
@@ -121,7 +121,7 @@ function getStreams(_0x492b3c, _0x102a04, _0x3a8ce0, _0x47acce) {
         _0x176500["length"] > 0 && (_0x427e08 = _0x176500[0]["href"]);
       if (!_0x427e08["startsWith"](_0x188d52(157)))
         _0x427e08 = BASE_URL + _0x427e08;
-      const _0x30148f = yield (yield fetch(_0x427e08, { "headers": HEADERS }))[_0x188d52(181)](), _0x33db12 = cheerio[_0x188d52(201)](_0x30148f), _0x60bea3 = _0x33db12(_0x188d52(160))[_0x188d52(190)]("content") || "";
+      const _0x30148f = yield (yield fetch(_0x427e08, { "headers": HEADERS }))[_0x188d52(181)](), _0x33db12 = cheerio[_0x188d52(201)](_0x30148f), _0x60bea3 = _0x33db12("video").attr("src") || _0x33db12("video source").attr("src") || _0x33db12(_0x188d52(160))[_0x188d52(190)]("content") || "";
       if (!_0x60bea3)
         return [];
       return [{ "name": _0x188d52(196), "url": _0x60bea3, "quality": extractQuality(_0x60bea3), "title": _0x188d52(196), "subtitles": [], "behaviorHints": { "notWebReady": !![], "proxyHeaders": { "request": Object["assign"]({}, HEADERS) } } }];

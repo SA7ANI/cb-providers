@@ -136,28 +136,6 @@
       ]
     },
     {
-      "id": "movieblast",
-      "name": "MovieBlast",
-      "description": "Direct links via MovieBlast API with multi-language support",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/movieblast.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/Icons/movieblast.png",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
       "id": "kurage",
       "name": "Kurage",
       "description": "Kurage.live anime streaming with tRPC API and multi-server proxy support",
@@ -181,27 +159,6 @@
       ]
     },
     {
-      "id": "vidnest",
-      "name": "Vidnest",
-      "description": "Vidnest streaming with encrypted AES-GCM sources",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vidnest.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://vidnest.fun/favicon.ico",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
       "id": "anizone",
       "name": "AniZone",
       "description": "AniZone high-quality anime streaming with multi-audio and soft subtitles",
@@ -220,30 +177,6 @@
       ],
       "logo": "https://anizone.to/favicon.ico",
       "contentLanguage": [
-        "ja",
-        "en"
-      ]
-    },
-    {
-      "id": "animedekho",
-      "name": "AnimeDekho",
-      "description": "AnimeDekho stream provider",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "anime",
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/animedekho.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "",
-      "contentLanguage": [
-        "hi",
         "ja",
         "en"
       ]
@@ -420,27 +353,6 @@
       ]
     },
     {
-      "id": "purstream",
-      "name": "Purstream",
-      "description": "Purstream stream provider",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/purstream.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
       "id": "topcartoons",
       "name": "TopCartoons",
       "description": "TopCartoons stream provider",
@@ -502,50 +414,6 @@
       "logo": "",
       "contentLanguage": [
         "en"
-      ]
-    },
-    {
-      "id": "uhdmovies",
-      "name": "UHDMovies",
-      "description": "UHD Movies streaming with multiple resolution",
-      "version": "1.2.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/uhdmovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=uhdmovies.pink&sz=128",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "zinkmovies",
-      "name": "ZinkMovies",
-      "description": "ZinkMovies stream provider",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/zinkmovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "",
-      "contentLanguage": [
-        "en",
-        "hi"
       ]
     },
     {
@@ -837,28 +705,6 @@
       ]
     },
     {
-      "id": "movieblast",
-      "name": "MovieBlast",
-      "description": "Direct links via MovieBlast API with multi-language support",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/movieblast.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/Icons/movieblast.png",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
       "id": "kurage",
       "name": "Kurage",
       "description": "Kurage.live anime streaming with tRPC API and multi-server proxy support",
@@ -882,27 +728,6 @@
       ]
     },
     {
-      "id": "vidnest",
-      "name": "Vidnest",
-      "description": "Vidnest streaming with encrypted AES-GCM sources",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/vidnest.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://vidnest.fun/favicon.ico",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
       "id": "anizone",
       "name": "AniZone",
       "description": "AniZone high-quality anime streaming with multi-audio and soft subtitles",
@@ -921,30 +746,6 @@
       ],
       "logo": "https://anizone.to/favicon.ico",
       "contentLanguage": [
-        "ja",
-        "en"
-      ]
-    },
-    {
-      "id": "animedekho",
-      "name": "AnimeDekho",
-      "description": "AnimeDekho stream provider",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "anime",
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/animedekho.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "",
-      "contentLanguage": [
-        "hi",
         "ja",
         "en"
       ]
@@ -1121,27 +922,6 @@
       ]
     },
     {
-      "id": "purstream",
-      "name": "Purstream",
-      "description": "Purstream stream provider",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/purstream.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
       "id": "topcartoons",
       "name": "TopCartoons",
       "description": "TopCartoons stream provider",
@@ -1203,50 +983,6 @@
       "logo": "",
       "contentLanguage": [
         "en"
-      ]
-    },
-    {
-      "id": "uhdmovies",
-      "name": "UHDMovies",
-      "description": "UHD Movies streaming with multiple resolution",
-      "version": "1.2.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/uhdmovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://www.google.com/s2/favicons?domain=uhdmovies.pink&sz=128",
-      "contentLanguage": [
-        "en",
-        "hi"
-      ]
-    },
-    {
-      "id": "zinkmovies",
-      "name": "ZinkMovies",
-      "description": "ZinkMovies stream provider",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie",
-        "tv"
-      ],
-      "filename": "providers/zinkmovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "",
-      "contentLanguage": [
-        "en",
-        "hi"
       ]
     },
     {

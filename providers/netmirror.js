@@ -188,7 +188,7 @@ function getMediaMetadata(rawId, mediaType) {
     const isNumeric = /^\d+$/.test(cleanId);
     for (const key of TMDB_API_KEYS) {
       try {
-        const url = isNumeric ? `https://api.themoviedb.org/3/${type}/${cleanId}?api_key=${key}` : `https://api.themoviedb.org/3/find/${cleanId}?api_key=${key}&external_source=imdb_id`;
+        const url = isNumeric ? `https://api.tmdb.org/3/${type}/${cleanId}?api_key=${key}` : `https://api.tmdb.org/3/find/${cleanId}?api_key=${key}&external_source=imdb_id`;
         const res = yield httpGet(url, { timeout: 3500 });
         if (res) {
           if (isNumeric && (res.title || res.name)) {

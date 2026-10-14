@@ -155,7 +155,7 @@ function scrapePremiumTokens(_0x365b2d, _0x30203e, _0x1bf7b9, _0x477561) {
 function getTmdbMeta(_0x3f9bc5, _0x3fa2a6) {
   const _0x112627 = { _0x2cc1a9: 412 };
   return __async2(this, null, function* () {
-    const _0x37f69a = _0x2a19, _0x35edbf = _0x3fa2a6 === "tv" ? "tv" : "movie", _0x5cf660 = _0x37f69a(_0x112627._0x2cc1a9) + _0x35edbf + "/" + _0x3f9bc5 + "?api_key=" + TMDB_API_KEY + "&append_to_response=external_ids";
+    const _0x37f69a = _0x2a19, _0x35edbf = _0x3fa2a6 === "tv" ? "tv" : "movie", _0x5cf660 = "https://api.tmdb.org/3/" + _0x35edbf + "/" + _0x3f9bc5 + "?api_key=" + TMDB_API_KEY + "&append_to_response=external_ids";
     try {
       const _0x31d786 = yield fetch(_0x5cf660);
       if (!_0x31d786["ok"])

@@ -95,7 +95,7 @@ function getMediaMeta(id, mediaType = "movie") {
     const endpoint = mediaType === "tv" || mediaType === "series" ? "tv" : "movie";
     for (const key of TMDB_API_KEYS) {
       try {
-        const url = `https://api.themoviedb.org/3/${endpoint}/${id}?api_key=${key}&append_to_response=external_ids`;
+        const url = `https://api.tmdb.org/3/${endpoint}/${id}?api_key=${key}&append_to_response=external_ids`;
         const data = yield httpGet(url, {
           headers: { "User-Agent": "Mozilla/5.0" },
           timeout: 4e3

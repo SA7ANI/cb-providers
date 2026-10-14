@@ -149,7 +149,7 @@ function getTMDBDetails(tmdbId, mediaType) {
       }
     }
     for (const apiKey of TMDB_API_KEYS) {
-      const rawUrl = `https://api.themoviedb.org/3/${endpoint}/${tmdbId}?api_key=${apiKey}`;
+      const rawUrl = `https://api.tmdb.org/3/${endpoint}/${tmdbId}?api_key=${apiKey}`;
       try {
         const res = yield fetch(rawUrl, {
           headers: { "Accept": "application/json", "User-Agent": "Mozilla/5.0" }

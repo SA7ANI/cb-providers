@@ -42,7 +42,7 @@ const TMDB_API_KEYS = [
   "439c478a771f35c05022f9feabcca01c",
   "e49339e830e014e414c2b9a71b2d4f82"
 ];
-const TMDB_BASE_URL = "https://api.themoviedb.org/3";
+const TMDB_BASE_URL = "https://api.tmdb.org/3";
 const ANIZEN_API_BASE = "https://anizen-api.vgdz6n57j7.workers.dev/anikototv";
 const cheerio = (typeof require !== "undefined" ? function() {
   try {
