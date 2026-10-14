@@ -98,7 +98,7 @@ function getMediaMeta(id, mediaType = "movie") {
         const url = `https://api.tmdb.org/3/${endpoint}/${id}?api_key=${key}&append_to_response=external_ids`;
         const data = yield httpGet(url, {
           headers: { "User-Agent": "Mozilla/5.0" },
-          timeout: 4e3
+          timeout: 8e3
         });
         if (data) {
           const imdbId = data.external_ids && data.external_ids.imdb_id || (String(id).startsWith("tt") ? id : null);
@@ -263,7 +263,7 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
         const url = `https://st.111477.xyz/config/${tag}/stream/movie/${mediaMeta.imdbId}.json`;
         const data = yield httpGet(url, {
           headers: { "User-Agent": "Mozilla/5.0" },
-          timeout: 5e3
+          timeout: 8e3
         });
         const rawStreams = data && data.streams || [];
         if (!Array.isArray(rawStreams) || rawStreams.length === 0)

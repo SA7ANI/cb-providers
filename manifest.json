@@ -570,6 +570,73 @@
         "en",
         "ja"
       ]
+    },
+    {
+      "id": "multimovies",
+      "name": "MultiMovies",
+      "description": "MultiMovies fast streaming servers with direct embeds and dual audio support",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/multimovies.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=multimovies.garden&sz=128",
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "toonstream",
+      "name": "ToonStream",
+      "description": "ToonStream direct anime and cartoon streaming with Hindi and English dubs",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/toonstream.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=toonstream.us&sz=128",
+      "contentLanguage": [
+        "en",
+        "hi",
+        "ja"
+      ]
+    },
+    {
+      "id": "puretoons",
+      "name": "PureToons",
+      "description": "PureToons Indian cartoon & anime collection in Hindi dubs",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/puretoons.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=puretoons.in&sz=128",
+      "contentLanguage": [
+        "hi",
+        "en"
+      ]
     }
   ],
   "scrapers": [
@@ -1138,6 +1205,73 @@
       "contentLanguage": [
         "en",
         "ja"
+      ]
+    },
+    {
+      "id": "multimovies",
+      "name": "MultiMovies",
+      "description": "MultiMovies fast streaming servers with direct embeds and dual audio support",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/multimovies.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=multimovies.garden&sz=128",
+      "contentLanguage": [
+        "en",
+        "hi"
+      ]
+    },
+    {
+      "id": "toonstream",
+      "name": "ToonStream",
+      "description": "ToonStream direct anime and cartoon streaming with Hindi and English dubs",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/toonstream.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=toonstream.us&sz=128",
+      "contentLanguage": [
+        "en",
+        "hi",
+        "ja"
+      ]
+    },
+    {
+      "id": "puretoons",
+      "name": "PureToons",
+      "description": "PureToons Indian cartoon & anime collection in Hindi dubs",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie",
+        "tv"
+      ],
+      "filename": "providers/puretoons.js",
+      "enabled": true,
+      "formats": [
+        "m3u8",
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=puretoons.in&sz=128",
+      "contentLanguage": [
+        "hi",
+        "en"
       ]
     }
   ],
