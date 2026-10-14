@@ -1,12 +1,12 @@
 # 🌶️ CB Providers
 
-[![Providers](https://img.shields.io/badge/Active_Providers-32_Verified-emerald?style=for-the-badge&logo=fastapi)](manifest.json)
+[![Providers](https://img.shields.io/badge/Active_Providers-26_Verified-emerald?style=for-the-badge&logo=fastapi)](manifest.json)
 [![Platform](https://img.shields.io/badge/Platform-Nuvio_App-blue?style=for-the-badge)](https://github.com/yoruix/nuvio-providers)
 [![License](https://img.shields.io/badge/License-GNU_GPLv3-orange?style=for-the-badge)](LICENSE)
 
 A curated, high-performance collection of streaming and scraper plugins built for the **Nuvio App**.
 
-All 32 providers are **tested, live-verified**, and optimized for fast stream extraction across 4K UHD, 1080p, Multi-Audio (Hindi, English, Japanese, Tamil, Telugu), and Anime.
+All 26 providers are **tested, live-verified**, and optimized for fast stream extraction across 4K UHD, 1080p, Multi-Audio (Hindi, English, Japanese, Tamil, Telugu), and Anime.
 
 ---
 
@@ -17,12 +17,12 @@ All 32 providers are **tested, live-verified**, and optimized for fast stream ex
    ```text
    https://raw.githubusercontent.com/SA7ANI/cb-providers/main/manifest.json
    ```
-3. Tap **Add** / **Refresh** to load all 32 active modules.
+3. Tap **Add** / **Refresh** to load all 26 active modules.
 4. Toggle your desired providers and prioritize as needed.
 
 ---
 
-## 🚀 Active Provider Fleet (32 Verified Modules)
+## 🚀 Active Provider Fleet (26 Verified Modules)
 
 | # | Provider Name | ID | Supported Media | Content Languages | Description |
 |---|---|---|---|---|---|
@@ -30,34 +30,28 @@ All 32 providers are **tested, live-verified**, and optimized for fast stream ex
 | 2 | **4KHDHub** | `4khdhub` | Movies, TV | `en`, `hi` | Direct 4K & 1080p high speed links |
 | 3 | **HDHub4u** | `hdhub4u` | Movies, TV | `en`, `hi` | Fast direct links with download & streaming mirrors |
 | 4 | **VegaMovies** | `vegamovies` | Movies, TV | `en`, `hi` | V-Cloud direct streaming & multi-quality options |
-| 5 | **UHDMovies** | `uhdmovies` | Movies, TV | `en`, `hi` | Premier 4K UHD & 1080p HEVC download & stream sources |
-| 6 | **MoviesMod** | `moviesmod` | Movies, TV | `en`, `hi` | High-speed multi-quality movies with GDrive/HubCloud |
-| 7 | **DesiFlix** | `desiflix` | Movies, TV | `en`, `hi` | Indian movies, Bollywood & Hindi series |
-| 8 | **Einthusan** | `einthusan` | Movies | `en`, `hi`, `ta`, `te`, `ml`, `kn` | Indian cinema catalog (Hindi, Tamil, Telugu, Malayalam) |
-| 9 | **Castle** | `castle` | Movies, TV | `en`, `hi` | Direct fast streaming with multi-server failover |
-| 10 | **RedFlix** | `redflix` | Movies, TV | `en`, `hi` | RedFlix catalog streaming |
-| 11 | **MovieBlast** | `movieblast` | Movies, TV | `en`, `hi` | Direct cloud links & multi-server playback |
-| 12 | **🧲 Torrentio** | `torrentio` | Movies, TV | `en` | Multi-torrent streaming engine for global movies & series |
+| 5 | **Castle** | `castle` | Movies, TV | `en`, `hi` | Direct fast streaming with multi-server failover |
+| 6 | **RedFlix** | `redflix` | Movies, TV | `en`, `hi` | RedFlix catalog streaming |
+| 7 | **Kurage** | `kurage` | Anime, TV | `en`, `ja` | Anime streaming with multi-server failover |
+| 8 | **AniZone** | `anizone` | Anime, TV | `en`, `ja` | High-quality anime with multi-audio & soft subtitles |
+| 9 | **DesiFlix** | `desiflix` | Movies, TV | `en`, `hi` | Indian movies, Bollywood & Hindi series |
+| 10 | **Dahmermovies** | `dahmermovies` | Movies | `en` | High-speed direct movie streams |
+| 11 | **Dahmermovies-TV** | `dahmermovies-tv` | TV | `en` | Fast TV series multi-episode streams |
+| 12 | **Einthusan** | `einthustan` | Movies | `en`, `hi`, `ta`, `te`, `ml`, `kn` | Indian cinema catalog (Hindi, Tamil, Telugu, Malayalam) |
 | 13 | **MovieBox** | `moviebox` | Movies, TV | `en` | Multi-server fast streaming |
-| 14 | **Dahmermovies** | `dahmermovies` | Movies | `en` | High-speed direct movie streams |
-| 15 | **Dahmermovies-TV** | `dahmermovies-tv` | TV | `en` | Fast TV series multi-episode streams |
-| 16 | **Kurage** | `kurage` | Anime, TV | `en`, `ja` | Anime streaming with multi-server failover |
-| 17 | **AniZone** | `anizone` | Anime, TV | `en`, `ja` | High-quality anime with multi-audio & soft subtitles |
-| 18 | **AnimeDekho** | `animedekho` | Anime, TV | `en`, `hi`, `ja` | Hindi & multi-audio anime streaming |
-| 19 | **Reanime** | `reanime` | Anime, Movies | `en`, `ja` | Anime & Asian content streaming |
-| 20 | **Vidnest** | `vidnest` | Movies, TV | `en` | Multi-server streaming with local cipher decoding |
-| 21 | **PlayIMDb** | `playimdb` | Movies, TV | `en` | Multi-hoster movie streaming engine |
-| 22 | **Purstream** | `purstream` | Movies, TV | `en` | Direct stream resolver |
-| 23 | **🪨 VidRock** | `vidrock` | Movies, TV | `en` | Embed video streamer |
-| 24 | **TopCartoons** | `topcartoons` | TV | `en` | Animated series, cartoons & family entertainment |
-| 25 | **ZinkMovies** | `zinkmovies` | Movies | `en` | Fast direct links |
-| 26 | **Movix VF** | `movix` | Movies, TV | `fr`, `en` | French audio/subbed streaming |
-| 27 | **🌸 PersianStremio** | `persianstremio` | Movies, TV | `fa`, `en` | Multi-source streams with Persian support |
-| 28 | **AnimeWorld** | `animeworld` | Anime, TV, Movies | `hi`, `ta`, `te`, `en`, `ja` | Multi-Language Indian & Global Anime: Hindi, Tamil, Telugu, English, Japanese |
-| 29 | **AnimeSalt** | `animesalt` | Anime, TV, Movies | `ja`, `en`, `hi` | High-speed anime streaming with Multi-Server failover (Abyss, VidMoly, Videasy) |
-| 30 | **AniZen** | `anizen` | Anime, Movies, TV | `ja`, `en` | Pure AES decrypted MegaPlay/Vidstream anime streams |
-| 31 | **CineFreak** | `cinefreak` | Movies, TV | `en`, `hi` | Typesense-powered Indian & Hollywood direct streams |
-| 32 | **NetMirror** | `netmirror` | Movies, TV | `en`, `hi` | Multi-OTT direct HLS streaming across Netflix, Prime Video & Hotstar |
+| 14 | **MoviesMod** | `moviesmod` | Movies, TV | `en`, `hi` | High-speed multi-quality movies with GDrive/HubCloud |
+| 15 | **Movix VF** | `movix-vf` | Movies, TV | `fr`, `en` | French audio/subbed streaming |
+| 16 | **PlayIMDb** | `playimdb` | Movies, TV | `en` | Multi-hoster movie streaming engine |
+| 17 | **TopCartoons** | `topcartoons` | TV | `en` | Animated series, cartoons & family entertainment |
+| 18 | **🧲 Torrentio** | `torrentio` | Movies, TV | `en` | Multi-torrent streaming engine for global movies & series |
+| 19 | **🪨 VidRock** | `vidrock` | Movies, TV | `en` | Embed video streamer |
+| 20 | **Reanime** | `reanime` | Anime, Movies | `en`, `ja` | Anime & Asian content streaming |
+| 21 | **AnimeWorld** | `animeworld` | Anime, TV, Movies | `hi`, `ta`, `te`, `en`, `ja` | Multi-Language Indian & Global Anime: Hindi, Tamil, Telugu, English, Japanese |
+| 22 | **AnimeSalt** | `animesalt` | Anime, TV, Movies | `ja`, `en`, `hi` | High-speed anime streaming with Multi-Server failover (Abyss, VidMoly, Videasy) |
+| 23 | **AniZen** | `anizen` | Anime, Movies, TV | `ja`, `en` | Pure AES decrypted MegaPlay/Vidstream anime streams |
+| 24 | **CineFreak** | `cinefreak` | Movies, TV | `en`, `hi` | Typesense-powered Indian & Hollywood direct streams |
+| 25 | **NetMirror** | `netmirror` | Movies, TV | `en`, `hi` | Multi-OTT direct HLS streaming across Netflix, Prime Video & Hotstar |
+| 26 | **AniKage** | `anikage` | Anime, TV | `en`, `ja` | High-speed anime streaming with direct m3u8 streams |
 
 ---
 
@@ -68,9 +62,8 @@ cb-providers/
 ├── providers/                 # Production-ready, standalone provider bundles
 │   ├── moviesdrive.js
 │   ├── 4khdhub.js
-│   ├── uhdmovies.js
 │   ├── torrentio.js
-│   └── ... (27 modules)
+│   └── ... (26 modules)
 ├── src/                       # Multi-file source development (optional)
 ├── manifest.json              # Provider plugin registry (Nuvio standard)
 ├── build.js                   # Hermes/esbuild bundler & transpiler
