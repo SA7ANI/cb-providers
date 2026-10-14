@@ -42,9 +42,9 @@ const TMDB_API_KEYS = [
   "439c478a771f35c05022f9feabcca01c",
   "e49339e830e014e414c2b9a71b2d4f82"
 ];
-const TMDB_BASE_URL = "https://api.themoviedb.org/3";
-const CINEFREAK_BASE = "https://cinefreak.net";
-const SEARCH_API = "https://search.yagaverse.net/api";
+const TMDB_BASE_URL = "https://api.tmdb.org/3";
+const CINEFREAK_BASE = "https://new1.cinefreak.link";
+const SEARCH_API = "https://new1.cinefreak.link/search-api.php";
 const cheerio = (typeof require !== "undefined" ? function() {
   try {
     return require("cheerio-without-node-native");
@@ -225,11 +225,15 @@ function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum = 1) 
       console.log(`[CineFreak] Scraping for: "${query}" (${meta.year || "any"}), Type: ${mediaType}, S:${seasonNum} E:${episodeNum}`);
       let searchData = null;
       try {
-        searchData = yield httpGet(`${SEARCH_API}/search?q=${encodeURIComponent(query)}&pg=1`, {}, 6e3);
+        searchData = yield httpGet(`${SEARCH_API}?q=${encodeURIComponent(query)}&pg=1`, {
+          "Accept": "application/json",
+          "Referer": `${CINEFREAK_BASE}/fast-search/`
+        }, 6e3);
       } catch (e) {
         console.error("[CineFreak] Search API failed:", e.message);
       }
-      const hits = (searchData == null ? void 0 : searchData.hits) || [];
+      const rawResults = (searchData == null ? void 0 : searchData.results) || (searchData == null ? void 0 : searchData.hits) || [];
+      const hits = rawResults.map(r => r.document ? r : { document: { title: r.t, slug: r.l } });
       if (!hits.length) {
         console.log("[CineFreak] No hits found for:", query);
         return [];

@@ -33,7 +33,7 @@ var _0x2a35f6 = _0x2bf8;
     }
   }
 })(_0x157f, 268497);
-var TMDB_KEY = _0x2a35f6(173), DOMAINS_URL = "https://raw.githubusercontent.com/wooodyhood/nuvio-repo/main/domains.json", MOVIX_FALLBACK = _0x2a35f6(147), _cachedEndpoint = null;
+var TMDB_KEY = _0x2a35f6(173), DOMAINS_URL = "https://raw.githubusercontent.com/wooodyhood/nuvio-repo/main/domains.json", MOVIX_FALLBACK = "cash", _cachedEndpoint = null;
 function _0x157f() {
   var _0x19afc0 = ["Bw92AxG", "ovHryLPTrW", "nZiWCa", "CMvWBgfJzq", "Bw92Awu", "CMvMzxjLCG", "zxbPC29Kzv9YDw5FDgLTzq", "rhvHBc1bDwrPBW", "y2fZAa", "mta4mha", "Dw5KzwzPBMvK", "otu5mJe0EMDdEMfy", "8j+nVYa", "l2fWAs9JCgfZBwfSl3r2lW", "8j+hUVcFH7GG4OcIipcFH6VWN4E3", "r0vu", "mtjSCNLnC3C", "zMLYC3rFywLYx2rHDgu", "mtC0odC2ognSDNzkBa", "jMXHBMD1ywDLpwvUlvvt", "BMfTzq", "Dg9vChbLCKnHC2u", "DgHLBG", "ywXS", "C2XPy2u", "mtq5nti2AK1syNje", "BgfUzW", "nZKYndqZmKnTv1bwuG", "mta4ma", "Ahr0Chm6lY9TB3zPEc4", "ig1PBG", "zM9YrwfJAa", "zhvYyxrPB24", "yxbP", "zJnKnZu3odi0zJa4zweYy2zMndvLyJHMndDJytnHmwu", "Ahr0Chm6lY9HCgKUDgHLBw92AwvKyI5VCMCVmY8", "jMvWAxnVzgu9", "8j+hQ/cFH7C", "zMLSDgvY", "zxHWB3j0CW", "tw92AxG", "BgvUz3rO", "z2v0u3rYzwfTCW", "Btn1oa", "ic0G", "CMvSzwfZzv9KyxrL", "CgXHEwvY", "ChvZAa", "ihWG", "Aw5KzxHpzG", "mte2ntiYn0nSAu9ksG", "ANnVBG", "sc4YnJq", "BgLUA3m", "tw92AxGGFca", "EwvHCG", "BwfW", "Dg9mB3DLCKnHC2u", "p2fWAv9RzxK9", "C3bSAxq", "vK9tvezs", "CMvZB2X2zq", "y2f0y2G", "C291CMnLCW", "DgL0Bgu", "ihWG8j+oTsa", "l3n0CMvHBt9ZzwfZB249", "mJmZmtCYmu9dqw9owG", "mJuYmJvzs0voAvK", "l3n0CMvHBq", "DxjS"];
   _0x157f = function() {

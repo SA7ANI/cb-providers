@@ -259,7 +259,7 @@ function formatCholeCard(opt) {
 }
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var TMDB_BASE_URL = "https://api.tmdb.org/3";
-var MAIN_URL = "https://new1.hdhub4u.free";
+var MAIN_URL = "https://new7.hdhub4u.cl";
 var DOMAINS_URL = "https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json";
 var DOMAIN_CACHE_TTL = 4 * 60 * 60 * 1e3;
 var HEADERS = {
@@ -486,7 +486,7 @@ function getTMDBDetails(tmdbId, mediaType) {
   });
 }
 var import_cheerio_without_node_native = import_cheerio_without_node_native2;
-var import_crypto_js = __toESM(require("crypto-js"));
+var import_crypto_js = null;
 function getRedirectLinks(url) {
   return __async(this, null, function* () {
     try {
@@ -846,8 +846,8 @@ function loadExtractor(_0) {
 function search(query) {
   return __async(this, null, function* () {
     const today = (/* @__PURE__ */ new Date()).toISOString().split("T")[0];
-    const searchUrl = `https://search.hdhub4u.glass/collections/post/documents/search?q=${encodeURIComponent(query)}&query_by=post_title,category&query_by_weights=4,2&sort_by=sort_by_date:desc&limit=15&highlight_fields=none&use_cache=true&page=1&analytics_tag=${today}`;
-    const response = yield fetch(searchUrl, { headers: HEADERS });
+    const searchUrl = `https://search.pingora.fyi/collections/post/documents/search?q=${encodeURIComponent(query)}&query_by=post_title,category,stars,director,imdb_id&query_by_weights=4,2,2,2,4&sort_by=sort_by_date:desc&limit=15&highlight_fields=none&use_cache=true&page=1&analytics_tag=${today}`;
+    const response = yield fetch(searchUrl, { headers: __spreadProps2(__spreadValues2({}, HEADERS), { Referer: "https://new7.hdhub4u.cl/search.html" }) });
     const data = yield response.json();
     if (!data || !data.hits)
       return [];

@@ -139,22 +139,21 @@ function findPurstreamIdByTitle(_0x280b47, _0x29fc0e, _0x4d2ef) {
 }
 function fetchMovieSources(_0x49430b) {
   var _0x4c2d0b = { _0x50c9e8: 537, _0x531ce5: 540 }, _0x554abb = { _0xd3fcd6: 504 }, _0x8dafd7 = _0x580258;
-  return fetch(PURSTREAM_API + _0x8dafd7(_0x4c2d0b._0x50c9e8) + _0x49430b + _0x8dafd7(_0x4c2d0b._0x531ce5), { "headers": { "User-Agent": PURSTREAM_UA, "Referer": PURSTREAM_REFERER } })[_0x8dafd7(523)](function(_0x46650d) {
+  return fetch(PURSTREAM_API + "/stream/" + _0x49430b, { "headers": { "User-Agent": PURSTREAM_UA, "Referer": PURSTREAM_REFERER } })[_0x8dafd7(523)](function(_0x46650d) {
     var _0xdaec5b = _0x8dafd7;
     return _0x46650d[_0xdaec5b(_0x554abb._0xd3fcd6)]();
   })["then"](function(_0x245ec2) {
-    var _0x244c94 = _0x8dafd7;
-    return _0x245ec2["data"]["items"][_0x244c94(555)] || [];
+    return _0x245ec2["data"]["items"]["sources"] || _0x245ec2["data"]["items"]["urls"] || _0x245ec2["data"]["items"][_0x244c94(555)] || [];
   });
 }
 function fetchEpisodeSources(_0x259bef, _0x1b9d37, _0x2dd536) {
   var _0x32d93e = { _0x4d7262: 542, _0x21445a: 523 }, _0x751dc3 = { _0x363a56: 504 }, _0x12b369 = _0x580258;
-  return fetch(PURSTREAM_API + _0x12b369(_0x32d93e._0x4d7262) + _0x259bef + "/episode?season=" + (_0x1b9d37 || 1) + "&episode=" + (_0x2dd536 || 1), { "headers": { "User-Agent": PURSTREAM_UA, "Referer": PURSTREAM_REFERER } })[_0x12b369(_0x32d93e._0x21445a)](function(_0x4b363d) {
+  return fetch(PURSTREAM_API + "/stream/" + _0x259bef + "/episode?season=" + (_0x1b9d37 || 1) + "&episode=" + (_0x2dd536 || 1), { "headers": { "User-Agent": PURSTREAM_UA, "Referer": PURSTREAM_REFERER } })[_0x12b369(_0x32d93e._0x21445a)](function(_0x4b363d) {
     var _0x3e2e7a = _0x12b369;
     return _0x4b363d[_0x3e2e7a(_0x751dc3._0x363a56)]();
   })["then"](function(_0x57ed4f) {
     var _0x366a6f = _0x12b369;
-    return _0x57ed4f[_0x366a6f(512)]["items"][_0x366a6f(502)] || [];
+    return _0x57ed4f["data"]["items"]["sources"] || _0x57ed4f[_0x366a6f(512)]["items"][_0x366a6f(502)] || [];
   });
 }
 function parseLang(_0x1b1bbc) {
@@ -176,14 +175,25 @@ function parseQuality(_0x11d4c6) {
   return "HD";
 }
 function normalizeMovieSources(_0x29ba99, _0x22ed47) {
-  var _0x175a0e = { _0x25f6be: 566 }, _0x86ce77 = { _0x3c58b8: 526 };
-  return _0x29ba99["filter"](function(_0x4fc8fa) {
-    var _0x4b0294 = _0x1911;
-    return _0x4fc8fa[_0x4b0294(509)] && (_0x4fc8fa["url"]["match"](/\.m3u8/i) || _0x4fc8fa["url"][_0x4b0294(_0x86ce77._0x3c58b8)](/\.mp4/i));
-  })["map"](function(_0x1e197e) {
-    var _0x269d05 = _0x1911, _0x56fac8 = parseQuality(_0x1e197e["name"]), _0x168dce = _0x1e197e["url"]["match"](/\.mp4/i) ? "mp4" : _0x269d05(_0x175a0e._0x25f6be), _0x53c8d3 = parseLang(_0x1e197e["name"]), _0x217d9a = buildPurstreamTitle(_0x22ed47, _0x56fac8, _0x53c8d3, _0x168dce, null, null, null, _0x1e197e["name"]);
-    return { "name": "Purstream | " + _0x56fac8["toLowerCase"]() + _0x269d05(527) + _0x53c8d3, "title": _0x217d9a, "size": _0x217d9a, "description": _0x217d9a, "url": _0x1e197e[_0x269d05(509)], "quality": "", "language": "", "format": _0x168dce, "headers": { "User-Agent": PURSTREAM_UA, "Referer": PURSTREAM_REFERER } };
-  });
+  return _0x29ba99.map(function(_0x4fc8fa) {
+    var rawUrl = _0x4fc8fa.stream_url || _0x4fc8fa.url || "";
+    var rawName = _0x4fc8fa.source_name || _0x4fc8fa.name || "HD";
+    var q = parseQuality(rawName);
+    var lang = parseLang(rawName);
+    var fmt = rawUrl.match(/\.mp4/i) ? "mp4" : "m3u8";
+    var title = buildPurstreamTitle(_0x22ed47, q, lang, fmt, null, null, null, rawName);
+    return {
+      name: "Purstream | " + q.toLowerCase() + " • " + lang,
+      title: title,
+      size: title,
+      description: title,
+      url: rawUrl,
+      quality: q,
+      language: lang,
+      format: fmt,
+      headers: { "User-Agent": PURSTREAM_UA, "Referer": PURSTREAM_REFERER }
+    };
+  }).filter(function(s) { return s.url && (s.url.includes('.m3u8') || s.url.includes('.mp4')); });
 }
 function _0x1911(_0x5d112d, _0x4880d7) {
   _0x5d112d = _0x5d112d - 491;
