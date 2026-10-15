@@ -25,8 +25,10 @@ const TMDB_API_KEYS = [
   "e49339e830e014e414c2b9a71b2d4f82"
 ];
 const CONFIG_TAGS = [
-  "aHR0cHM6Ly9hLjExMTQ3Ny54eXovOkExMQ"
-  // https://a.111477.xyz/:A11
+  "aHR0cHM6Ly9hLjExMTQ3Ny54eXovOkExMTo6dG1kYj0xODY1ZjQzYTA1NDljYTUwZDM0MWRkOWFiOGIyOWY0OTo6bGltaXQ9Mw",
+  "aHR0cHM6Ly9hLjExMTQ3Ny54eXovOkExMTo6dG1kYj00MzljNDc4YTc3MWYzNWMwNTAyMmY5ZmVhYmNjYTAxYzo6bGltaXQ9Mw",
+  "aHR0cHM6Ly9hLjExMTQ3Ny54eXovOkExMTo6dG1kYj04MjY1YmQxNjc5NjYzYTdlYTEyYWMxNjhkYTg0ZDJlODo6bGltaXQ9Mw",
+  "aHR0cHM6Ly9hLjExMTQ3Ny54eXovOkExMTo6dG1kYj1lNDkzMzllODMwZTAxNGU0MTRjMmI5YTcxYjJkNGY4Mjo6bGltaXQ9Mw"
 ];
 function httpGet(_0) {
   return __async(this, arguments, function* (url, options = {}) {
