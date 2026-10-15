@@ -1,6 +1,7 @@
 # 🌶️ CB Providers
 
 [![Providers](https://img.shields.io/badge/Active_Providers-29_Verified-emerald?style=for-the-badge&logo=fastapi)](manifest.json)
+[![Changelog](https://img.shields.io/badge/Changelog-v2.5.0-purple?style=for-the-badge)](CHANGELOG.md)
 [![Platform](https://img.shields.io/badge/Platform-Nuvio_App-blue?style=for-the-badge)](https://github.com/yoruix/nuvio-providers)
 [![License](https://img.shields.io/badge/License-GNU_GPLv3-orange?style=for-the-badge)](LICENSE)
 
