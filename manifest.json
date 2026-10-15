@@ -204,46 +204,6 @@
       ]
     },
     {
-      "id": "dahmermovies",
-      "name": "Dahmermovies",
-      "description": "Dahmer Movies streaming service. Can be slow at times to fetch and stream. Only use if needed.",
-      "version": "1.0.2",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie"
-      ],
-      "filename": "providers/dahmermovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://image.similarpng.com/file/similarpng/very-thumbnail/2021/05/Letter-D-logo-design-template-with-geometric-shape-style-on-transparent-background-PNG.png",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "dahmermovies-tv",
-      "name": "Dahmermovies-TV",
-      "description": "Dahmermovies-TV stream provider",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "tv"
-      ],
-      "filename": "providers/dahmermovies-4k.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
       "id": "einthustan",
       "name": "Einthustan",
       "description": "Einthustan stream provider",
@@ -815,46 +775,6 @@
       "contentLanguage": [
         "en",
         "hi"
-      ]
-    },
-    {
-      "id": "dahmermovies",
-      "name": "Dahmermovies",
-      "description": "Dahmer Movies streaming service. Can be slow at times to fetch and stream. Only use if needed.",
-      "version": "1.0.2",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "movie"
-      ],
-      "filename": "providers/dahmermovies.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "https://image.similarpng.com/file/similarpng/very-thumbnail/2021/05/Letter-D-logo-design-template-with-geometric-shape-style-on-transparent-background-PNG.png",
-      "contentLanguage": [
-        "en"
-      ]
-    },
-    {
-      "id": "dahmermovies-tv",
-      "name": "Dahmermovies-TV",
-      "description": "Dahmermovies-TV stream provider",
-      "version": "1.0.0",
-      "author": "Chole Bhature",
-      "supportedTypes": [
-        "tv"
-      ],
-      "filename": "providers/dahmermovies-4k.js",
-      "enabled": true,
-      "formats": [
-        "mp4",
-        "m3u8"
-      ],
-      "logo": "",
-      "contentLanguage": [
-        "en"
       ]
     },
     {
