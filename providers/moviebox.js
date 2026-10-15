@@ -63,25 +63,18 @@ function formatCholeCard(opt) {
   var cleanText = text.replace(/4khdhub/gi, "").replace(/hdhub4u/gi, "");
   var res = "";
   var qCheck = opt.quality ? String(opt.quality).trim() : "";
-  if (/\b(?:2160p|4k|uhd)\b/i.test(qCheck))
+  if (/\b(?:2160p|4k|uhd)\b/i.test(qCheck) || /\b(?:2160p|4k|uhd)\b/i.test(cleanText))
     res = "4K UHD";
-  else if (/\b(?:1080p|fhd)\b/i.test(qCheck))
+  else if (/\b(?:1080p|fhd)\b/i.test(qCheck) || /\b(?:1080p|fhd)\b/i.test(cleanText))
     res = "1080p FHD";
-  else if (/\b(?:720p|hd)\b/i.test(qCheck))
+  else if (/\b(?:720p|hd)\b/i.test(qCheck) || /\b(?:720p|hd)\b/i.test(cleanText))
     res = "720p HD";
-  else if (/\b(?:480p|sd)\b/i.test(qCheck))
-    res = "480p";
-  else if (/\b(?:2160p|4k|uhd)\b/i.test(cleanText))
-    res = "4K UHD";
-  else if (/\b(?:1080p|fhd)\b/i.test(cleanText))
-    res = "1080p FHD";
-  else if (/\b(?:720p|hd)\b/i.test(cleanText))
-    res = "720p HD";
-  else if (/\b(?:480p|sd)\b/i.test(cleanText))
-    res = "480p";
+  else if (/\b(?:480p|sd)\b/i.test(qCheck) || /\b(?:480p|sd)\b/i.test(cleanText))
+    res = "480p SD";
   else
     res = qCheck ? qCheck.toUpperCase() : "1080p FHD";
-  var source = "";
+
+  var source = "WEB-DL";
   if (/\bremux\b/i.test(text))
     source = "REMUX";
   else if (/\b(?:bluray|bdrip|brrip)\b/i.test(text))
@@ -90,13 +83,15 @@ function formatCholeCard(opt) {
     source = "WEB-DL";
   else if (/\bhdtv\b/i.test(text))
     source = "HDTV";
+
   var codecs = [];
   if (/\b(?:hevc|x265|h\.?265)\b/i.test(text))
     codecs.push("HEVC");
   else if (/\b(?:x264|h\.?264|avc)\b/i.test(text))
-    codecs.push("x264");
-  if (/\b10-?bit\b/i.test(text))
-    codecs.push("10-bit");
+    codecs.push("AVC");
+  else
+    codecs.push(res.includes("4K") ? "HEVC" : "AVC");
+
   var hdr = [];
   if (/\b(?:dolby\s*vision|dv)\b/i.test(text))
     hdr.push("Dolby Vision");
@@ -104,6 +99,7 @@ function formatCholeCard(opt) {
     hdr.push("HDR10+");
   else if (/\b(?:hdr10|hdr)\b/i.test(text))
     hdr.push("HDR");
+
   var audio = [];
   var hasAtmos = /\b(?:atmos|ddpa)\b/i.test(text);
   var hasTrueHD = /\btruehd\b/i.test(text);
@@ -125,8 +121,9 @@ function formatCholeCard(opt) {
     audio.push("DDP 5.1");
   else if (hasDD)
     audio.push("DD 5.1");
-  else if (/\baac\b/i.test(text))
+  else
     audio.push("AAC");
+
   var langs = [];
   if (/\b(?:hindi|hin)\b/i.test(text))
     langs.push("\u{1F1EE}\u{1F1F3} Hindi");
@@ -144,60 +141,29 @@ function formatCholeCard(opt) {
     langs.push("\u{1F310} Dual-Audio");
   if (/\bmulti[- ]?audio\b/i.test(text))
     langs.push("\u{1F310} Multi-Audio");
-  if (langs.length === 0 && opt.defaultLang) {
-    langs.push(opt.defaultLang);
-  }
+  if (langs.length === 0)
+    langs.push(opt.defaultLang || "\u{1F310} Multi-Audio");
   var uniqueLangs = Array.from(new Set(langs));
+
   var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
   var rawSize = opt.size || (sizeMatch ? sizeMatch[1] : "");
-  var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "";
-  var server = opt.server || "";
-  if (!server) {
-    var grpMatch = text.match(/-([a-zA-Z0-9_]+)(?:\.[a-z]{3})?$/i);
-    if (grpMatch && grpMatch[1].length > 2 && grpMatch[1].length < 15)
-      server = grpMatch[1];
-  }
-  var nameParts = [];
-  if (opt.latency)
-    nameParts.push("\u{1F7E2} FAST (" + opt.latency + "ms)");
-  nameParts.push(opt.provider || "Stream");
-  if (server)
-    nameParts.push("\u{1F3F7}\uFE0F " + server);
-  if (res)
-    nameParts.push(res);
-  if (source)
-    nameParts.push(source);
-  if (codecs.length)
-    nameParts.push(codecs.join(" "));
-  if (hdr.length)
-    nameParts.push(hdr.join(" "));
-  if (audio.length)
-    nameParts.push(audio[0]);
-  if (uniqueLangs.length) {
-    var dualTag = uniqueLangs.find(function(l) {
-      return l.indexOf("Dual") !== -1 || l.indexOf("Multi") !== -1;
-    });
-    if (dualTag)
-      nameParts.push(dualTag);
-    else
-      nameParts.push(uniqueLangs.slice(0, 2).join(" + "));
-  }
-  if (opt.seeders !== void 0 && opt.seeders !== null && opt.seeders !== "") {
-    nameParts.push("\u{1F331} " + opt.seeders);
-  }
-  var nameLine = nameParts.join(" \u2022 ");
-  var filename = (opt.filename || "").trim();
-  if (!filename || filename === opt.title) {
-    var baseTitle = (opt.title || "Video").replace(/[^a-zA-Z0-9]+/g, ".");
-    var yr = opt.year ? "." + opt.year : "";
-    var se = opt.season && opt.episode ? ".S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : "";
-    var r = res ? "." + res.replace(/\s+/g, ".") : "";
-    var s = source ? "." + source : "";
-    var c = codecs.length ? "." + codecs.join(".") : "";
-    var a = audio.length ? "." + audio[0].replace(/[^a-zA-Z0-9]+/g, ".") : "";
-    var g = server ? "-" + server.replace(/[\s\-_]+/g, "") : "-" + (opt.provider || "Release");
-    filename = baseTitle + yr + se + r + s + c + a + g + ".mkv";
-  }
+  var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "Direct";
+
+  var server = opt.server || "MovieBox";
+  var provider = opt.provider || "MovieBox";
+
+  var baseTitle = (opt.title || "Video").replace(/[^a-zA-Z0-9]+/g, ".");
+  var yr = opt.year ? "." + opt.year : "";
+  var se = opt.season && opt.episode ? ".S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : "";
+  var r = res ? "." + res.replace(/\s+/g, ".") : "";
+  var s = source ? "." + source : "";
+  var c = codecs.length ? "." + codecs.join(".") : "";
+  var a = audio.length ? "." + audio[0].replace(/[^a-zA-Z0-9]+/g, ".") : "";
+  var g = "-" + provider;
+  var filename = (opt.filename && opt.filename.endsWith(".mkv") && !opt.filename.includes(" "))
+    ? opt.filename
+    : (baseTitle + yr + se + r + s + c + a + g + ".mkv");
+
   var specTags = [res, source].concat(codecs).filter(Boolean);
   var seasonEp = opt.season && opt.episode ? " \u2022 S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : "";
   var line1 = "\u{1F3AC} " + (opt.title || "Unknown") + (opt.year ? " (" + opt.year + ")" : "") + seasonEp + (specTags.length ? " [" + specTags.join(" \u2022 ") + "]" : "");
@@ -212,9 +178,10 @@ function formatCholeCard(opt) {
     meta.push("\u{1F7E2} " + opt.seeders + " Seeders");
   if (server)
     meta.push("\u{1F3F7}\uFE0F " + server);
-  meta.push("\u{1F517} " + (opt.provider || "Stream"));
+  meta.push("\u{1F517} " + provider);
   var line5 = meta.join(" \u2022 ");
   var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
+
   var qualitySlug = "1080p";
   if (res.indexOf("4K") !== -1 || res.indexOf("2160") !== -1)
     qualitySlug = "4k";
@@ -224,12 +191,13 @@ function formatCholeCard(opt) {
     qualitySlug = "720p";
   else if (res.indexOf("480") !== -1)
     qualitySlug = "480p";
+
   return {
     name: body,
     description: body,
     title: body,
     quality: qualitySlug,
-    size: size || ""
+    size: size || "Direct"
   };
 }
 var API_BASE = "https://api3.aoneroom.com";
@@ -607,7 +575,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
     if (bestMatch) {
       const s = mediaType === "tv" ? seasonNum : 0;
       const e = mediaType === "tv" ? episodeNum : 0;
-      return yield getStreamLinks(bestMatch.subjectId, s, e, details.title, mediaType);
+      return yield getStreamLinks(bestMatch.subjectId, s, e, details.title, mediaType, details.year);
     }
     console.log(`[MovieBox] No matching content found for: ${details.title}`);
     return [];
@@ -754,7 +722,7 @@ function getAudioLabel(stream, fallbackLanguage) {
   }
   return `${language} Audio`;
 }
-function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", mediaType = "movie") {
+function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", mediaType = "movie", mediaYear = "") {
   return __async(this, null, function* () {
     const subjectUrl = `${API_BASE}/wefeed-mobile-bff/subject-api/get?subjectId=${subjectId}`;
     const detailRes = yield movieBoxRequest("GET", subjectUrl);
@@ -824,7 +792,7 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
               const card = formatCholeCard({
                 provider: "MovieBox",
                 title: mediaTitle,
-                year: "",
+                year: mediaYear || "",
                 season: season > 0 ? season : null,
                 episode: episode > 0 ? episode : null,
                 filename: `${mediaTitle}${season > 0 ? ` S${season}E${episode}` : ""} ${quality} ${audioLabel} ${formatType}`,
@@ -862,7 +830,7 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
                     const card = formatCholeCard({
                       provider: "MovieBox",
                       title: mediaTitle,
-                      year: "",
+                      year: mediaYear || "",
                       season: season > 0 ? season : null,
                       episode: episode > 0 ? episode : null,
                       filename: `${mediaTitle}${season > 0 ? ` S${season}E${episode}` : ""} ${quality} ${audioLabel}`,
