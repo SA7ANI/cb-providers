@@ -537,14 +537,14 @@ function extractHubCloud(hubCloudUrl, baseMeta) {
       let href = $(el).attr("href");
       if (!href || href.startsWith("#") || href.includes("telegram"))
         return;
-      if (href.includes("pixel.hubcloud.ist") || href.includes("pixeldrain.dev") || href.includes("mega.nz") || href.includes("gamerxyt.com"))
+      if (href.includes("gpdl") || href.includes("pixel.hubcloud.ist") || href.includes("pixeldrain.dev") || href.includes("mega.nz") || href.includes("gamerxyt.com"))
         return;
       if (href.includes("pixeldrain.com/u/")) {
         href = href.replace("pixeldrain.com/u/", "pixeldrain.com/api/file/");
       }
-      if (text.includes("10Gbps") || text.includes("PixelServer") || href.includes("hubcloud.cx")) {
+      if (text.includes("PixelServer")) {
         results.push({
-          source: "HubCloud 10Gbps",
+          source: "PixelServer",
           url: href,
           meta: currentMeta
         });

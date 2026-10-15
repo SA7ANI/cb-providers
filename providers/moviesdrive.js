@@ -255,10 +255,10 @@ function getMainUrl() {
     try {
       const response = yield fetch("https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json", { headers: { "User-Agent": "Mozilla/5.0" } });
       const data = yield response.json();
-      cachedMainUrl = data.moviesdrive || "https://new5.moviesdrive.christmas";
+      cachedMainUrl = data.moviesdrive || "https://new2.moviesdrive.beer";
       return cachedMainUrl;
     } catch (e) {
-      return "https://new5.moviesdrive.christmas";
+      return "https://new2.moviesdrive.beer";
     }
   });
 }
@@ -302,7 +302,7 @@ function hubCloudExtractor(url, referer) {
         let link = $(element).attr("href");
         const text = $(element).text().toLowerCase();
         if (link && !link.includes("telegram") && !link.startsWith("#")) {
-          if (link.includes("pixel.hubcloud.ist") || link.includes("pixeldrain.dev") || link.includes("mega.nz") || link.includes("gamerxyt.com")) {
+          if (link.includes("gpdl") || text.includes("10gbps") || link.includes("pixel.hubcloud.ist") || link.includes("pixeldrain.dev") || link.includes("mega.nz") || link.includes("gamerxyt.com")) {
             continue;
           }
           if (link.includes("pixeldrain.com/u/")) {
@@ -315,8 +315,6 @@ function hubCloudExtractor(url, referer) {
             label = "ZipDisk Server";
           else if (link.includes("pixeldrain"))
             label = "PixelServer";
-          else if (link.includes("gpdl") || text.includes("10gbps"))
-            label = "HubCloud - 10Gbps";
           else if (text.includes("fsl server") || text.includes("download file"))
             label = "HubCloud - Direct";
           else if (text.includes("s3 server"))
@@ -340,11 +338,6 @@ function loadExtractor(url, referer) {
       const hostname = new URL(url).hostname;
       if (hostname.includes("hubcloud"))
         return yield hubCloudExtractor(url, referer);
-      if (hostname.includes("gdflix") || hostname.includes("gdlink")) {
-        const qMatch = url.match(/(2160p|4k|1080p|720p|480p)/i);
-        const qNum = qMatch ? qMatch[1].toLowerCase().includes("720") ? 720 : qMatch[1].toLowerCase().includes("480") ? 480 : 1080 : 1080;
-        return [{ name: "Google Drive Fast", quality: qNum, url }];
-      }
       return [];
     } catch (e) {
       return [];

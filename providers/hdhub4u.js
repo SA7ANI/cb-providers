@@ -689,7 +689,7 @@ function hubCloudExtractor(url, referer) {
       for (const element of elements) {
         const link = $(element).attr("href");
         const text = $(element).text().toLowerCase();
-        if (!link || link.startsWith("#") || link.includes("telegram") || link.includes("pixel.hubcloud.ist") || link.includes("pixeldrain.dev") || link.includes("gamerxyt.com")) {
+        if (!link || link.startsWith("#") || link.includes("telegram") || link.includes("gpdl") || link.includes("pixel.hubcloud.ist") || link.includes("pixeldrain.dev") || link.includes("gamerxyt.com")) {
           continue;
         }
         const fileName = header || headerDetails || "Unknown";
@@ -719,21 +719,6 @@ function hubCloudExtractor(url, referer) {
               links.push({ source: `HubCloud - BuzzServer ${labelExtras}`, quality, url: dlink, size: sizeInBytes, fileName });
             }
           } catch (e) {
-          }
-        } else if ((text.includes("10gbps") || link && link.includes("hubcloud.cx")) && !link.includes("pixel.hubcloud.ist")) {
-          let targetUrl = link;
-          if (link && !link.includes("hubcloud.cx")) {
-            try {
-              const resp = yield fetch(link, { method: "GET", redirect: "manual" });
-              const loc = resp.headers.get("location");
-              if (loc && loc.includes("link=")) {
-                targetUrl = loc.substring(loc.indexOf("link=") + 5);
-              }
-            } catch (e) {
-            }
-          }
-          if (targetUrl && !targetUrl.includes("pixel.hubcloud.ist")) {
-            links.push({ source: `HubCloud - 10Gbps ${labelExtras}`, quality, url: targetUrl, size: sizeInBytes, fileName });
           }
         } else if (text.includes("zipdisk") || link && link.includes("workers.dev")) {
           links.push({ source: `ZipDisk Server ${labelExtras}`, quality, url: link, size: sizeInBytes, fileName });

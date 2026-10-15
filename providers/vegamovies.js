@@ -120,18 +120,34 @@ function searchVega(imdbId, title) {
   return __async2(this, null, function* () {
     const queriesToTry = [];
     if (imdbId && imdbId.startsWith("tt"))
-      queriesToTry.push(imdbId);
+      queriesToTry.push({ type: "imdb", query: imdbId });
     if (title)
-      queriesToTry.push(title);
-    for (const q of queriesToTry) {
+      queriesToTry.push({ type: "title", query: title });
+    for (const item of queriesToTry) {
       try {
-        const searchUrl = `${MAIN_URL}/ts-search.php?q=${encodeURIComponent(q)}&page=1`;
+        const searchUrl = `${MAIN_URL}/ts-search.php?q=${encodeURIComponent(item.query)}&page=1`;
         const response = yield fetch(searchUrl, { headers: HEADERS });
         if (!response.ok)
           continue;
         const data = yield response.json();
         if (data && Array.isArray(data.hits) && data.hits.length > 0) {
-          return data.hits.map((h) => ({
+          if (item.type === "imdb") {
+            const exact = data.hits.filter(h => h.document && h.document.imdb_id === item.query);
+            if (exact.length > 0) {
+              return exact.map(h => ({
+                url: h.document.permalink.startsWith("http") ? h.document.permalink : `${MAIN_URL}${h.document.permalink}`,
+                title: h.document.post_title
+              }));
+            }
+            continue;
+          }
+          const titleWords = item.query.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(w => w.length > 2);
+          const matched = data.hits.filter(h => {
+            const pt = (h.document && h.document.post_title || "").toLowerCase();
+            return titleWords.some(w => pt.includes(w));
+          });
+          const chosenHits = matched.length > 0 ? matched : data.hits;
+          return chosenHits.map((h) => ({
             url: h.document.permalink.startsWith("http") ? h.document.permalink : `${MAIN_URL}${h.document.permalink}`,
             title: h.document.post_title
           }));
