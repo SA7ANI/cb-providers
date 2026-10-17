@@ -253,12 +253,14 @@ function getMainUrl() {
     if (cachedMainUrl)
       return cachedMainUrl;
     try {
-      const response = yield fetch("https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json", { headers: { "User-Agent": "Mozilla/5.0" } });
+      const response = yield fetch("https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json", { headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(3000) });
       const data = yield response.json();
-      cachedMainUrl = data.moviesdrive || "https://new2.moviesdrive.beer";
+      let d = data.moviesdrive || "https://new3.moviesdrive.beer";
+      if (d.includes("new2.moviesdrive.beer")) d = "https://new3.moviesdrive.beer";
+      cachedMainUrl = d;
       return cachedMainUrl;
     } catch (e) {
-      return "https://new2.moviesdrive.beer";
+      return "https://new3.moviesdrive.beer";
     }
   });
 }
@@ -267,7 +269,7 @@ function hubCloudExtractor(url, referer) {
     var _a;
     try {
       let currentUrl = url.replace(/hubcloud\.(ink|dad|cx|lol|top|rocks|site|buzz)/gi, "hubcloud.ist");
-      const pageResponse = yield fetch(currentUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: referer }) });
+      const pageResponse = yield fetch(currentUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: referer }), signal: AbortSignal.timeout(4000) });
       let pageData = yield pageResponse.text();
       let finalUrl = currentUrl;
       if (!currentUrl.includes("hubcloud.php")) {
@@ -287,7 +289,7 @@ function hubCloudExtractor(url, referer) {
             nextHref = `${urlObj.protocol}//${urlObj.hostname}/${nextHref.replace(/^\//, "")}`;
           }
           finalUrl = nextHref;
-          const secondResponse = yield fetch(finalUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: currentUrl }) });
+          const secondResponse = yield fetch(finalUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: currentUrl }), signal: AbortSignal.timeout(4000) });
           pageData = yield secondResponse.text();
         }
       }
@@ -302,10 +304,12 @@ function hubCloudExtractor(url, referer) {
         let link = $(element).attr("href");
         const text = $(element).text().toLowerCase();
         if (link && !link.includes("telegram") && !link.startsWith("#")) {
-          if (link.includes("gpdl") || text.includes("10gbps") || link.includes("pixel.hubcloud.ist") || link.includes("pixeldrain.dev") || link.includes("mega.nz") || link.includes("gamerxyt.com")) {
+          if (link.includes("gpdl") || link.includes("mega.nz") || link.includes("gamerxyt.com")) {
             continue;
           }
-          if (link.includes("pixeldrain.com/u/")) {
+          if (link.includes("pixeldrain.dev/u/")) {
+            link = link.replace("pixeldrain.dev/u/", "pixeldrain.com/api/file/");
+          } else if (link.includes("pixeldrain.com/u/")) {
             link = link.replace("pixeldrain.com/u/", "pixeldrain.com/api/file/");
           }
           let label = "HubCloud";
@@ -313,6 +317,8 @@ function hubCloudExtractor(url, referer) {
             label = "Direct R2";
           else if (link.includes("workers.dev"))
             label = "ZipDisk Server";
+          else if (link.includes("pixel.hubcloud.ist") || text.includes("10gbps"))
+            label = "HubCloud - Direct 10Gbps";
           else if (link.includes("pixeldrain"))
             label = "PixelServer";
           else if (text.includes("fsl server") || text.includes("download file"))
@@ -376,10 +382,18 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       const mediaTitle = tmdbData.title || tmdbData.name;
       if (!match && mediaTitle) {
         console.log(`[MoviesDrive] IMDb search failed, falling back to title search: ${mediaTitle}`);
-        const titleRes = yield fetch(`${mainUrl}/search.php?q=${encodeURIComponent(mediaTitle)}`, { headers: HEADERS });
+        const titleRes = yield fetch(`${mainUrl}/search.php?q=${encodeURIComponent(mediaTitle)}`, { headers: HEADERS, signal: AbortSignal.timeout(4000) });
         if (titleRes.ok) {
           const titleData = yield titleRes.json();
-          match = ((_b = titleData == null ? void 0 : titleData.hits) == null ? void 0 : _b.map((h) => h.document).find((d) => d.imdb_id === imdbId || d.post_title && d.post_title.toLowerCase().includes(mediaTitle.toLowerCase()))) || ((_d = (_c = titleData == null ? void 0 : titleData.hits) == null ? void 0 : _c[0]) == null ? void 0 : _d.document);
+          const cleanTitle = mediaTitle.toLowerCase().replace(/[^a-z0-9]/g, '');
+          match = (_b = titleData == null ? void 0 : titleData.hits) == null ? void 0 : _b.map((h) => h.document).find((d) => {
+            if (d.imdb_id === imdbId) return true;
+            if (d.post_title) {
+              const cleanPost = d.post_title.toLowerCase().replace(/[^a-z0-9]/g, '');
+              return cleanPost.includes(cleanTitle);
+            }
+            return false;
+          });
         }
       }
       if (!match) {
@@ -388,64 +402,73 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       }
       const permalink = match.permalink;
       const href = permalink.startsWith("http") ? permalink : `${mainUrl}${permalink}`;
-      const pageRes = yield fetch(href, { headers: HEADERS });
+      const pageRes = yield fetch(href, { headers: HEADERS, signal: AbortSignal.timeout(4000) });
       const pageHtml = yield pageRes.text();
       const $ = import_cheerio_without_node_native2.default.load(pageHtml);
       const allLinks = [];
       if (mediaType === "movie") {
         const downloadLinks = $("h5 > a, p > a.btn, a[href*='search-recover'], a[href*='hubcloud']").map((i, el) => $(el).attr("href")).get();
-        for (const dLink of [...new Set(downloadLinks)]) {
+        const uniqueLinks = [...new Set(downloadLinks)].slice(0, 3);
+        for (const dLink of uniqueLinks) {
           const extracted = yield extractMdrive(dLink);
-          for (const server of extracted) {
-            const streams = yield loadExtractor(server, href);
-            allLinks.push(...streams.map((s) => __spreadProps(__spreadValues({}, s), __spreadValues({
-              provider: "moviesdrive"
-            }, formatCholeCard({
-              provider: "MoviesDrive",
-              title: tmdbData.title || tmdbData.name,
-              year: tmdbData.release_date ? tmdbData.release_date.split("-")[0] : "",
-              filename: s.realFilename || match.post_title || "",
-              server: s.name,
-              quality: `${s.quality}p`,
-              size: s.size || "",
-              url: s.url
-            })))));
+          const loadPromises = extracted.slice(0, 2).map((server) => loadExtractor(server, href));
+          const resolvedLists = yield Promise.allSettled(loadPromises);
+          for (const rl of resolvedLists) {
+            if (rl.status === "fulfilled" && Array.isArray(rl.value)) {
+              allLinks.push(...rl.value.map((s) => __spreadProps(__spreadValues({}, s), __spreadValues({
+                provider: "moviesdrive"
+              }, formatCholeCard({
+                provider: "MoviesDrive",
+                title: tmdbData.title || tmdbData.name,
+                year: tmdbData.release_date ? tmdbData.release_date.split("-")[0] : "",
+                filename: s.realFilename || match.post_title || "",
+                server: s.name,
+                quality: `${s.quality}p`,
+                size: s.size || "",
+                url: s.url
+              })))));
+            }
           }
+          if (allLinks.length >= 4) break;
         }
       } else {
         const stag = `Season ${seasonNum}`;
         const sep = `Ep${String(episodeNum).padStart(2, "0")}|Ep${episodeNum}`;
         const entries = $("h5").filter((i, el) => new RegExp(stag, "i").test($(el).text()));
-        for (const entry of entries.get()) {
+        for (const entry of entries.get().slice(0, 2)) {
           const nextHref = $(entry).next().find("a").attr("href");
           if (nextHref) {
-            const epPageRes = yield fetch(nextHref, { headers: HEADERS });
+            const epPageRes = yield fetch(nextHref, { headers: HEADERS, signal: AbortSignal.timeout(4000) });
             const epPageHtml = yield epPageRes.text();
             const $ep = import_cheerio_without_node_native2.default.load(epPageHtml);
             const epEntries = $ep("h5").filter((i, el) => new RegExp(sep, "i").test($ep(el).text()));
-            for (const epEntry of epEntries.get()) {
+            for (const epEntry of epEntries.get().slice(0, 1)) {
               const link1 = $ep(epEntry).next().find("a").attr("href");
               const link2 = $ep(epEntry).next().next().find("a").attr("href");
-              const epLinks = [link1, link2].filter((l) => !!l);
-              for (const epLink of epLinks) {
-                const streams = yield loadExtractor(epLink, nextHref);
-                allLinks.push(...streams.map((s) => __spreadProps(__spreadValues({}, s), __spreadValues({
-                  provider: "moviesdrive"
-                }, formatCholeCard({
-                  provider: "MoviesDrive",
-                  title: tmdbData.title || tmdbData.name,
-                  year: tmdbData.first_air_date ? tmdbData.first_air_date.split("-")[0] : "",
-                  season: seasonNum,
-                  episode: episodeNum,
-                  filename: s.realFilename || match.post_title || "",
-                  server: s.name,
-                  quality: `${s.quality}p`,
-                  size: s.size || "",
-                  url: s.url
-                })))));
+              const epLinks = [link1, link2].filter((l) => !!l).slice(0, 2);
+              const epPromises = epLinks.map((epLink) => loadExtractor(epLink, nextHref));
+              const epResolved = yield Promise.allSettled(epPromises);
+              for (const er of epResolved) {
+                if (er.status === "fulfilled" && Array.isArray(er.value)) {
+                  allLinks.push(...er.value.map((s) => __spreadProps(__spreadValues({}, s), __spreadValues({
+                    provider: "moviesdrive"
+                  }, formatCholeCard({
+                    provider: "MoviesDrive",
+                    title: tmdbData.title || tmdbData.name,
+                    year: tmdbData.first_air_date ? tmdbData.first_air_date.split("-")[0] : "",
+                    season: seasonNum,
+                    episode: episodeNum,
+                    filename: s.realFilename || match.post_title || "",
+                    server: s.name,
+                    quality: `${s.quality}p`,
+                    size: s.size || "",
+                    url: s.url
+                  })))));
+                }
               }
             }
           }
+          if (allLinks.length >= 4) break;
         }
       }
       return allLinks;
@@ -458,7 +481,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
 function extractMdrive(url) {
   return __async(this, null, function* () {
     try {
-      const res = yield fetch(url, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }) });
+      const res = yield fetch(url, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }), signal: AbortSignal.timeout(4000) });
       const html = yield res.text();
       if (url.includes("search-recover.php")) {
         const qMatch = html.match(/const Q_INITIAL\s*=\s*"([^"]+)"/);
@@ -472,17 +495,19 @@ function extractMdrive(url) {
             from_ac: tokenMatch[1]
           });
           const apiRes = yield fetch(`${apiBase}?${searchParams.toString()}`, {
-            headers: __spreadProps(__spreadValues({}, HEADERS), { "Accept": "application/json", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" })
+            headers: __spreadProps(__spreadValues({}, HEADERS), { "Accept": "application/json", "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }),
+            signal: AbortSignal.timeout(4000)
           });
           const data = yield apiRes.json();
           if (data.hits) {
-            return data.hits.map((h) => h.url ? h.url.replace(/hubcloud\.(ink|dad|cx|lol|top|rocks|site|buzz)/gi, "hubcloud.ist") : null).filter((u) => !!u);
+            return data.hits.map((h) => h.url ? h.url.replace(/hubcloud\.(ink|dad|cx|lol|top|rocks|site|buzz)/gi, "hubcloud.ist") : null).filter((u) => !!u).slice(0, 3);
           }
         }
       }
       const $ = import_cheerio_without_node_native2.default.load(html);
-      const regex = /hubcloud|gdflix|gdlink/i;
-      return $("a[href]").map((i, el) => $(el).attr("href")).get().filter((href) => regex.test(href));
+      const regex = /hubcloud/i;
+      const allUrls = $("a[href]").map((i, el) => $(el).attr("href")).get().filter((href) => regex.test(href));
+      return [...new Set(allUrls)].slice(0, 3);
     } catch (e) {
       return [];
     }
