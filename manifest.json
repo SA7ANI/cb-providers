@@ -615,6 +615,32 @@
         "hi",
         "en"
       ]
+    },
+    {
+      "id": "einthusan",
+      "name": "Einthusan",
+      "description": "Premium South Asian movies in HD (Hindi, Tamil, Telugu, Malayalam, etc.)",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie"
+      ],
+      "filename": "providers/einthusan.js",
+      "enabled": true,
+      "formats": [
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=einthusan.tv&sz=128",
+      "contentLanguage": [
+        "hi",
+        "ta",
+        "te",
+        "ml",
+        "kn",
+        "bn",
+        "mr",
+        "pa"
+      ]
     }
   ],
   "scrapers": [
@@ -1228,6 +1254,32 @@
       "contentLanguage": [
         "hi",
         "en"
+      ]
+    },
+    {
+      "id": "einthusan",
+      "name": "Einthusan",
+      "description": "Premium South Asian movies in HD (Hindi, Tamil, Telugu, Malayalam, etc.)",
+      "version": "1.0.0",
+      "author": "Chole Bhature",
+      "supportedTypes": [
+        "movie"
+      ],
+      "filename": "providers/einthusan.js",
+      "enabled": true,
+      "formats": [
+        "mp4"
+      ],
+      "logo": "https://www.google.com/s2/favicons?domain=einthusan.tv&sz=128",
+      "contentLanguage": [
+        "hi",
+        "ta",
+        "te",
+        "ml",
+        "kn",
+        "bn",
+        "mr",
+        "pa"
       ]
     }
   ],

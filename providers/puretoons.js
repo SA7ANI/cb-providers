@@ -121,17 +121,25 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
     const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
     if (!meta || !meta.title) return [];
 
-    const searchUrl = `${BASE_URL}/?s=${encodeURIComponent(meta.title.toLowerCase())}`;
+    const cleanTitle = (meta.title || "").replace(/[^a-zA-Z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+    let searchUrl = `${BASE_URL}/?s=${encodeURIComponent(cleanTitle.toLowerCase())}`;
     let html = "";
     try {
       html = yield httpGet(searchUrl, { headers: HEADERS, timeout: 8e3 });
-    } catch (_) {
-      return [];
+    } catch (_) {}
+
+    let postMatches = [...(html || "").matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
+    if (postMatches.length === 0) {
+      const words = cleanTitle.split(" ").filter(w => w.length > 2);
+      if (words.length > 1) {
+        const simplified = words.slice(0, 2).join(" ");
+        try {
+          const fallbackHtml = yield httpGet(`${BASE_URL}/?s=${encodeURIComponent(simplified.toLowerCase())}`, { headers: HEADERS, timeout: 8e3 });
+          postMatches = [...(fallbackHtml || "").matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
+        } catch (_) {}
+      }
     }
 
-    if (!html || typeof html !== "string") return [];
-
-    const postMatches = [...html.matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
     if (postMatches.length === 0) return [];
 
     const postUrl = postMatches[0][1];
@@ -150,7 +158,7 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
     for (const l of allLinks) {
       const text = l[2].replace(/<[^>]+>/g, "").trim().toLowerCase();
       let href = l[1];
-      if (text.includes("watch") || text.includes("online")) {
+      if (text.includes("watch") || text.includes("online") || text.includes("1080p") || text.includes("720p") || text.includes("download") || href.includes("main.php?url=")) {
         if (href.startsWith("/")) href = `${BASE_URL}${href}`;
         if (href.includes("main.php?url=")) {
           href = href.replace("main.php?url=", "solved/");
@@ -175,7 +183,7 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
             headers: { "User-Agent": HEADERS["User-Agent"], "Referer": postUrl },
             redirect: "manual"
           });
-          const loc = redRes.headers.get("location");
+          const loc = redRes && redRes.headers && typeof redRes.headers.get === "function" ? redRes.headers.get("location") : null;
           if (loc && loc.startsWith("http") && !loc.endsWith(".jpg") && !loc.endsWith(".png")) {
             destUrl = loc;
             break;
