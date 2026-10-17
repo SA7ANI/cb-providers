@@ -78,7 +78,7 @@ var __async2 = (__this, __arguments, generator) => {
 };
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var TMDB_BASE_URL = "https://api.tmdb.org/3";
-var MAIN_URL = "https://vegamovies.gallery";
+var MAIN_URL = "https://vegamoviess.build";
 var HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
   "Referer": `${MAIN_URL}/`
@@ -119,37 +119,35 @@ function getTMDBDetails(tmdbId, mediaType) {
 function searchVega(imdbId, title) {
   return __async2(this, null, function* () {
     const queriesToTry = [];
-    if (imdbId && imdbId.startsWith("tt"))
-      queriesToTry.push({ type: "imdb", query: imdbId });
     if (title)
-      queriesToTry.push({ type: "title", query: title });
-    for (const item of queriesToTry) {
+      queriesToTry.push(title);
+    if (imdbId && imdbId.startsWith("tt"))
+      queriesToTry.push(imdbId);
+    for (const q of queriesToTry) {
       try {
-        const searchUrl = `${MAIN_URL}/ts-search.php?q=${encodeURIComponent(item.query)}&page=1`;
-        const response = yield fetch(searchUrl, { headers: HEADERS });
-        if (!response.ok)
-          continue;
-        const data = yield response.json();
-        if (data && Array.isArray(data.hits) && data.hits.length > 0) {
-          if (item.type === "imdb") {
-            const exact = data.hits.filter(h => h.document && h.document.imdb_id === item.query);
-            if (exact.length > 0) {
-              return exact.map(h => ({
-                url: h.document.permalink.startsWith("http") ? h.document.permalink : `${MAIN_URL}${h.document.permalink}`,
-                title: h.document.post_title
-              }));
-            }
-            continue;
-          }
-          const titleWords = item.query.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(w => w.length > 2);
-          const matched = data.hits.filter(h => {
-            const pt = (h.document && h.document.post_title || "").toLowerCase();
-            return titleWords.some(w => pt.includes(w));
+        const params = new URLSearchParams();
+        params.append("do", "search");
+        params.append("subaction", "search");
+        params.append("story", q);
+        const searchUrl = `${MAIN_URL}/index.php?do=search`;
+        const response = yield fetch(searchUrl, {
+          method: "POST",
+          headers: __spreadProps(__spreadValues({}, HEADERS), { "Content-Type": "application/x-www-form-urlencoded" }),
+          body: params.toString()
+        });
+        if (!response.ok) continue;
+        const html = yield response.text();
+        const articleMatches = [...html.matchAll(/<a\s+[^>]*href=["']([^"']+\.html)["'][^>]*title=["']([^"']+)["']/gi)];
+        if (articleMatches.length > 0) {
+          const qWords = q.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(w => w.length > 2);
+          const matched = articleMatches.filter(m => {
+            const t = (m[2] || "").toLowerCase();
+            return qWords.some(w => t.includes(w));
           });
-          const chosenHits = matched.length > 0 ? matched : data.hits;
-          return chosenHits.map((h) => ({
-            url: h.document.permalink.startsWith("http") ? h.document.permalink : `${MAIN_URL}${h.document.permalink}`,
-            title: h.document.post_title
+          const chosen = matched.length > 0 ? matched : articleMatches;
+          return chosen.map(m => ({
+            url: m[1].startsWith("http") ? m[1] : `${MAIN_URL}${m[1]}`,
+            title: m[2]
           }));
         }
       } catch (e) {
@@ -304,13 +302,25 @@ function formatCholeCard(opt) {
 function resolveVegaLink(linkUrl, referer) {
   return __async(this, null, function* () {
     try {
-      if (linkUrl.includes("fastdl")) {
+      if (linkUrl.includes("fast-dl") || linkUrl.includes("fastdl")) {
         const fr = yield fetch(linkUrl, {
           headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: referer }),
-          signal: AbortSignal.timeout(4e3)
+          signal: AbortSignal.timeout(5e3)
         });
         if (fr.ok) {
           const fh = yield fr.text();
+          const dlBtnMatch = fh.match(/href=["'](dl\.php\?code=[^"']+)["']/i);
+          if (dlBtnMatch) {
+            const finalDlUrl = `https://fast-dl.one/dl/${dlBtnMatch[1]}`;
+            const finalRes = yield fetch(finalDlUrl, {
+              headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: linkUrl }),
+              redirect: 'manual'
+            });
+            const loc = finalRes.headers.get('location');
+            if (loc && loc.startsWith('http')) {
+              return loc;
+            }
+          }
           const m = fh.match(/var\s+reurl\s*=\s*["']([^"']+)["']/i);
           if (m) {
             let direct = m[1];
@@ -413,7 +423,7 @@ function getDownloadLinks(postUrl, postTitle, mediaInfo, mediaType, season, epis
             if (!nexRes.ok)
               continue;
             const nexHtml = yield nexRes.text();
-            const allLinks = [...nexHtml.matchAll(/href="([^"]*(?:fastdl|vcloud|filebee|dgdrive|hubcloud|pixeldrain)[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi)];
+            const allLinks = [...nexHtml.matchAll(/href="([^"]*(?:fast-?dl|v-?cloud|filebee|dgdrive|hubcloud|pixeldrain)[^"]*)"[^>]*>([\s\S]*?)<\/a>/gi)];
             const finalLinks = allLinks.slice(0, 2);
             const resolvePromises = finalLinks.map((f) => __async(this, null, function* () {
               const rawTarget = f[1];
@@ -490,8 +500,9 @@ function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) 
         return [];
       const bestMatch = searchResults[0];
       const streams = yield getDownloadLinks(bestMatch.url, bestMatch.title, mediaInfo, mediaType, season, episode);
-      return streams.map((s) => __spreadProps2(__spreadValues2({}, s), { type: mediaType }));
+      return streams.map((s) => Object.assign({}, s, { type: mediaType }));
     } catch (e) {
+      console.error('[VegaMovies] Error in getStreams:', e.message);
       return [];
     }
   });

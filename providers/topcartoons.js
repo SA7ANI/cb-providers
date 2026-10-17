@@ -121,7 +121,7 @@ function getStreams(_0x492b3c, _0x102a04, _0x3a8ce0, _0x47acce) {
         _0x176500["length"] > 0 && (_0x427e08 = _0x176500[0]["href"]);
       if (!_0x427e08["startsWith"](_0x188d52(157)))
         _0x427e08 = BASE_URL + _0x427e08;
-      const _0x30148f = yield (yield fetch(_0x427e08, { "headers": HEADERS }))[_0x188d52(181)](), _0x33db12 = cheerio[_0x188d52(201)](_0x30148f), _0x60bea3 = _0x33db12("video").attr("src") || _0x33db12("video source").attr("src") || _0x33db12(_0x188d52(160))[_0x188d52(190)]("content") || "";
+      const _30148f = yield (yield fetch(_0x427e08, { "headers": HEADERS }))[_0x188d52(181)](), _0x33db12 = cheerio[_0x188d52(201)](_30148f), _0x60bea3 = _0x33db12("video").attr("src") || _0x33db12("video source").attr("src") || _0x33db12('meta[property="og:video:url"]').attr("content") || _0x33db12('meta[property="og:video"]').attr("content") || "";
       if (!_0x60bea3)
         return [];
       return [{ "name": _0x188d52(196), "url": _0x60bea3, "quality": extractQuality(_0x60bea3), "title": _0x188d52(196), "subtitles": [], "behaviorHints": { "notWebReady": !![], "proxyHeaders": { "request": Object["assign"]({}, HEADERS) } } }];

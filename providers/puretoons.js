@@ -155,6 +155,21 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
         if (href.includes("main.php?url=")) {
           href = href.replace("main.php?url=", "solved/");
         }
+        let resolvedTarget = "";
+        if (href.includes("solved/")) {
+          const b64 = href.split("solved/")[1].split("/")[0].split("?")[0];
+          try {
+            if (typeof atob === "function") {
+              resolvedTarget = atob(b64);
+            } else if (typeof Buffer !== "undefined") {
+              resolvedTarget = Buffer.from(b64, "base64").toString("utf-8");
+            }
+          } catch (_) {}
+        }
+        if (resolvedTarget && resolvedTarget.startsWith("http")) {
+          destUrl = resolvedTarget;
+          break;
+        }
         try {
           const redRes = yield fetch(href, {
             headers: { "User-Agent": HEADERS["User-Agent"], "Referer": postUrl },

@@ -241,13 +241,26 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
     const sNum = parseInt(season, 10) || 1;
     const epNum = parseInt(episode, 10) || 1;
 
+    let activeBase = BASE_URL;
+    try {
+      if (typeof fetch === "function") {
+        const check = yield fetch(BASE_URL, {
+          headers: HEADERS,
+          redirect: "follow"
+        });
+        if (check && check.url) {
+          activeBase = new URL(check.url).origin;
+        }
+      }
+    } catch (_) {}
+
     const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
     if (!meta || !meta.title) return [];
 
-    const searchUrl = `${BASE_URL}/search?q=${encodeURIComponent(meta.title.toLowerCase())}`;
+    const searchUrl = `${activeBase}/search?q=${encodeURIComponent(meta.title.toLowerCase())}`;
     let html = "";
     try {
-      html = yield httpGet(searchUrl, { headers: HEADERS, timeout: 8e3 });
+      html = yield httpGet(searchUrl, { headers: Object.assign({}, HEADERS, { Referer: activeBase + "/" }), timeout: 8e3 });
     } catch (_) {
       return [];
     }
@@ -273,14 +286,14 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
 
     if (!selected || !selected.url) return [];
 
-    let watchUrl = `${BASE_URL}${selected.url}`;
+    let watchUrl = `${activeBase}${selected.url}`;
     if (isTv) {
-      watchUrl = `${BASE_URL}${selected.url}/season/${sNum}/episode/${epNum}`;
+      watchUrl = `${activeBase}${selected.url}/season/${sNum}/episode/${epNum}`;
     }
 
     let pageHtml = "";
     try {
-      pageHtml = yield httpGet(watchUrl, { headers: HEADERS, timeout: 8e3 });
+      pageHtml = yield httpGet(watchUrl, { headers: Object.assign({}, HEADERS, { Referer: activeBase + "/" }), timeout: 8e3 });
     } catch (_) {
       return [];
     }

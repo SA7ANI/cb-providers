@@ -385,10 +385,9 @@ function extractMovieStreams(pageUrl, mediaInfo) {
           },
           provider: "redflix"
         });
+        streamItem.url = url;
         if (isEmbed) {
           streamItem.externalUrl = url;
-        } else {
-          streamItem.url = url;
         }
         streams.push(streamItem);
       }
@@ -438,10 +437,9 @@ function extractTVStreams(baseUrl, pageUrl, season, episode, mediaInfo) {
               },
               provider: "redflix"
             });
+            streamItem.url = src.url;
             if (isEmbed) {
               streamItem.externalUrl = src.url;
-            } else {
-              streamItem.url = src.url;
             }
             streams.push(streamItem);
           }

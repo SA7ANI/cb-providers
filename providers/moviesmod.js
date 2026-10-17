@@ -246,7 +246,66 @@ function formatCholeCard(opt) {
   };
 }
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
-var cachedDomain = "https://moviesmod.ai.in";
+var cachedDomain = "https://moviesmod.us.org";
+function bypassThenaukriadda(step1Action, sid) {
+  return __async(this, null, function* () {
+    try {
+      const p1 = new URLSearchParams({ _lp_http: sid });
+      const r1 = yield fetch(step1Action, {
+        method: "POST",
+        headers: __spreadProps(__spreadValues({}, HEADERS), {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }),
+        body: p1.toString()
+      });
+      const h1 = yield r1.text();
+      const $1 = import_cheerio_without_node_native.default.load(h1);
+      const form1 = $1("form#lp-s1-form");
+      const action1 = form1.attr("action") || step1Action;
+      const p2 = new URLSearchParams();
+      form1.find("input").each((_, el) => {
+        p2.append($1(el).attr("name"), $1(el).attr("value") || "");
+      });
+      const r2 = yield fetch(action1, {
+        method: "POST",
+        headers: __spreadProps(__spreadValues({}, HEADERS), {
+          "Content-Type": "application/x-www-form-urlencoded"
+        }),
+        body: p2.toString()
+      });
+      const h2 = yield r2.text();
+      let cookieName = "";
+      let cookieVal = "";
+      let goUrl = "";
+      const cookieMatch = h2.match(/sc\(\s*["']([^"']+)["']\s*,\s*["']([^"']+)["']/);
+      if (cookieMatch) {
+        cookieName = cookieMatch[1];
+        cookieVal = cookieMatch[2];
+      }
+      const goMatch = h2.match(/['"](https?:\\\/\\\/[^'"]+\?lp_go=[^'"]+)['"]/);
+      if (goMatch) {
+        goUrl = goMatch[1].replace(/\\\//g, "/");
+      } else if (cookieName) {
+        goUrl = `https://en.thenaukriadda.in/?lp_go=${cookieName}`;
+      }
+      if (!goUrl || !cookieName) return null;
+      const r3 = yield fetch(goUrl, {
+        headers: __spreadProps(__spreadValues({}, HEADERS), {
+          "Cookie": `${cookieName}=${cookieVal}`,
+          "Referer": action1
+        })
+      });
+      const h3 = yield r3.text();
+      const redirectMatch = h3.match(/replace\(\s*["']([^"']+)["']\s*\)/);
+      if (redirectMatch) {
+        return redirectMatch[1].replace(/\\\//g, "/");
+      }
+      return null;
+    } catch (_) {
+      return null;
+    }
+  });
+}
 function getMainUrl() {
   return __async(this, null, function* () {
     return cachedDomain;
@@ -581,7 +640,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
         const text = $(el).text();
         return qualityRegex.test(text) && !text.includes("MoviesMod");
       });
-      for (const entry of entries.get()) {
+      for (const entry of entries.get().slice(0, 2)) {
         const quality = getIndexQuality($(entry).text());
         let linkEl = $(entry).next().find(`a:contains('${aTag}')`).first();
         if (!linkEl.length) {
@@ -612,13 +671,30 @@ function processModLink(url, referer, quality, mediaType, episodeNum, details, s
       const selector = mediaType === "movie" ? "p a.maxbutton, a:contains('Download')" : `h3 a:contains('Episode ${episodeNum}'), a:contains('Episode ${episodeNum}'), a.maxbutton`;
       let source = $(selector).first().attr("href");
       if (!source) {
-        source = $('a[href*="driveseed.org"], a[href*="tech.unblockedgames.world"], a[href*="video-seed"]').first().attr("href");
+        source = $('a[href*="driveseed.org"], a[href*="tech.unblockedgames.world"], a[href*="video-seed"], a[href*="thenaukriadda"]').first().attr("href");
       }
-      if (!source)
+      let finalLink = source || "";
+      let naukriAction = "https://en.thenaukriadda.in/";
+      let naukriSid = "";
+      const lpForm = $("form#lp-land");
+      if (lpForm.length) {
+        naukriAction = lpForm.attr("action") || "https://en.thenaukriadda.in/";
+        naukriSid = lpForm.find('input[name="_lp_http"]').attr("value") || "";
+      } else if (source && source.includes("thenaukriadda")) {
+        try {
+          const u = new URL(source);
+          naukriSid = u.searchParams.get("sid") || "";
+          naukriAction = `${u.protocol}//${u.host}${u.pathname}`;
+        } catch (_) {}
+      }
+      if (naukriSid) {
+        const bypassed = yield bypassThenaukriadda(naukriAction, naukriSid);
+        if (bypassed) finalLink = bypassed;
+      }
+      if (!finalLink && !source)
         return [];
-      let finalLink = source;
-      if (source.includes("unblockedgames") || source.includes("tech.") || source.includes("href.li")) {
-        finalLink = yield bypassHrefli(source);
+      if (finalLink.includes("unblockedgames") || finalLink.includes("tech.") || finalLink.includes("href.li")) {
+        finalLink = yield bypassHrefli(finalLink);
       }
       const results = [];
       const title = details && details.title || "";
