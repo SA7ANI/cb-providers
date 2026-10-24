@@ -76,13 +76,45 @@ var __async2 = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
+if (typeof AbortSignal !== "undefined" && !AbortSignal.timeout) {
+  AbortSignal.timeout = function(ms) {
+    var controller = new AbortController();
+    setTimeout(function() {
+      try { controller.abort(); } catch (_) {}
+    }, ms);
+    return controller.signal;
+  };
+}
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var TMDB_BASE_URL = "https://api.tmdb.org/3";
-var MAIN_URL = "https://vegamoviess.build";
+var DOMAINS_URL = "https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json";
+var MAIN_URL = "https://new1.vegamovies.lease";
+var DOMAIN_CACHE_TTL = 4 * 60 * 60 * 1e3;
+var domainCacheTimestamp = 0;
 var HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/120.0.0.0 Safari/537.36",
   "Referer": `${MAIN_URL}/`
 };
+function fetchAndUpdateDomain() {
+  return __async2(this, null, function* () {
+    const now = Date.now();
+    if (now - domainCacheTimestamp < DOMAIN_CACHE_TTL) return;
+    try {
+      const response = yield fetch(DOMAINS_URL, {
+        method: "GET",
+        headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
+      });
+      if (response.ok) {
+        const data = yield response.json();
+        if (data && data.vegamovies) {
+          MAIN_URL = data.vegamovies;
+          HEADERS.Referer = `${MAIN_URL}/`;
+          domainCacheTimestamp = now;
+        }
+      }
+    } catch (_) {}
+  });
+}
 function getTMDBDetails(tmdbId, mediaType) {
   return __async2(this, null, function* () {
     var _a, _b;
@@ -118,12 +150,38 @@ function getTMDBDetails(tmdbId, mediaType) {
 }
 function searchVega(imdbId, title) {
   return __async2(this, null, function* () {
+    yield fetchAndUpdateDomain();
     const queriesToTry = [];
     if (title)
       queriesToTry.push(title);
     if (imdbId && imdbId.startsWith("tt"))
       queriesToTry.push(imdbId);
     for (const q of queriesToTry) {
+      try {
+        const searchUrl = `${MAIN_URL}/ts-search.php?q=${encodeURIComponent(q)}&page=1`;
+        const response = yield fetch(searchUrl, {
+          headers: __spreadProps(__spreadValues({}, HEADERS), {
+            Referer: `${MAIN_URL}/search.html?q=${encodeURIComponent(q)}`
+          })
+        });
+        if (response.ok) {
+          const data = yield response.json();
+          if (data && data.hits && data.hits.length > 0) {
+            return data.hits.map((hit) => {
+              const doc = hit.document || {};
+              let pUrl = doc.permalink || "";
+              if (pUrl && !pUrl.startsWith("http")) {
+                pUrl = `${MAIN_URL}${pUrl.startsWith("/") ? "" : "/"}${pUrl}`;
+              }
+              return {
+                url: pUrl,
+                title: doc.post_title || ""
+              };
+            }).filter((item) => item.url && item.title);
+          }
+        }
+      } catch (e) {}
+
       try {
         const params = new URLSearchParams();
         params.append("do", "search");

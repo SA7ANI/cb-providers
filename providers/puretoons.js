@@ -112,86 +112,6 @@ function getMediaMeta(id, mediaType = "tv") {
   });
 }
 
-function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
-  return __async(this, null, function* () {
-    const isTv = mediaType === "tv" || mediaType === "series" || mediaType === "anime";
-    const sNum = parseInt(season, 10) || 1;
-    const epNum = parseInt(episode, 10) || 1;
-
-    const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
-    if (!meta || !meta.title) return [];
-
-    const cleanTitle = (meta.title || "").replace(/[^a-zA-Z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
-    let searchUrl = `${BASE_URL}/?s=${encodeURIComponent(cleanTitle.toLowerCase())}`;
-    let html = "";
-    try {
-      html = yield httpGet(searchUrl, { headers: HEADERS, timeout: 8e3 });
-    } catch (_) {}
-
-    let postMatches = [...(html || "").matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
-    if (postMatches.length === 0) {
-      const words = cleanTitle.split(" ").filter(w => w.length > 2);
-      if (words.length > 1) {
-        const simplified = words.slice(0, 2).join(" ");
-        try {
-          const fallbackHtml = yield httpGet(`${BASE_URL}/?s=${encodeURIComponent(simplified.toLowerCase())}`, { headers: HEADERS, timeout: 8e3 });
-          postMatches = [...(fallbackHtml || "").matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
-        } catch (_) {}
-      }
-    }
-
-    if (postMatches.length === 0) return [];
-
-    const postUrl = postMatches[0][1];
-    let postHtml = "";
-    try {
-      postHtml = yield httpGet(postUrl, { headers: HEADERS, timeout: 8e3 });
-    } catch (_) {
-      return [];
-    }
-
-    if (!postHtml || typeof postHtml !== "string") return [];
-
-    const allLinks = [...postHtml.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
-    let destUrl = "";
-
-    for (const l of allLinks) {
-      const text = l[2].replace(/<[^>]+>/g, "").trim().toLowerCase();
-      let href = l[1];
-      if (text.includes("watch") || text.includes("online") || text.includes("1080p") || text.includes("720p") || text.includes("download") || href.includes("main.php?url=")) {
-        if (href.startsWith("/")) href = `${BASE_URL}${href}`;
-        if (href.includes("main.php?url=")) {
-          href = href.replace("main.php?url=", "solved/");
-        }
-        let resolvedTarget = "";
-        if (href.includes("solved/")) {
-          const b64 = href.split("solved/")[1].split("/")[0].split("?")[0];
-          try {
-            if (typeof atob === "function") {
-              resolvedTarget = atob(b64);
-            } else if (typeof Buffer !== "undefined") {
-              resolvedTarget = Buffer.from(b64, "base64").toString("utf-8");
-            }
-          } catch (_) {}
-        }
-        if (resolvedTarget && resolvedTarget.startsWith("http")) {
-          destUrl = resolvedTarget;
-          break;
-        }
-        try {
-          const redRes = yield fetch(href, {
-            headers: { "User-Agent": HEADERS["User-Agent"], "Referer": postUrl },
-            redirect: "manual"
-          });
-          const loc = redRes && redRes.headers && typeof redRes.headers.get === "function" ? redRes.headers.get("location") : null;
-          if (loc && loc.startsWith("http") && !loc.endsWith(".jpg") && !loc.endsWith(".png")) {
-            destUrl = loc;
-            break;
-          }
-        } catch (_) {}
-      }
-    }
-
 function formatCholeCard(opt) {
   var raw = [opt.filename || "", opt.rawText || "", opt.server || "", opt.quality || "", opt.size || "", opt.title || ""].join(" ");
   var text = raw.trim();
@@ -314,6 +234,96 @@ function formatCholeCard(opt) {
   };
 }
 
+function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
+  return __async(this, null, function* () {
+    const isTv = mediaType === "tv" || mediaType === "series" || mediaType === "anime";
+    const sNum = parseInt(season, 10) || 1;
+    const epNum = parseInt(episode, 10) || 1;
+
+    const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
+    if (!meta || !meta.title) return [];
+
+    const cleanTitle = (meta.title || "").replace(/[^a-zA-Z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+    let searchUrl = `${BASE_URL}/?s=${encodeURIComponent(cleanTitle.toLowerCase())}`;
+    let html = "";
+    try {
+      html = yield httpGet(searchUrl, { headers: HEADERS, timeout: 8e3 });
+    } catch (_) {}
+
+    let postMatches = [...(html || "").matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
+    if (postMatches.length === 0) {
+      const words = cleanTitle.split(" ").filter(w => w.length > 2);
+      if (words.length > 1) {
+        const simplified = words.slice(0, 2).join(" ");
+        try {
+          const fallbackHtml = yield httpGet(`${BASE_URL}/?s=${encodeURIComponent(simplified.toLowerCase())}`, { headers: HEADERS, timeout: 8e3 });
+          postMatches = [...(fallbackHtml || "").matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
+        } catch (_) {}
+      }
+    }
+
+    if (postMatches.length === 0) return [];
+
+    if (isTv && postMatches.length > 1) {
+      const seasonMatch = postMatches.find(m => {
+        const text = m[2].toLowerCase();
+        return text.includes(`season ${sNum}`) || text.includes(`season 0${sNum}`) || text.includes(`s${sNum}`) || text.includes(`s0${sNum}`);
+      });
+      if (seasonMatch) {
+        postMatches = [seasonMatch, ...postMatches.filter(m => m !== seasonMatch)];
+      }
+    }
+
+    const postUrl = postMatches[0][1];
+    let postHtml = "";
+    try {
+      postHtml = yield httpGet(postUrl, { headers: HEADERS, timeout: 8e3 });
+    } catch (_) {
+      return [];
+    }
+
+    if (!postHtml || typeof postHtml !== "string") return [];
+
+    const allLinks = [...postHtml.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
+    let destUrl = "";
+
+    for (const l of allLinks) {
+      const text = l[2].replace(/<[^>]+>/g, "").trim().toLowerCase();
+      let href = l[1];
+      if (text.includes("watch") || text.includes("online") || text.includes("1080p") || text.includes("720p") || text.includes("download") || href.includes("main.php?url=")) {
+        if (href.startsWith("/")) href = `${BASE_URL}${href}`;
+        if (href.includes("main.php?url=")) {
+          href = href.replace("main.php?url=", "solved/");
+        }
+        let resolvedTarget = "";
+        if (href.includes("solved/")) {
+          const b64 = href.split("solved/")[1].split("/")[0].split("?")[0];
+          try {
+            if (typeof atob === "function") {
+              resolvedTarget = atob(b64);
+            } else if (typeof Buffer !== "undefined") {
+              resolvedTarget = Buffer.from(b64, "base64").toString("utf-8");
+            }
+          } catch (_) {}
+        }
+        if (resolvedTarget && resolvedTarget.startsWith("http")) {
+          destUrl = resolvedTarget;
+          break;
+        }
+        try {
+          const redRes = yield fetch(href, {
+            headers: { "User-Agent": HEADERS["User-Agent"], "Referer": postUrl },
+            redirect: "manual"
+          });
+          const loc = redRes && redRes.headers && typeof redRes.headers.get === "function" ? redRes.headers.get("location") : null;
+          if (loc && loc.startsWith("http") && !loc.endsWith(".jpg") && !loc.endsWith(".png")) {
+            destUrl = loc;
+            break;
+          }
+        } catch (_) {}
+      }
+    }
+
     const streams = [];
 
     if (destUrl && (destUrl.includes("toonstream") || destUrl.includes("watchanimeworld"))) {
@@ -355,6 +365,13 @@ function formatCholeCard(opt) {
   });
 }
 
-module.exports = {
-  getStreams
-};
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams };
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+}
+

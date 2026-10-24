@@ -58,8 +58,8 @@ var __async = (__this, __arguments, generator) => {
   });
 };
 var import_cheerio_without_node_native2 = __toESM(require("cheerio-without-node-native"));
-var DOMAINS_URL = "https://raw.githubusercontent.com/phisher98/TVVVV/refs/heads/main/domains.json";
-var FALLBACK_DOMAIN = "https://moviesmod.ai.in";
+var DOMAINS_URL = "https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json";
+var FALLBACK_DOMAIN = "https://moviesmod.meme";
 var TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49";
 var TMDB_BASE_URL = "https://api.tmdb.org/3";
 var HEADERS = {
@@ -246,7 +246,8 @@ function formatCholeCard(opt) {
   };
 }
 var import_cheerio_without_node_native = __toESM(require("cheerio-without-node-native"));
-var cachedDomain = "https://moviesmod.us.org";
+var cachedDomain = "https://moviesmod.meme";
+var cachedDomainTs = 0;
 function bypassThenaukriadda(step1Action, sid) {
   return __async(this, null, function* () {
     try {
@@ -308,7 +309,24 @@ function bypassThenaukriadda(step1Action, sid) {
 }
 function getMainUrl() {
   return __async(this, null, function* () {
-    return cachedDomain;
+    const now = Date.now();
+    if (now - cachedDomainTs < 4 * 60 * 60 * 1000 && cachedDomain) {
+      return cachedDomain;
+    }
+    try {
+      const res = yield fetch(DOMAINS_URL, {
+        headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
+      });
+      if (res.ok) {
+        const data = yield res.json();
+        if (data && data.moviesmod) {
+          cachedDomain = data.moviesmod;
+          cachedDomainTs = now;
+          return cachedDomain;
+        }
+      }
+    } catch (_) {}
+    return cachedDomain || FALLBACK_DOMAIN;
   });
 }
 function getBaseUrl(url) {
@@ -745,4 +763,12 @@ function processModLink(url, referer, quality, mediaType, episodeNum, details, s
     }
   });
 }
-module.exports = { getStreams };
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams };
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+}

@@ -409,7 +409,14 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
       const player1Match = pageHtml.match(/player1\.php\?data=([a-zA-Z0-9+=/]+)/);
       if (player1Match) {
         try {
-          const decoded = Buffer.from(player1Match[1], "base64").toString("utf8");
+          const rawB64 = player1Match[1];
+          let decoded = "";
+          if (typeof atob === "function") {
+            try { decoded = atob(rawB64); } catch (_) {}
+          }
+          if (!decoded && typeof Buffer !== "undefined") {
+            try { decoded = Buffer.from(rawB64, "base64").toString("utf8"); } catch (_) {}
+          }
           const list = JSON.parse(decoded);
           if (Array.isArray(list)) {
             for (const item of list) {
@@ -527,4 +534,12 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
     }
   });
 }
-module.exports = { getStreams };
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams };
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+}

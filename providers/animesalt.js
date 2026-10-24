@@ -271,7 +271,14 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
         const dataMatch = pUrl.match(/data=([^&"']+)/);
         if (dataMatch) {
           try {
-            const decodedStr = Buffer.from(decodeURIComponent(dataMatch[1]), "base64").toString("utf-8");
+            const rawB64 = decodeURIComponent(dataMatch[1]);
+            let decodedStr = "";
+            if (typeof atob === "function") {
+              try { decodedStr = atob(rawB64); } catch (_) {}
+            }
+            if (!decodedStr && typeof Buffer !== "undefined") {
+              try { decodedStr = Buffer.from(rawB64, "base64").toString("utf-8"); } catch (_) {}
+            }
             const list = JSON.parse(decodedStr);
             for (const item of list) {
               const abyssUrl = item.link;
@@ -319,4 +326,12 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
     }
   });
 }
-module.exports = { getStreams };
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams };
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+}

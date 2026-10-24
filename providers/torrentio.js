@@ -266,3 +266,11 @@ function onSettings() {
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { getStreams, onSettings };
 }
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+  globalThis.onSettings = onSettings;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+  global.onSettings = onSettings;
+}

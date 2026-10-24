@@ -284,6 +284,8 @@ function getSyncInfo(id, mediaType, season, episode) {
     let finalDate = cMeta.date;
     if (mediaType === "movie" && base.release_date)
       finalDate = base.release_date;
+    if (!finalDate && (base.first_air_date || base.release_date))
+      finalDate = base.first_air_date || base.release_date;
     if (!finalDate)
       throw new Error(`Could not find release date for ID ${imdbId}`);
     return {
@@ -426,4 +428,13 @@ function getStreams(tmdbId, mediaType, season, episode) {
     }
   });
 }
-module.exports = { getStreams };
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams };
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+}
+

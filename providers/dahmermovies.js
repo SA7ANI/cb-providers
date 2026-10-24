@@ -296,6 +296,13 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
     return streams;
   });
 }
-module.exports = {
-  getStreams
-};
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams };
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+}
+

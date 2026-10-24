@@ -25,11 +25,44 @@ const TMDB_API_KEYS = [
   "8265bd1679663a7ea12ac168da84d2e8"
 ];
 
-const BASE_URL = "https://multimovies.garden";
+if (typeof AbortSignal !== "undefined" && !AbortSignal.timeout) {
+  AbortSignal.timeout = function(ms) {
+    var controller = new AbortController();
+    setTimeout(function() {
+      try { controller.abort(); } catch (_) {}
+    }, ms);
+    return controller.signal;
+  };
+}
+
+const DOMAINS_URL = "https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json";
+let BASE_URL = "https://m1.multimovies.courses";
+let domainCacheTimestamp = 0;
+const DOMAIN_CACHE_TTL = 4 * 60 * 60 * 1e3;
 const HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-  "Referer": "https://multimovies.garden/"
+  "Referer": `${BASE_URL}/`
 };
+
+function fetchAndUpdateDomain() {
+  return __async(this, null, function* () {
+    const now = Date.now();
+    if (now - domainCacheTimestamp < DOMAIN_CACHE_TTL) return;
+    try {
+      if (typeof fetch === "function") {
+        const res = yield fetch(DOMAINS_URL, { signal: AbortSignal.timeout(4000) });
+        if (res.ok) {
+          const data = yield res.json();
+          if (data && data.MultiMovies) {
+            BASE_URL = data.MultiMovies;
+            HEADERS.Referer = `${BASE_URL}/`;
+            domainCacheTimestamp = now;
+          }
+        }
+      }
+    } catch (_) {}
+  });
+}
 
 function httpGet(_0) {
   return __async(this, arguments, function* (url, options = {}) {
@@ -237,6 +270,7 @@ function formatCholeCard(opt) {
 
 function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
   return __async(this, null, function* () {
+    yield fetchAndUpdateDomain();
     const isTv = mediaType === "tv" || mediaType === "series";
     const sNum = parseInt(season, 10) || 1;
     const epNum = parseInt(episode, 10) || 1;
@@ -246,7 +280,8 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
       if (typeof fetch === "function") {
         const check = yield fetch(BASE_URL, {
           headers: HEADERS,
-          redirect: "follow"
+          redirect: "follow",
+          signal: AbortSignal.timeout(4000)
         });
         if (check && check.url) {
           activeBase = new URL(check.url).origin;
@@ -309,6 +344,10 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
       while (streamUrl.includes("&amp;")) {
         streamUrl = streamUrl.replace(/&amp;/g, "&");
       }
+      if (streamUrl.includes("src=") || streamUrl.includes("SRC=")) {
+        const srcMatch = streamUrl.match(/src=["']?([^"'\s>]+)/i);
+        if (srcMatch) streamUrl = srcMatch[1];
+      }
       streamUrl = streamUrl.trim();
       if (!streamUrl.startsWith("http")) continue;
 
@@ -353,6 +392,13 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
   });
 }
 
-module.exports = {
-  getStreams
-};
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams };
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+}
+

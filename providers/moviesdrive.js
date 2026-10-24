@@ -63,6 +63,15 @@ var loadHtml = function(h) {
   return _cheerio && _cheerio.load ? _cheerio.load(h) : _cheerio ? _cheerio(h) : null;
 };
 var import_cheerio_without_node_native2 = { default: { load: loadHtml }, load: loadHtml };
+if (typeof AbortSignal !== "undefined" && !AbortSignal.timeout) {
+  AbortSignal.timeout = function(ms) {
+    var controller = new AbortController();
+    setTimeout(function() {
+      try { controller.abort(); } catch (_) {}
+    }, ms);
+    return controller.signal;
+  };
+}
 var DOMAINS_URL = "https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json";
 var HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/144.0.0.0 Safari/537.36",

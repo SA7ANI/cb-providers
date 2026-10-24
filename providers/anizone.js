@@ -330,6 +330,10 @@ function getStreams(tmdbId, mediaType, season, episode) {
 
 if (typeof module !== 'undefined' && module.exports) {
     module.exports = { getStreams };
-} else {
+}
+if (typeof globalThis !== 'undefined') {
+    globalThis.getStreams = getStreams;
+}
+if (typeof global !== 'undefined') {
     global.getStreams = getStreams;
 }

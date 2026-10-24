@@ -420,6 +420,13 @@ function getStreams(tmdbId, mediaType = "movie", seasonNum = 1, episodeNum = 1) 
     return streams;
   });
 }
-module.exports = {
-  getStreams
-};
+if (typeof module !== "undefined" && module.exports) {
+  module.exports = { getStreams };
+}
+if (typeof globalThis !== "undefined") {
+  globalThis.getStreams = getStreams;
+}
+if (typeof global !== "undefined") {
+  global.getStreams = getStreams;
+}
+
