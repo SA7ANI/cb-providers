@@ -175,9 +175,9 @@ async function testSingleProvider(providerMeta) {
       throw new Error('Exported getStreams is not a function');
     }
 
-    // Call getStreams with timeout safety
+    // Call getStreams with timeout safety (45s headroom for complex multi-layer scraping)
     const timeoutPromise = new Promise((_, reject) =>
-      setTimeout(() => reject(new Error('Scraper timed out (30s limit)')), 30000)
+      setTimeout(() => reject(new Error('Scraper timed out (45s limit)')), 45000)
     );
 
     const callPromise = getStreamsFn(

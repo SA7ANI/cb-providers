@@ -236,9 +236,10 @@ function formatCholeCard(opt) {
 
 function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
   return __async(this, null, function* () {
-    const isTv = mediaType === "tv" || mediaType === "series" || mediaType === "anime";
-    const sNum = parseInt(season, 10) || 1;
-    const epNum = parseInt(episode, 10) || 1;
+    try {
+      const isTv = mediaType === "tv" || mediaType === "series" || mediaType === "anime";
+      const sNum = parseInt(season, 10) || 1;
+      const epNum = parseInt(episode, 10) || 1;
 
     const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
     if (!meta || !meta.title) return [];
@@ -361,7 +362,11 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
       }
     }
 
-    return streams;
+      return streams;
+    } catch (e) {
+      console.error("[PureToons] Error:", e.message);
+      return [];
+    }
   });
 }
 

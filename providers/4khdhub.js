@@ -573,11 +573,12 @@ function extractHubCloud(hubCloudUrl, baseMeta) {
 }
 function getStreams(tmdbId, type, season, episode) {
   return __async(this, null, function* () {
-    const tmdbDetails = yield getTmdbDetails(tmdbId, type);
-    if (!tmdbDetails)
-      return [];
-    const { title, year } = tmdbDetails;
-    console.log(`[4KHDHub] Search: ${title} (${year})`);
+    try {
+      const tmdbDetails = yield getTmdbDetails(tmdbId, type);
+      if (!tmdbDetails)
+        return [];
+      const { title, year } = tmdbDetails;
+      console.log(`[4KHDHub] Search: ${title} (${year})`);
     const isSeries = type === "series" || type === "tv";
     const pageUrl = yield fetchPageUrl(title, year, isSeries);
     if (!pageUrl) {
@@ -648,8 +649,12 @@ function getStreams(tmdbId, type, season, episode) {
         return [];
       }
     }));
-    const results = yield Promise.all(streamPromises);
-    return results.reduce((acc, val) => acc.concat(val), []);
+      const results = yield Promise.all(streamPromises);
+      return results.reduce((acc, val) => acc.concat(val), []);
+    } catch (e) {
+      console.log(`[4KHDHub] Error: ${e.message}`);
+      return [];
+    }
   });
 }
 if (typeof module !== "undefined" && module.exports) {

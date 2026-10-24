@@ -314,10 +314,11 @@ function getMediaMeta(id, mediaType = "tv") {
 
 function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
   return __async(this, null, function* () {
-    yield fetchAndUpdateDomain();
-    const isTv = mediaType === "tv" || mediaType === "series" || mediaType === "anime";
-    const sNum = parseInt(season, 10) || 1;
-    const epNum = parseInt(episode, 10) || 1;
+    try {
+      yield fetchAndUpdateDomain();
+      const isTv = mediaType === "tv" || mediaType === "series" || mediaType === "anime";
+      const sNum = parseInt(season, 10) || 1;
+      const epNum = parseInt(episode, 10) || 1;
 
     const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
     if (!meta || !meta.title) return [];
@@ -439,7 +440,11 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
       }
     }
 
-    return streams;
+      return streams;
+    } catch (e) {
+      console.error("[ToonStream] Error:", e.message);
+      return [];
+    }
   });
 }
 

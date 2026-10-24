@@ -621,14 +621,14 @@ function extractDriveseedPage(url) {
 }
 function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
   return __async(this, null, function* () {
-    console.log(`[MoviesMod] Querying streams for TMDB: ${tmdbId}, Type: ${mediaType}`);
-    const details = yield fetchTmdbDetails(tmdbId, mediaType);
-    if (!details)
-      return [];
-    const mainUrl = yield getMainUrl();
-    const query = details.title || details.imdbId;
-    const searchUrl = mediaType === "movie" ? `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(query)}` : `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(query)} ${seasonNum}`;
     try {
+      console.log(`[MoviesMod] Querying streams for TMDB: ${tmdbId}, Type: ${mediaType}`);
+      const details = yield fetchTmdbDetails(tmdbId, mediaType);
+      if (!details)
+        return [];
+      const mainUrl = yield getMainUrl();
+      const query = details.title || details.imdbId;
+      const searchUrl = mediaType === "movie" ? `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(query)}` : `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(query)} ${seasonNum}`;
       console.log(`[MoviesMod] Searching at: ${searchUrl}`);
       const searchRes = yield fetch(searchUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }), cfKiller: true });
       const searchHtml = yield searchRes.text();
@@ -659,6 +659,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
         return qualityRegex.test(text) && !text.includes("MoviesMod");
       });
       for (const entry of entries.get().slice(0, 2)) {
+        if (allStreams.length >= 2) break;
         const quality = getIndexQuality($(entry).text());
         let linkEl = $(entry).next().find(`a:contains('${aTag}')`).first();
         if (!linkEl.length) {

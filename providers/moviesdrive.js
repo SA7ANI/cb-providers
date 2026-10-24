@@ -361,26 +361,26 @@ function loadExtractor(url, referer) {
 }
 function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
   return __async(this, null, function* () {
-    var _a2, _b, _c, _d;
-    var _a;
-    console.log(`[MoviesDrive] Querying streams for TMDB: ${tmdbId}, Type: ${mediaType}`);
-    const tmdbApiKey = "1865f43a0549ca50d341dd9ab8b29f49";
-    const tmdbUrl = `https://api.tmdb.org/3/${mediaType}/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids`;
-    const tmdbRes = yield fetch(tmdbUrl, {
-      headers: {
-        "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
-        "Accept": "application/json",
-        "Connection": "keep-alive"
-      }
-    });
-    const tmdbData = yield tmdbRes.json();
-    const imdbId = (_a = tmdbData.external_ids) == null ? void 0 : _a.imdb_id;
-    if (!imdbId) {
-      console.error("[MoviesDrive] Failed to get IMDB ID");
-      return [];
-    }
-    const mainUrl = yield getMainUrl();
     try {
+      var _a2, _b, _c, _d;
+      var _a;
+      console.log(`[MoviesDrive] Querying streams for TMDB: ${tmdbId}, Type: ${mediaType}`);
+      const tmdbApiKey = "1865f43a0549ca50d341dd9ab8b29f49";
+      const tmdbUrl = `https://api.tmdb.org/3/${mediaType}/${tmdbId}?api_key=${tmdbApiKey}&append_to_response=external_ids`;
+      const tmdbRes = yield fetch(tmdbUrl, {
+        headers: {
+          "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/121.0.0.0 Safari/537.36",
+          "Accept": "application/json",
+          "Connection": "keep-alive"
+        }
+      });
+      const tmdbData = yield tmdbRes.json();
+      const imdbId = (_a = tmdbData.external_ids) == null ? void 0 : _a.imdb_id;
+      if (!imdbId) {
+        console.error("[MoviesDrive] Failed to get IMDB ID");
+        return [];
+      }
+      const mainUrl = yield getMainUrl();
       let match = null;
       console.log(`[MoviesDrive] Searching at: ${mainUrl}/search.php?q=${imdbId}`);
       const searchRes = yield fetch(`${mainUrl}/search.php?q=${imdbId}`, { headers: HEADERS });

@@ -562,23 +562,28 @@ function extractPolicyResource(signCookie) {
 }
 function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
   return __async(this, null, function* () {
-    console.log(`[MovieBox] Querying streams for TMDB: ${tmdbId}, Type: ${mediaType}`);
-    const details = yield fetchTmdbDetails(tmdbId, mediaType);
-    if (!details)
+    try {
+      console.log(`[MovieBox] Querying streams for TMDB: ${tmdbId}, Type: ${mediaType}`);
+      const details = yield fetchTmdbDetails(tmdbId, mediaType);
+      if (!details)
+        return [];
+      let subjects = yield searchMovieBox(details.title);
+      let bestMatch = findBestMatch(subjects, details.title, details.year, mediaType);
+      if (!bestMatch && details.originalTitle && details.originalTitle !== details.title) {
+        subjects = yield searchMovieBox(details.originalTitle);
+        bestMatch = findBestMatch(subjects, details.originalTitle, details.year, mediaType);
+      }
+      if (bestMatch) {
+        const s = mediaType === "tv" ? seasonNum : 0;
+        const e = mediaType === "tv" ? episodeNum : 0;
+        return yield getStreamLinks(bestMatch.subjectId, s, e, details.title, mediaType, details.year);
+      }
+      console.log(`[MovieBox] No matching content found for: ${details.title}`);
       return [];
-    let subjects = yield searchMovieBox(details.title);
-    let bestMatch = findBestMatch(subjects, details.title, details.year, mediaType);
-    if (!bestMatch && details.originalTitle && details.originalTitle !== details.title) {
-      subjects = yield searchMovieBox(details.originalTitle);
-      bestMatch = findBestMatch(subjects, details.originalTitle, details.year, mediaType);
+    } catch (e) {
+      console.error(`[MovieBox] Error: ${e.message}`);
+      return [];
     }
-    if (bestMatch) {
-      const s = mediaType === "tv" ? seasonNum : 0;
-      const e = mediaType === "tv" ? episodeNum : 0;
-      return yield getStreamLinks(bestMatch.subjectId, s, e, details.title, mediaType, details.year);
-    }
-    console.log(`[MovieBox] No matching content found for: ${details.title}`);
-    return [];
   });
 }
 function searchMovieBox(query) {
