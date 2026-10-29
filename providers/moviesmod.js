@@ -314,7 +314,7 @@ function getMainUrl() {
       return cachedDomain;
     }
     try {
-      const res = yield fetch(DOMAINS_URL, {
+      const res = yield fetch(DOMAINS_URL, { signal: AbortSignal.timeout(3000),
         headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
       });
       if (res.ok) {
@@ -630,13 +630,13 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       const query = details.title || details.imdbId;
       const searchUrl = mediaType === "movie" ? `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(query)}` : `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(query)} ${seasonNum}`;
       console.log(`[MoviesMod] Searching at: ${searchUrl}`);
-      const searchRes = yield fetch(searchUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }), cfKiller: true });
+      const searchRes = yield fetch(searchUrl, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }), cfKiller: true, signal: AbortSignal.timeout(3500) });
       const searchHtml = yield searchRes.text();
       const $search = import_cheerio_without_node_native2.default.load(searchHtml);
       let targetUrl = $search("article a").first().attr("href") || $search("#content_box article a").first().attr("href");
       if (!targetUrl && details.imdbId && details.imdbId !== query) {
         const fallbackQuery = mediaType === "movie" ? `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(details.imdbId)}` : `${mainUrl.replace(/\/$/, "")}/search/${encodeURIComponent(details.imdbId)} ${seasonNum}`;
-        const fallbackRes = yield fetch(fallbackQuery, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }), cfKiller: true });
+        const fallbackRes = yield fetch(fallbackQuery, { headers: __spreadProps(__spreadValues({}, HEADERS), { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36" }), cfKiller: true, signal: AbortSignal.timeout(3500) });
         const fallbackHtml = yield fallbackRes.text();
         const $fallback = import_cheerio_without_node_native2.default.load(fallbackHtml);
         targetUrl = $fallback("article a").first().attr("href") || $fallback("#content_box article a").first().attr("href");
