@@ -36,10 +36,10 @@ if (typeof AbortSignal !== "undefined" && !AbortSignal.timeout) {
 }
 
 const DOMAINS_URL = "https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json";
-let BASE_URL = "https://toonstream.vip";
+let BASE_URL = "https://toonstream.us";
 const HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
-  "Referer": "https://toonstream.vip/"
+  "Referer": "https://toonstream.us/"
 };
 
 let domainCacheTimestamp = 0;
@@ -312,6 +312,36 @@ function getMediaMeta(id, mediaType = "tv") {
   });
 }
 
+let cachedToonCookie = "";
+let toonCookieExpires = 0;
+
+function getAccessCookie() {
+  return __async(this, null, function* () {
+    const now = Date.now();
+    if (cachedToonCookie && now < toonCookieExpires) return cachedToonCookie;
+    try {
+      const res = yield fetch(`${BASE_URL}/api/access/ads/verify`, {
+        method: "POST",
+        headers: {
+          "User-Agent": HEADERS["User-Agent"],
+          "Content-Type": "application/json",
+          "Referer": `${BASE_URL}/home`
+        },
+        body: JSON.stringify({ returnTo: "/home" })
+      });
+      if (res.ok) {
+        const cookies = res.headers.getSetCookie ? res.headers.getSetCookie() : [res.headers.get("set-cookie")];
+        if (cookies && cookies.length) {
+          cachedToonCookie = cookies.filter(Boolean).map(c => c.split(";")[0]).join("; ");
+          toonCookieExpires = now + 4 * 60 * 60 * 1000;
+          return cachedToonCookie;
+        }
+      }
+    } catch (_) {}
+    return "";
+  });
+}
+
 function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
   return __async(this, null, function* () {
     try {
@@ -320,28 +350,47 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
       const sNum = parseInt(season, 10) || 1;
       const epNum = parseInt(episode, 10) || 1;
 
-    const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
-    if (!meta || !meta.title) return [];
+      const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
+      if (!meta || !meta.title) return [];
 
-    const searchUrl = `${BASE_URL}/s?q=${encodeURIComponent(meta.title.toLowerCase())}`;
-    let searchHtml = "";
-    try {
-      searchHtml = yield httpGet(searchUrl, { headers: HEADERS, timeout: 8e3 });
-    } catch (_) {
-      return [];
-    }
+      const cookie = yield getAccessCookie();
+      const reqHeaders = Object.assign({}, HEADERS, cookie ? { Cookie: cookie } : {});
 
-    if (!searchHtml || typeof searchHtml !== "string") return [];
+      let targetUrl = "";
 
-    let targetUrl = "";
+      // 1. Query live search API
+      try {
+        const searchJson = yield httpGet(`${BASE_URL}/search/all?q=${encodeURIComponent(meta.title.toLowerCase())}`, { headers: reqHeaders, timeout: 6e3 });
+        if (searchJson && Array.isArray(searchJson.data) && searchJson.data.length > 0) {
+          const typeMatch = isTv ? searchJson.data.find(d => d.type === "series") : searchJson.data.find(d => d.type === "movie");
+          const chosen = typeMatch || searchJson.data[0];
+          if (chosen && chosen.url) {
+            targetUrl = chosen.url.startsWith("http") ? chosen.url : `${BASE_URL}${chosen.url}`;
+          }
+        }
+      } catch (_) {}
 
-    if (isTv) {
-      const seriesMatches = [...searchHtml.matchAll(/<a[^>]+href="(\/series\/[^"]+)"[^>]*class="lnk-blk"/gi)];
-      if (seriesMatches.length > 0) {
-        const seriesPageUrl = `${BASE_URL}${seriesMatches[0][1]}`;
+      // Fallback search: try search with first 2 keywords
+      if (!targetUrl) {
+        const cleanWords = (meta.title || "").replace(/[^a-zA-Z0-9 ]+/g, " ").trim().split(/\s+/);
+        if (cleanWords.length > 1) {
+          try {
+            const searchJson2 = yield httpGet(`${BASE_URL}/search/all?q=${encodeURIComponent(cleanWords.slice(0, 2).join(" ").toLowerCase())}`, { headers: reqHeaders, timeout: 6e3 });
+            if (searchJson2 && Array.isArray(searchJson2.data) && searchJson2.data.length > 0) {
+              const typeMatch = isTv ? searchJson2.data.find(d => d.type === "series") : searchJson2.data.find(d => d.type === "movie");
+              const chosen = typeMatch || searchJson2.data[0];
+              if (chosen && chosen.url) {
+                targetUrl = chosen.url.startsWith("http") ? chosen.url : `${BASE_URL}${chosen.url}`;
+              }
+            }
+          } catch (_) {}
+        }
+      }
+
+      if (isTv && targetUrl) {
         let seriesHtml = "";
         try {
-          seriesHtml = yield httpGet(seriesPageUrl, { headers: HEADERS, timeout: 8e3 });
+          seriesHtml = yield httpGet(targetUrl, { headers: reqHeaders, timeout: 8e3 });
         } catch (_) {}
 
         if (seriesHtml) {
@@ -352,26 +401,32 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
           }
         }
       }
-    } else {
-      const movieMatches = [...searchHtml.matchAll(/<a[^>]+href="(\/movies\/[^"]+)"[^>]*class="lnk-blk"/gi)];
-      if (movieMatches.length > 0) {
-        targetUrl = `${BASE_URL}${movieMatches[0][1]}`;
+
+      if (!targetUrl) return [];
+
+      let pageHtml = "";
+      try {
+        pageHtml = yield httpGet(targetUrl, { headers: reqHeaders, timeout: 8e3 });
+      } catch (_) {
+        return [];
       }
-    }
 
-    if (!targetUrl) return [];
+      if (!pageHtml || typeof pageHtml !== "string") return [];
 
-    let pageHtml = "";
-    try {
-      pageHtml = yield httpGet(targetUrl, { headers: HEADERS, timeout: 8e3 });
-    } catch (_) {
-      return [];
-    }
+      // If page hit the 24-hour access wall, refresh cookie and retry once
+      if (pageHtml.includes("24-Hour Access Redirect System")) {
+        cachedToonCookie = "";
+        const freshCookie = yield getAccessCookie();
+        const retryHeaders = Object.assign({}, HEADERS, freshCookie ? { Cookie: freshCookie } : {});
+        try {
+          pageHtml = yield httpGet(targetUrl, { headers: retryHeaders, timeout: 8e3 });
+        } catch (_) {}
+      }
 
-    if (!pageHtml || typeof pageHtml !== "string") return [];
+      if (!pageHtml || typeof pageHtml !== "string") return [];
 
-    const iframeRegex = /<iframe[^>]+(?:src|data-src)="([^"]+)"/gi;
-    const iframeMatches = [...pageHtml.matchAll(iframeRegex)];
+      const iframeRegex = /<iframe[^>]+(?:src|data-src)="([^"]+)"/gi;
+      const iframeMatches = [...pageHtml.matchAll(iframeRegex)];
 
     const streams = [];
     const seInfo = isTv ? ` • S${String(sNum).padStart(2, "0")}E${String(epNum).padStart(2, "0")}` : "";

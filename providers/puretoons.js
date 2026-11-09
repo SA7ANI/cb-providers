@@ -285,7 +285,9 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
 
     if (!postHtml || typeof postHtml !== "string") return [];
 
-    const allLinks = [...postHtml.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
+    const contentMatch = postHtml.match(/<div[^>]*class="[^"]*(?:entry-content|post-content)[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
+    const searchScope = contentMatch ? contentMatch[1] : postHtml;
+    const allLinks = [...searchScope.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
     let destUrl = "";
 
     for (const l of allLinks) {
@@ -294,7 +296,18 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
       if (text.includes("watch") || text.includes("online") || text.includes("1080p") || text.includes("720p") || text.includes("download") || href.includes("main.php?url=")) {
         if (href.startsWith("/")) href = `${BASE_URL}${href}`;
         if (href.includes("main.php?url=")) {
-          href = href.replace("main.php?url=", "solved/");
+          const solvedUrl = href.replace("main.php?url=", "solved/");
+          try {
+            const redRes = yield fetch(solvedUrl, {
+              headers: { "User-Agent": HEADERS["User-Agent"], "Referer": postUrl },
+              redirect: "manual"
+            });
+            const loc = redRes && redRes.headers && typeof redRes.headers.get === "function" ? redRes.headers.get("location") : null;
+            if (loc && !/\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(loc)) {
+              destUrl = loc;
+              break;
+            }
+          } catch (_) {}
         }
         let resolvedTarget = "";
         if (href.includes("solved/")) {
@@ -307,7 +320,7 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
             }
           } catch (_) {}
         }
-        if (resolvedTarget && resolvedTarget.startsWith("http")) {
+        if (resolvedTarget && resolvedTarget.startsWith("http") && !/\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(resolvedTarget)) {
           destUrl = resolvedTarget;
           break;
         }
@@ -317,7 +330,7 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
             redirect: "manual"
           });
           const loc = redRes && redRes.headers && typeof redRes.headers.get === "function" ? redRes.headers.get("location") : null;
-          if (loc && loc.startsWith("http") && !loc.endsWith(".jpg") && !loc.endsWith(".png")) {
+          if (loc && loc.startsWith("http") && !/\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(loc)) {
             destUrl = loc;
             break;
           }
@@ -328,9 +341,48 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
     const streams = [];
 
     if (destUrl && (destUrl.includes("toonstream") || destUrl.includes("watchanimeworld"))) {
+      if (destUrl.includes("toonstream")) {
+        destUrl = destUrl.replace("toonstream.one", "toonstream.us").replace("toonstream.vip", "toonstream.us");
+      }
+      let destHeaders = Object.assign({}, HEADERS);
+      if (destUrl.includes("toonstream")) {
+        try {
+          const vRes = yield fetch("https://toonstream.us/api/access/ads/verify", {
+            method: "POST",
+            headers: {
+              "User-Agent": HEADERS["User-Agent"],
+              "Content-Type": "application/json",
+              "Referer": "https://toonstream.us/home"
+            },
+            body: JSON.stringify({ returnTo: "/home" })
+          });
+          if (vRes.ok) {
+            const cookies = vRes.headers.getSetCookie ? vRes.headers.getSetCookie() : [vRes.headers.get("set-cookie")];
+            if (cookies && cookies.length) {
+              const cStr = cookies.filter(Boolean).map(c => c.split(";")[0]).join("; ");
+              destHeaders = Object.assign({}, destHeaders, { Cookie: cStr, Referer: "https://toonstream.us/home" });
+            }
+          }
+        } catch (_) {}
+      }
+
+      if (isTv && destUrl.includes("/series/")) {
+        let seriesHtml = "";
+        try {
+          seriesHtml = yield httpGet(destUrl, { headers: destHeaders, timeout: 8e3 });
+        } catch (_) {}
+        if (seriesHtml) {
+          const epRegex = new RegExp(`href="(\\/episode\\/[^"]+-${sNum}x${epNum}\\/?)"`, "i");
+          const epMatch = seriesHtml.match(epRegex);
+          if (epMatch) {
+            destUrl = `https://toonstream.us${epMatch[1]}`;
+          }
+        }
+      }
+
       let destHtml = "";
       try {
-        destHtml = yield httpGet(destUrl, { headers: HEADERS, timeout: 8e3 });
+        destHtml = yield httpGet(destUrl, { headers: destHeaders, timeout: 8e3 });
       } catch (_) {}
 
       if (destHtml && typeof destHtml === "string") {

@@ -51,7 +51,7 @@ var __async2 = (_0x17326d, _0x3bf1f8, _0x9587a8) => {
     }, _0x259de0 = (_0x1f9f9b) => _0x1f9f9b[_0x10c202(564)] ? _0x370d04(_0x1f9f9b[_0x10c202(565)]) : Promise[_0x10c202(560)](_0x1f9f9b["value"])["then"](_0x4088dc, _0x157564);
     _0x259de0((_0x9587a8 = _0x9587a8[_0x10c202(520)](_0x17326d, _0x3bf1f8))["next"]());
   });
-}, PROVIDER_NAME = _0x4d7322(488), DESIFLIX_BASE = "https://manifest.desitvhub.eu.org", TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49", FETCH_TIMEOUT = 12e3, USER_AGENT = _0x4d7322(546);
+}, PROVIDER_NAME = _0x4d7322(488), DESIFLIX_BASE = "https://manifest.desitvhub.eu.org", TMDB_API_KEY = "1865f43a0549ca50d341dd9ab8b29f49", FETCH_TIMEOUT = 18e3, USER_AGENT = _0x4d7322(546);
 function log(_0x59bee8) {
   console["log"]("[" + PROVIDER_NAME + "] " + _0x59bee8);
 }

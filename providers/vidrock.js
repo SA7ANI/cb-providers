@@ -338,13 +338,16 @@ function buildStream(_0x54c020, _0x4536c0, _0x3dac81, _0x59316c, _0x49ae21) {
       const _0xba5a64 = decryptStreamUrl(_0x4536c0["url"]);
       if (!/^https?:\/\//i[_0x4912a3(485)](_0xba5a64))
         return null;
-      const _0xeef186 = yield fetch(_0xba5a64, { "headers": HEADERS, "skipSizeCheck": !![] });
-      if (!_0xeef186["ok"])
-        return null;
-      const _0x23892f = parseMasterTopVariant(yield _0xeef186["text"](), _0xba5a64);
-      if (!_0x23892f)
-        return null;
-      const _0x8be275 = qualityLabelFromResolution(_0x23892f[_0x4912a3(479)], _0x23892f[_0x4912a3(_0x11ef00._0x31b5c9)]);
+      let _0x8be275 = "1080p";
+      try {
+        const _0xeef186 = yield fetch(_0xba5a64, { "headers": HEADERS, "skipSizeCheck": !![], signal: AbortSignal.timeout(3000) });
+        if (_0xeef186 && _0xeef186["ok"]) {
+          const _0x23892f = parseMasterTopVariant(yield _0xeef186["text"](), _0xba5a64);
+          if (_0x23892f) {
+            _0x8be275 = qualityLabelFromResolution(_0x23892f[_0x4912a3(479)], _0x23892f[_0x4912a3(_0x11ef00._0x31b5c9)]);
+          }
+        }
+      } catch (_) {}
       let _0x40441c = String(_0x54c020)["replace"](/\s*(1080p\s+)?server\s*2\s*$/gi, "")["trim"]();
       const _0x13810b = getProviderEmoji(_0x40441c), _0x39e45c = buildDropdownMetadata(_0x54c020, _0x8be275, _0x3dac81, _0x59316c, _0x49ae21, _0xba5a64);
       return { "name": _0x4912a3(454) + _0x8be275 + _0x4912a3(_0x11ef00._0x5b352d) + _0x13810b + " [" + _0x40441c + "]", "title": _0x39e45c, "size": _0x39e45c, "description": _0x39e45c, "url": _0xba5a64, "quality": "", "language": "", "headers": HEADERS, "provider": "vidrock", "subtitles": [], "_serverKey": _0x54c020, "_rawQuality": _0x8be275 };
@@ -368,7 +371,7 @@ function getStreams(_0x57e554, _0x22a367, _0x1507d9, _0x99159c) {
       _0x5ab710 = parseInt(_0x5ab710, 10);
       if (!_0x5ab710)
         return [];
-      const _0x3f57e8 = yield getBaseUrl(), _0x14e400 = _0x22a367 === "tv", _0x57e68a = _0x14e400 ? _0x297011(_0x388b9c._0x286ec1) + _0x5ab710 + "/" + (_0x1507d9 || 1) + "/" + (_0x99159c || 1) : _0x297011(_0x388b9c._0x3b4c45) + _0x5ab710, _0x407a94 = yield fetch(_0x3f57e8 + _0x297011(_0x388b9c._0x54ae95) + _0x57e68a, { "headers": HEADERS, "skipSizeCheck": !![] });
+      const _0x3f57e8 = yield getBaseUrl(), _0x14e400 = _0x22a367 === "tv", _0x57e68a = _0x14e400 ? _0x297011(_0x388b9c._0x286ec1) + _0x5ab710 + "/" + (_0x1507d9 || 1) + "/" + (_0x99159c || 1) : _0x297011(_0x388b9c._0x3b4c45) + _0x5ab710, _0x407a94 = yield fetch(_0x3f57e8 + _0x297011(_0x388b9c._0x54ae95) + _0x57e68a, { "headers": HEADERS, "skipSizeCheck": !![], "signal": (typeof AbortSignal !== "undefined" && AbortSignal.timeout ? AbortSignal.timeout(8000) : void 0) });
       if (!_0x407a94["ok"])
         return [];
       const _0x541513 = yield _0x407a94[_0x297011(_0x388b9c._0x34ce41)]()["catch"](() => null);
