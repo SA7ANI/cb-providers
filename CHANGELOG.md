@@ -6,6 +6,26 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ---
 
+## [2.6.0] - 2026-11-16
+
+### 🛡️ Playback Integrity & Dummy Link Elimination
+
+This milestone eliminates ExoPlayer / Nuvio playback errors across all providers, ensuring that every stream returned is a genuine, verified video stream (`.m3u8`, `.mp4`, `.mkv`, Google direct CDN, or P2P torrent magnets) and never an unplayable HTML webpage or embed player iframe.
+
+#### 🔧 Fixed & Sanitized
+* **Elimination of Fake HTML Embed Links**:
+  * **`redflix.js` & `multimovies.js`**: Sanitized to eliminate iframe web player URLs (`play.xpass.top`, `moviesapi.to`, `rozgarlelo.modiplay.xyz`, `iqsmartgames.com`, etc.) from being returned as video streams. Disabled pure embed scrapers in `manifest.json`.
+  * **`toonstream.js` & `puretoons.js`**: Removed dummy iframe fallback pushes (`filesforever.link/embed/...`); strictly returns only verified direct video streams (e.g. Ruby `.m3u8`).
+  * **`animeworld.js`**: Stripped dead 404 player fallbacks (`zephyrix.org`) and unresolved web players, preserving only decrypted video stream URLs.
+* **Stream Playability Pre-Validation (HTTP 403 & Worker Defense)**:
+  * **`4khdhub.js` & `moviesmod.js`**: Added real-time stream pre-validation to discard quota-exceeded Cloudflare worker endpoints (`*.workers.dev` 403 `downloadQuotaExceeded` / HTML error landing pages) and prioritize genuine direct CDN video streams (Google CDN direct `video/mkv`).
+* **ExoPlayer Playback Headers Injection**:
+  * **`castle.js` & `moviebox.js`**: Added `behaviorHints.proxyHeaders.request` alongside `headers` so that Nuvio's player engine passes authorization and CDN headers without throwing 403 Forbidden.
+* **Hermes Runtime Compatibility**:
+  * Transpiled all provider scripts via `build.js` for Nuvio's Hermes JS runtime.
+
+---
+
 ## [2.5.0] - 2026-10-15
 
 ### 🚀 Major Provider Audit & Auto-Healing
