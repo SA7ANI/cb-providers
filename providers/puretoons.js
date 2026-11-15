@@ -18,19 +18,16 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
 const TMDB_API_KEYS = [
   "1865f43a0549ca50d341dd9ab8b29f49",
   "439c478a771f35c05022f9feabcca01c",
   "8265bd1679663a7ea12ac168da84d2e8"
 ];
-
 const BASE_URL = "https://puretoons.in";
 const HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
   "Referer": "https://puretoons.in/"
 };
-
 function httpGet(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const headers = options.headers || {};
@@ -39,7 +36,8 @@ function httpGet(_0) {
       try {
         const res = yield axios.get(url, { headers, timeout });
         return res.data;
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     if (typeof require === "function") {
       try {
@@ -48,7 +46,8 @@ function httpGet(_0) {
           const res = yield ax.get(url, { headers, timeout });
           return res.data;
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     if (typeof fetch === "function") {
       const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
@@ -59,7 +58,8 @@ function httpGet(_0) {
           headers,
           signal: controller ? controller.signal : void 0
         });
-        if (timer) clearTimeout(timer);
+        if (timer)
+          clearTimeout(timer);
         const text = yield res.text();
         try {
           return JSON.parse(text);
@@ -67,14 +67,14 @@ function httpGet(_0) {
           return text;
         }
       } catch (e) {
-        if (timer) clearTimeout(timer);
+        if (timer)
+          clearTimeout(timer);
         throw e;
       }
     }
     throw new Error("No HTTP client available");
   });
 }
-
 function getMediaMeta(id, mediaType = "tv") {
   return __async(this, null, function* () {
     const isImdb = typeof id === "string" && id.startsWith("tt");
@@ -89,7 +89,8 @@ function getMediaMeta(id, mediaType = "tv") {
             year: d.meta.year || ""
           };
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     const endpoint = mediaType === "movie" ? "movie" : "tv";
     for (const key of TMDB_API_KEYS) {
@@ -106,12 +107,12 @@ function getMediaMeta(id, mediaType = "tv") {
             return { imdbId: isImdb ? id : null, title, year };
           }
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     return { imdbId: isImdb ? id : null, title: "", year: "" };
   });
 }
-
 function formatCholeCard(opt) {
   var raw = [opt.filename || "", opt.rawText || "", opt.server || "", opt.quality || "", opt.size || "", opt.title || ""].join(" ");
   var text = raw.trim();
@@ -233,193 +234,190 @@ function formatCholeCard(opt) {
     provider: provider.toLowerCase()
   };
 }
-
 function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
   return __async(this, null, function* () {
     try {
       const isTv = mediaType === "tv" || mediaType === "series" || mediaType === "anime";
       const sNum = parseInt(season, 10) || 1;
       const epNum = parseInt(episode, 10) || 1;
-
-    const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
-    if (!meta || !meta.title) return [];
-
-    const cleanTitle = (meta.title || "").replace(/[^a-zA-Z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
-    let searchUrl = `${BASE_URL}/?s=${encodeURIComponent(cleanTitle.toLowerCase())}`;
-    let html = "";
-    try {
-      html = yield httpGet(searchUrl, { headers: HEADERS, timeout: 8e3 });
-    } catch (_) {}
-
-    let postMatches = [...(html || "").matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
-    if (postMatches.length === 0) {
-      const words = cleanTitle.split(" ").filter(w => w.length > 2);
-      if (words.length > 1) {
-        const simplified = words.slice(0, 2).join(" ");
-        try {
-          const fallbackHtml = yield httpGet(`${BASE_URL}/?s=${encodeURIComponent(simplified.toLowerCase())}`, { headers: HEADERS, timeout: 8e3 });
-          postMatches = [...(fallbackHtml || "").matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
-        } catch (_) {}
+      const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
+      if (!meta || !meta.title)
+        return [];
+      const cleanTitle = (meta.title || "").replace(/[^a-zA-Z0-9 ]+/g, " ").replace(/\s+/g, " ").trim();
+      let searchUrl = `${BASE_URL}/?s=${encodeURIComponent(cleanTitle.toLowerCase())}`;
+      let html = "";
+      try {
+        html = yield httpGet(searchUrl, { headers: HEADERS, timeout: 8e3 });
+      } catch (_) {
       }
-    }
-
-    if (postMatches.length === 0) return [];
-
-    if (isTv && postMatches.length > 1) {
-      const seasonMatch = postMatches.find(m => {
-        const text = m[2].toLowerCase();
-        return text.includes(`season ${sNum}`) || text.includes(`season 0${sNum}`) || text.includes(`s${sNum}`) || text.includes(`s0${sNum}`);
-      });
-      if (seasonMatch) {
-        postMatches = [seasonMatch, ...postMatches.filter(m => m !== seasonMatch)];
-      }
-    }
-
-    const postUrl = postMatches[0][1];
-    let postHtml = "";
-    try {
-      postHtml = yield httpGet(postUrl, { headers: HEADERS, timeout: 8e3 });
-    } catch (_) {
-      return [];
-    }
-
-    if (!postHtml || typeof postHtml !== "string") return [];
-
-    const contentMatch = postHtml.match(/<div[^>]*class="[^"]*(?:entry-content|post-content)[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
-    const searchScope = contentMatch ? contentMatch[1] : postHtml;
-    const allLinks = [...searchScope.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
-    let destUrl = "";
-
-    for (const l of allLinks) {
-      const text = l[2].replace(/<[^>]+>/g, "").trim().toLowerCase();
-      let href = l[1];
-      if (text.includes("watch") || text.includes("online") || text.includes("1080p") || text.includes("720p") || text.includes("download") || href.includes("main.php?url=")) {
-        if (href.startsWith("/")) href = `${BASE_URL}${href}`;
-        if (href.includes("main.php?url=")) {
-          const solvedUrl = href.replace("main.php?url=", "solved/");
+      let postMatches = [...(html || "").matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
+      if (postMatches.length === 0) {
+        const words = cleanTitle.split(" ").filter((w) => w.length > 2);
+        if (words.length > 1) {
+          const simplified = words.slice(0, 2).join(" ");
           try {
-            const redRes = yield fetch(solvedUrl, {
+            const fallbackHtml = yield httpGet(`${BASE_URL}/?s=${encodeURIComponent(simplified.toLowerCase())}`, { headers: HEADERS, timeout: 8e3 });
+            postMatches = [...(fallbackHtml || "").matchAll(/<h[23][^>]*>\s*<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
+          } catch (_) {
+          }
+        }
+      }
+      if (postMatches.length === 0)
+        return [];
+      if (isTv && postMatches.length > 1) {
+        const seasonMatch = postMatches.find((m) => {
+          const text = m[2].toLowerCase();
+          return text.includes(`season ${sNum}`) || text.includes(`season 0${sNum}`) || text.includes(`s${sNum}`) || text.includes(`s0${sNum}`);
+        });
+        if (seasonMatch) {
+          postMatches = [seasonMatch, ...postMatches.filter((m) => m !== seasonMatch)];
+        }
+      }
+      const postUrl = postMatches[0][1];
+      let postHtml = "";
+      try {
+        postHtml = yield httpGet(postUrl, { headers: HEADERS, timeout: 8e3 });
+      } catch (_) {
+        return [];
+      }
+      if (!postHtml || typeof postHtml !== "string")
+        return [];
+      const contentMatch = postHtml.match(/<div[^>]*class="[^"]*(?:entry-content|post-content)[^"]*"[^>]*>([\s\S]*?)<\/div>/i);
+      const searchScope = contentMatch ? contentMatch[1] : postHtml;
+      const allLinks = [...searchScope.matchAll(/<a[^>]+href="([^"]+)"[^>]*>([\s\S]*?)<\/a>/gi)];
+      let destUrl = "";
+      for (const l of allLinks) {
+        const text = l[2].replace(/<[^>]+>/g, "").trim().toLowerCase();
+        let href = l[1];
+        if (text.includes("watch") || text.includes("online") || text.includes("1080p") || text.includes("720p") || text.includes("download") || href.includes("main.php?url=")) {
+          if (href.startsWith("/"))
+            href = `${BASE_URL}${href}`;
+          if (href.includes("main.php?url=")) {
+            const solvedUrl = href.replace("main.php?url=", "solved/");
+            try {
+              const redRes = yield fetch(solvedUrl, {
+                headers: { "User-Agent": HEADERS["User-Agent"], "Referer": postUrl },
+                redirect: "manual"
+              });
+              const loc = redRes && redRes.headers && typeof redRes.headers.get === "function" ? redRes.headers.get("location") : null;
+              if (loc && !/\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(loc)) {
+                destUrl = loc;
+                break;
+              }
+            } catch (_) {
+            }
+          }
+          let resolvedTarget = "";
+          if (href.includes("solved/")) {
+            const b64 = href.split("solved/")[1].split("/")[0].split("?")[0];
+            try {
+              if (typeof atob === "function") {
+                resolvedTarget = atob(b64);
+              } else if (typeof Buffer !== "undefined") {
+                resolvedTarget = Buffer.from(b64, "base64").toString("utf-8");
+              }
+            } catch (_) {
+            }
+          }
+          if (resolvedTarget && resolvedTarget.startsWith("http") && !/\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(resolvedTarget)) {
+            destUrl = resolvedTarget;
+            break;
+          }
+          try {
+            const redRes = yield fetch(href, {
               headers: { "User-Agent": HEADERS["User-Agent"], "Referer": postUrl },
               redirect: "manual"
             });
             const loc = redRes && redRes.headers && typeof redRes.headers.get === "function" ? redRes.headers.get("location") : null;
-            if (loc && !/\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(loc)) {
+            if (loc && loc.startsWith("http") && !/\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(loc)) {
               destUrl = loc;
               break;
             }
-          } catch (_) {}
+          } catch (_) {
+          }
         }
-        let resolvedTarget = "";
-        if (href.includes("solved/")) {
-          const b64 = href.split("solved/")[1].split("/")[0].split("?")[0];
+      }
+      const streams = [];
+      if (destUrl && (destUrl.includes("toonstream") || destUrl.includes("watchanimeworld"))) {
+        if (destUrl.includes("toonstream")) {
+          destUrl = destUrl.replace("toonstream.one", "toonstream.us").replace("toonstream.vip", "toonstream.us");
+        }
+        let destHeaders = Object.assign({}, HEADERS);
+        if (destUrl.includes("toonstream")) {
           try {
-            if (typeof atob === "function") {
-              resolvedTarget = atob(b64);
-            } else if (typeof Buffer !== "undefined") {
-              resolvedTarget = Buffer.from(b64, "base64").toString("utf-8");
-            }
-          } catch (_) {}
-        }
-        if (resolvedTarget && resolvedTarget.startsWith("http") && !/\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(resolvedTarget)) {
-          destUrl = resolvedTarget;
-          break;
-        }
-        try {
-          const redRes = yield fetch(href, {
-            headers: { "User-Agent": HEADERS["User-Agent"], "Referer": postUrl },
-            redirect: "manual"
-          });
-          const loc = redRes && redRes.headers && typeof redRes.headers.get === "function" ? redRes.headers.get("location") : null;
-          if (loc && loc.startsWith("http") && !/\.(?:jpg|jpeg|png|webp|gif|svg)$/i.test(loc)) {
-            destUrl = loc;
-            break;
-          }
-        } catch (_) {}
-      }
-    }
-
-    const streams = [];
-
-    if (destUrl && (destUrl.includes("toonstream") || destUrl.includes("watchanimeworld"))) {
-      if (destUrl.includes("toonstream")) {
-        destUrl = destUrl.replace("toonstream.one", "toonstream.us").replace("toonstream.vip", "toonstream.us");
-      }
-      let destHeaders = Object.assign({}, HEADERS);
-      if (destUrl.includes("toonstream")) {
-        try {
-          const vRes = yield fetch("https://toonstream.us/api/access/ads/verify", {
-            method: "POST",
-            headers: {
-              "User-Agent": HEADERS["User-Agent"],
-              "Content-Type": "application/json",
-              "Referer": "https://toonstream.us/home"
-            },
-            body: JSON.stringify({ returnTo: "/home" })
-          });
-          if (vRes.ok) {
-            const cookies = vRes.headers.getSetCookie ? vRes.headers.getSetCookie() : [vRes.headers.get("set-cookie")];
-            if (cookies && cookies.length) {
-              const cStr = cookies.filter(Boolean).map(c => c.split(";")[0]).join("; ");
-              destHeaders = Object.assign({}, destHeaders, { Cookie: cStr, Referer: "https://toonstream.us/home" });
-            }
-          }
-        } catch (_) {}
-      }
-
-      if (isTv && destUrl.includes("/series/")) {
-        let seriesHtml = "";
-        try {
-          seriesHtml = yield httpGet(destUrl, { headers: destHeaders, timeout: 8e3 });
-        } catch (_) {}
-        if (seriesHtml) {
-          const epRegex = new RegExp(`href="(\\/episode\\/[^"]+-${sNum}x${epNum}\\/?)"`, "i");
-          const epMatch = seriesHtml.match(epRegex);
-          if (epMatch) {
-            destUrl = `https://toonstream.us${epMatch[1]}`;
-          }
-        }
-      }
-
-      let destHtml = "";
-      try {
-        destHtml = yield httpGet(destUrl, { headers: destHeaders, timeout: 8e3 });
-      } catch (_) {}
-
-      if (destHtml && typeof destHtml === "string") {
-        const iframes = [...destHtml.matchAll(/<iframe[^>]+(?:src|data-src)="([^"]+)"/gi)];
-        for (const ifr of iframes) {
-          const u = ifr[1].trim();
-          if (!u.startsWith("http") || u.includes("youtube.com") || u.includes("/embed/") || u.includes("/e/") || u.includes("filesforever.link")) continue;
-          if (!/\.(?:m3u8|mp4|mkv)(?:[?#]|$)/i.test(u)) continue;
-          let sName = "Server";
-          try {
-            sName = new URL(u).hostname.replace(/^www\./, "");
-          } catch (_) {}
-
-          const card = formatCholeCard({
-            title: meta.title,
-            year: meta.year,
-            season: isTv ? sNum : null,
-            episode: isTv ? epNum : null,
-            quality: "1080p",
-            server: sName,
-            rawText: `${meta.title} 1080p ${sName} Hindi Dubbed`,
-            provider: "PureToons"
-          });
-
-          streams.push(Object.assign({}, card, {
-            url: u,
-            headers: HEADERS,
-            behaviorHints: {
-              proxyHeaders: {
-                request: HEADERS
+            const vRes = yield fetch("https://toonstream.us/api/access/ads/verify", {
+              method: "POST",
+              headers: {
+                "User-Agent": HEADERS["User-Agent"],
+                "Content-Type": "application/json",
+                "Referer": "https://toonstream.us/home"
+              },
+              body: JSON.stringify({ returnTo: "/home" })
+            });
+            if (vRes.ok) {
+              const cookies = vRes.headers.getSetCookie ? vRes.headers.getSetCookie() : [vRes.headers.get("set-cookie")];
+              if (cookies && cookies.length) {
+                const cStr = cookies.filter(Boolean).map((c) => c.split(";")[0]).join("; ");
+                destHeaders = Object.assign({}, destHeaders, { Cookie: cStr, Referer: "https://toonstream.us/home" });
               }
             }
-          }));
+          } catch (_) {
+          }
+        }
+        if (isTv && destUrl.includes("/series/")) {
+          let seriesHtml = "";
+          try {
+            seriesHtml = yield httpGet(destUrl, { headers: destHeaders, timeout: 8e3 });
+          } catch (_) {
+          }
+          if (seriesHtml) {
+            const epRegex = new RegExp(`href="(\\/episode\\/[^"]+-${sNum}x${epNum}\\/?)"`, "i");
+            const epMatch = seriesHtml.match(epRegex);
+            if (epMatch) {
+              destUrl = `https://toonstream.us${epMatch[1]}`;
+            }
+          }
+        }
+        let destHtml = "";
+        try {
+          destHtml = yield httpGet(destUrl, { headers: destHeaders, timeout: 8e3 });
+        } catch (_) {
+        }
+        if (destHtml && typeof destHtml === "string") {
+          const iframes = [...destHtml.matchAll(/<iframe[^>]+(?:src|data-src)="([^"]+)"/gi)];
+          for (const ifr of iframes) {
+            const u = ifr[1].trim();
+            if (!u.startsWith("http") || u.includes("youtube.com") || u.includes("/embed/") || u.includes("/e/") || u.includes("filesforever.link"))
+              continue;
+            if (!/\.(?:m3u8|mp4|mkv)(?:[?#]|$)/i.test(u))
+              continue;
+            let sName = "Server";
+            try {
+              sName = new URL(u).hostname.replace(/^www\./, "");
+            } catch (_) {
+            }
+            const card = formatCholeCard({
+              title: meta.title,
+              year: meta.year,
+              season: isTv ? sNum : null,
+              episode: isTv ? epNum : null,
+              quality: "1080p",
+              server: sName,
+              rawText: `${meta.title} 1080p ${sName} Hindi Dubbed`,
+              provider: "PureToons"
+            });
+            streams.push(Object.assign({}, card, {
+              url: u,
+              headers: HEADERS,
+              behaviorHints: {
+                proxyHeaders: {
+                  request: HEADERS
+                }
+              }
+            }));
+          }
         }
       }
-    }
-
       return streams;
     } catch (e) {
       console.error("[PureToons] Error:", e.message);
@@ -427,7 +425,6 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
     }
   });
 }
-
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { getStreams };
 }
@@ -437,4 +434,3 @@ if (typeof globalThis !== "undefined") {
 if (typeof global !== "undefined") {
   global.getStreams = getStreams;
 }
-

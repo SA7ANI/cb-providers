@@ -289,7 +289,8 @@ function bypassThenaukriadda(step1Action, sid) {
       } else if (cookieName) {
         goUrl = `https://en.thenaukriadda.in/?lp_go=${cookieName}`;
       }
-      if (!goUrl || !cookieName) return null;
+      if (!goUrl || !cookieName)
+        return null;
       const r3 = yield fetch(goUrl, {
         headers: __spreadProps(__spreadValues({}, HEADERS), {
           "Cookie": `${cookieName}=${cookieVal}`,
@@ -310,11 +311,12 @@ function bypassThenaukriadda(step1Action, sid) {
 function getMainUrl() {
   return __async(this, null, function* () {
     const now = Date.now();
-    if (now - cachedDomainTs < 4 * 60 * 60 * 1000 && cachedDomain) {
+    if (now - cachedDomainTs < 4 * 60 * 60 * 1e3 && cachedDomain) {
       return cachedDomain;
     }
     try {
-      const res = yield fetch(DOMAINS_URL, { signal: AbortSignal.timeout(3000),
+      const res = yield fetch(DOMAINS_URL, {
+        signal: AbortSignal.timeout(3e3),
         headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
       });
       if (res.ok) {
@@ -325,7 +327,8 @@ function getMainUrl() {
           return cachedDomain;
         }
       }
-    } catch (_) {}
+    } catch (_) {
+    }
     return cachedDomain || FALLBACK_DOMAIN;
   });
 }
@@ -659,7 +662,8 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
         return qualityRegex.test(text) && !text.includes("MoviesMod");
       });
       for (const entry of entries.get().slice(0, 2)) {
-        if (allStreams.length >= 2) break;
+        if (allStreams.length >= 2)
+          break;
         const quality = getIndexQuality($(entry).text());
         let linkEl = $(entry).next().find(`a:contains('${aTag}')`).first();
         if (!linkEl.length) {
@@ -676,15 +680,16 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       }
       const validStreams = [];
       for (const s of allStreams) {
-        if (!s || !s.url) continue;
+        if (!s || !s.url)
+          continue;
         if (s.url.includes("workers.dev") || s.url.includes("driveseed.org/zfile") || s.url.includes("driveseed.org/file") || s.url.includes("driveseed.org/wfile")) {
           try {
             const probe = yield fetch(s.url, {
               headers: { "User-Agent": "Mozilla/5.0", "Range": "bytes=0-100" },
-              signal: AbortSignal.timeout(2000)
+              signal: AbortSignal.timeout(2e3)
             });
             const ct = (probe.headers.get("content-type") || "").toLowerCase();
-            if (probe.status === 403 || ct.includes("text/html") || (!probe.ok && probe.status !== 206)) {
+            if (probe.status === 403 || ct.includes("text/html") || !probe.ok && probe.status !== 206) {
               continue;
             }
           } catch (_) {
@@ -723,11 +728,13 @@ function processModLink(url, referer, quality, mediaType, episodeNum, details, s
           const u = new URL(source);
           naukriSid = u.searchParams.get("sid") || "";
           naukriAction = `${u.protocol}//${u.host}${u.pathname}`;
-        } catch (_) {}
+        } catch (_) {
+        }
       }
       if (naukriSid) {
         const bypassed = yield bypassThenaukriadda(naukriAction, naukriSid);
-        if (bypassed) finalLink = bypassed;
+        if (bypassed)
+          finalLink = bypassed;
       }
       if (!finalLink && !source)
         return [];

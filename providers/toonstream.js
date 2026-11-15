@@ -18,35 +18,35 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
 const TMDB_API_KEYS = [
   "1865f43a0549ca50d341dd9ab8b29f49",
   "439c478a771f35c05022f9feabcca01c",
   "8265bd1679663a7ea12ac168da84d2e8"
 ];
-
 if (typeof AbortSignal !== "undefined" && !AbortSignal.timeout) {
   AbortSignal.timeout = function(ms) {
     var controller = new AbortController();
     setTimeout(function() {
-      try { controller.abort(); } catch (_) {}
+      try {
+        controller.abort();
+      } catch (_) {
+      }
     }, ms);
     return controller.signal;
   };
 }
-
 const DOMAINS_URL = "https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json";
 let BASE_URL = "https://toonstream.us";
 const HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
   "Referer": "https://toonstream.us/"
 };
-
 let domainCacheTimestamp = 0;
 function fetchAndUpdateDomain() {
   return __async(this, null, function* () {
     const now = Date.now();
-    if (now - domainCacheTimestamp < 4 * 60 * 60 * 1000) return;
+    if (now - domainCacheTimestamp < 4 * 60 * 60 * 1e3)
+      return;
     try {
       const res = yield fetch(DOMAINS_URL, {
         headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64)" }
@@ -59,10 +59,10 @@ function fetchAndUpdateDomain() {
           domainCacheTimestamp = now;
         }
       }
-    } catch (_) {}
+    } catch (_) {
+    }
   });
 }
-
 function formatCholeCard(opt) {
   var raw = [opt.filename || "", opt.rawText || "", opt.server || "", opt.quality || "", opt.size || "", opt.title || ""].join(" ");
   var text = raw.trim();
@@ -184,7 +184,6 @@ function formatCholeCard(opt) {
     provider: provider.toLowerCase()
   };
 }
-
 function httpGet(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const headers = options.headers || {};
@@ -193,7 +192,8 @@ function httpGet(_0) {
       try {
         const res = yield axios.get(url, { headers, timeout });
         return res.data;
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     if (typeof require === "function") {
       try {
@@ -202,7 +202,8 @@ function httpGet(_0) {
           const res = yield ax.get(url, { headers, timeout });
           return res.data;
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     if (typeof fetch === "function") {
       const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
@@ -213,7 +214,8 @@ function httpGet(_0) {
           headers,
           signal: controller ? controller.signal : void 0
         });
-        if (timer) clearTimeout(timer);
+        if (timer)
+          clearTimeout(timer);
         const text = yield res.text();
         try {
           return JSON.parse(text);
@@ -221,34 +223,35 @@ function httpGet(_0) {
           return text;
         }
       } catch (e) {
-        if (timer) clearTimeout(timer);
+        if (timer)
+          clearTimeout(timer);
         throw e;
       }
     }
     throw new Error("No HTTP client available");
   });
 }
-
 function unpack(packed) {
   const match = packed.match(/eval\(function\(p,a,c,k,e,[rd]\)\{.*return p\}\('(.*)',(\d+),(\d+),'(.*)'\.split\('\|'\)/s);
-  if (!match) return null;
+  if (!match)
+    return null;
   let [, p, a, c, k] = match;
   a = parseInt(a, 10);
   c = parseInt(c, 10);
-  k = k.split('|');
+  k = k.split("|");
   while (c--) {
     if (k[c]) {
-      p = p.replace(new RegExp('\\b' + c.toString(a) + '\\b', 'g'), k[c]);
+      p = p.replace(new RegExp("\\b" + c.toString(a) + "\\b", "g"), k[c]);
     }
   }
   return p;
 }
-
 function extractRubyM3u8(rubyEmbedUrl) {
   return __async(this, null, function* () {
     try {
       const codeMatch = rubyEmbedUrl.match(/(?:embed-|\/e\/)([a-zA-Z0-9]+)/);
-      if (!codeMatch) return null;
+      if (!codeMatch)
+        return null;
       const code = codeMatch[1];
       const res = yield fetch("https://rubystm.com/dl", {
         method: "POST",
@@ -263,7 +266,7 @@ function extractRubyM3u8(rubyEmbedUrl) {
           auto: "1",
           referer: "https://toonstream.us/"
         }),
-        signal: AbortSignal.timeout(6000)
+        signal: AbortSignal.timeout(6e3)
       });
       const html = yield res.text();
       const unpacked = unpack(html);
@@ -274,7 +277,6 @@ function extractRubyM3u8(rubyEmbedUrl) {
     }
   });
 }
-
 function getMediaMeta(id, mediaType = "tv") {
   return __async(this, null, function* () {
     const isImdb = typeof id === "string" && id.startsWith("tt");
@@ -289,7 +291,8 @@ function getMediaMeta(id, mediaType = "tv") {
             year: d.meta.year || ""
           };
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     const endpoint = mediaType === "movie" ? "movie" : "tv";
     for (const key of TMDB_API_KEYS) {
@@ -306,19 +309,19 @@ function getMediaMeta(id, mediaType = "tv") {
             return { imdbId: isImdb ? id : null, title, year };
           }
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     return { imdbId: isImdb ? id : null, title: "", year: "" };
   });
 }
-
 let cachedToonCookie = "";
 let toonCookieExpires = 0;
-
 function getAccessCookie() {
   return __async(this, null, function* () {
     const now = Date.now();
-    if (cachedToonCookie && now < toonCookieExpires) return cachedToonCookie;
+    if (cachedToonCookie && now < toonCookieExpires)
+      return cachedToonCookie;
     try {
       const res = yield fetch(`${BASE_URL}/api/access/ads/verify`, {
         method: "POST",
@@ -332,16 +335,16 @@ function getAccessCookie() {
       if (res.ok) {
         const cookies = res.headers.getSetCookie ? res.headers.getSetCookie() : [res.headers.get("set-cookie")];
         if (cookies && cookies.length) {
-          cachedToonCookie = cookies.filter(Boolean).map(c => c.split(";")[0]).join("; ");
-          toonCookieExpires = now + 4 * 60 * 60 * 1000;
+          cachedToonCookie = cookies.filter(Boolean).map((c) => c.split(";")[0]).join("; ");
+          toonCookieExpires = now + 4 * 60 * 60 * 1e3;
           return cachedToonCookie;
         }
       }
-    } catch (_) {}
+    } catch (_) {
+    }
     return "";
   });
 }
-
 function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
   return __async(this, null, function* () {
     try {
@@ -349,50 +352,45 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
       const isTv = mediaType === "tv" || mediaType === "series" || mediaType === "anime";
       const sNum = parseInt(season, 10) || 1;
       const epNum = parseInt(episode, 10) || 1;
-
       const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
-      if (!meta || !meta.title) return [];
-
+      if (!meta || !meta.title)
+        return [];
       const cookie = yield getAccessCookie();
       const reqHeaders = Object.assign({}, HEADERS, cookie ? { Cookie: cookie } : {});
-
       let targetUrl = "";
-
-      // 1. Query live search API
       try {
         const searchJson = yield httpGet(`${BASE_URL}/search/all?q=${encodeURIComponent(meta.title.toLowerCase())}`, { headers: reqHeaders, timeout: 6e3 });
         if (searchJson && Array.isArray(searchJson.data) && searchJson.data.length > 0) {
-          const typeMatch = isTv ? searchJson.data.find(d => d.type === "series") : searchJson.data.find(d => d.type === "movie");
+          const typeMatch = isTv ? searchJson.data.find((d) => d.type === "series") : searchJson.data.find((d) => d.type === "movie");
           const chosen = typeMatch || searchJson.data[0];
           if (chosen && chosen.url) {
             targetUrl = chosen.url.startsWith("http") ? chosen.url : `${BASE_URL}${chosen.url}`;
           }
         }
-      } catch (_) {}
-
-      // Fallback search: try search with first 2 keywords
+      } catch (_) {
+      }
       if (!targetUrl) {
         const cleanWords = (meta.title || "").replace(/[^a-zA-Z0-9 ]+/g, " ").trim().split(/\s+/);
         if (cleanWords.length > 1) {
           try {
             const searchJson2 = yield httpGet(`${BASE_URL}/search/all?q=${encodeURIComponent(cleanWords.slice(0, 2).join(" ").toLowerCase())}`, { headers: reqHeaders, timeout: 6e3 });
             if (searchJson2 && Array.isArray(searchJson2.data) && searchJson2.data.length > 0) {
-              const typeMatch = isTv ? searchJson2.data.find(d => d.type === "series") : searchJson2.data.find(d => d.type === "movie");
+              const typeMatch = isTv ? searchJson2.data.find((d) => d.type === "series") : searchJson2.data.find((d) => d.type === "movie");
               const chosen = typeMatch || searchJson2.data[0];
               if (chosen && chosen.url) {
                 targetUrl = chosen.url.startsWith("http") ? chosen.url : `${BASE_URL}${chosen.url}`;
               }
             }
-          } catch (_) {}
+          } catch (_) {
+          }
         }
       }
-
       if (isTv && targetUrl) {
         let seriesHtml = "";
         try {
           seriesHtml = yield httpGet(targetUrl, { headers: reqHeaders, timeout: 8e3 });
-        } catch (_) {}
-
+        } catch (_) {
+        }
         if (seriesHtml) {
           const epRegex = new RegExp(`href="(\\/episode\\/[^"]+-${sNum}x${epNum}\\/?)"`, "i");
           const epMatch = seriesHtml.match(epRegex);
@@ -401,72 +399,64 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
           }
         }
       }
-
-      if (!targetUrl) return [];
-
+      if (!targetUrl)
+        return [];
       let pageHtml = "";
       try {
         pageHtml = yield httpGet(targetUrl, { headers: reqHeaders, timeout: 8e3 });
       } catch (_) {
         return [];
       }
-
-      if (!pageHtml || typeof pageHtml !== "string") return [];
-
-      // If page hit the 24-hour access wall, refresh cookie and retry once
+      if (!pageHtml || typeof pageHtml !== "string")
+        return [];
       if (pageHtml.includes("24-Hour Access Redirect System")) {
         cachedToonCookie = "";
         const freshCookie = yield getAccessCookie();
         const retryHeaders = Object.assign({}, HEADERS, freshCookie ? { Cookie: freshCookie } : {});
         try {
           pageHtml = yield httpGet(targetUrl, { headers: retryHeaders, timeout: 8e3 });
-        } catch (_) {}
-      }
-
-      if (!pageHtml || typeof pageHtml !== "string") return [];
-
-      const iframeRegex = /<iframe[^>]+(?:src|data-src)="([^"]+)"/gi;
-      const iframeMatches = [...pageHtml.matchAll(iframeRegex)];
-
-    const streams = [];
-    const seInfo = isTv ? ` • S${String(sNum).padStart(2, "0")}E${String(epNum).padStart(2, "0")}` : "";
-
-
-
-    for (const m of iframeMatches) {
-      const rawUrl = m[1].trim();
-      if (!rawUrl.startsWith("http") || rawUrl.includes("youtube.com")) continue;
-
-      if (rawUrl.includes("rubystm.com") || rawUrl.includes("streamruby.net")) {
-        const m3u8 = yield extractRubyM3u8(rawUrl);
-        if (m3u8 && typeof m3u8 === "string" && (m3u8.includes(".m3u8") || m3u8.includes(".mp4"))) {
-          const cardHls = formatCholeCard({
-            title: meta.title,
-            year: meta.year,
-            season: isTv ? sNum : null,
-            episode: isTv ? epNum : null,
-            quality: "1080p",
-            server: "Ruby Stream [Direct HLS]",
-            rawText: `${meta.title} 1080p Ruby Direct HLS Hindi Dubbed Multi-Audio`,
-            provider: "ToonStream"
-          });
-          const streamHeaders = {
-            "User-Agent": HEADERS["User-Agent"],
-            "Referer": "https://rubystm.com/"
-          };
-          streams.push(Object.assign({}, cardHls, {
-            url: m3u8,
-            headers: streamHeaders,
-            behaviorHints: {
-              proxyHeaders: {
-                request: streamHeaders
-              }
-            }
-          }));
+        } catch (_) {
         }
       }
-    }
-
+      if (!pageHtml || typeof pageHtml !== "string")
+        return [];
+      const iframeRegex = /<iframe[^>]+(?:src|data-src)="([^"]+)"/gi;
+      const iframeMatches = [...pageHtml.matchAll(iframeRegex)];
+      const streams = [];
+      const seInfo = isTv ? ` \u2022 S${String(sNum).padStart(2, "0")}E${String(epNum).padStart(2, "0")}` : "";
+      for (const m of iframeMatches) {
+        const rawUrl = m[1].trim();
+        if (!rawUrl.startsWith("http") || rawUrl.includes("youtube.com"))
+          continue;
+        if (rawUrl.includes("rubystm.com") || rawUrl.includes("streamruby.net")) {
+          const m3u8 = yield extractRubyM3u8(rawUrl);
+          if (m3u8 && typeof m3u8 === "string" && (m3u8.includes(".m3u8") || m3u8.includes(".mp4"))) {
+            const cardHls = formatCholeCard({
+              title: meta.title,
+              year: meta.year,
+              season: isTv ? sNum : null,
+              episode: isTv ? epNum : null,
+              quality: "1080p",
+              server: "Ruby Stream [Direct HLS]",
+              rawText: `${meta.title} 1080p Ruby Direct HLS Hindi Dubbed Multi-Audio`,
+              provider: "ToonStream"
+            });
+            const streamHeaders = {
+              "User-Agent": HEADERS["User-Agent"],
+              "Referer": "https://rubystm.com/"
+            };
+            streams.push(Object.assign({}, cardHls, {
+              url: m3u8,
+              headers: streamHeaders,
+              behaviorHints: {
+                proxyHeaders: {
+                  request: streamHeaders
+                }
+              }
+            }));
+          }
+        }
+      }
       return streams;
     } catch (e) {
       console.error("[ToonStream] Error:", e.message);
@@ -474,7 +464,6 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
     }
   });
 }
-
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { getStreams };
 }

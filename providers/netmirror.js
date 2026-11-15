@@ -429,4 +429,3 @@ if (typeof globalThis !== "undefined") {
 if (typeof global !== "undefined") {
   global.getStreams = getStreams;
 }
-

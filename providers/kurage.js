@@ -381,15 +381,17 @@ function getStreams(tmdbId, mediaType, season, episode) {
           "trpc-accept": "application/json",
           "x-trpc-source": "nextjs-react"
         },
-        signal: AbortSignal.timeout(5000)
+        signal: AbortSignal.timeout(5e3)
       };
       const [subRes, dubRes] = yield Promise.allSettled([
         fetchJson(subUrl, fetchOpts),
         fetchJson(dubUrl, fetchOpts)
       ]);
       const data = [];
-      if (subRes.status === "fulfilled" && Array.isArray(subRes.value)) data.push(...subRes.value);
-      if (dubRes.status === "fulfilled" && Array.isArray(dubRes.value)) data.push(...dubRes.value);
+      if (subRes.status === "fulfilled" && Array.isArray(subRes.value))
+        data.push(...subRes.value);
+      if (dubRes.status === "fulfilled" && Array.isArray(dubRes.value))
+        data.push(...dubRes.value);
       const allStreams = [];
       data.forEach((r) => {
         var _a, _b, _c;
@@ -441,4 +443,3 @@ if (typeof globalThis !== "undefined") {
 if (typeof global !== "undefined") {
   global.getStreams = getStreams;
 }
-

@@ -579,80 +579,81 @@ function getStreams(tmdbId, type, season, episode) {
         return [];
       const { title, year } = tmdbDetails;
       console.log(`[4KHDHub] Search: ${title} (${year})`);
-    const isSeries = type === "series" || type === "tv";
-    const pageUrl = yield fetchPageUrl(title, year, isSeries);
-    if (!pageUrl) {
-      console.log("[4KHDHub] Page not found");
-      return [];
-    }
-    console.log(`[4KHDHub] Found page: ${pageUrl}`);
-    const html = yield fetchText(pageUrl);
-    if (!html)
-      return [];
-    const $ = cheerio3.load(html);
-    const itemsToProcess = [];
-    if (isSeries && season && episode) {
-      const seasonStr = "S" + String(season).padStart(2, "0");
-      const episodeStr = "Episode-" + String(episode).padStart(2, "0");
-      $(".episode-item").each((_, el) => {
-        if ($(".episode-title", el).text().includes(seasonStr)) {
-          const downloadItems = $(".episode-download-item", el).filter((_2, item) => $(item).text().includes(episodeStr));
-          downloadItems.each((_2, item) => {
-            itemsToProcess.push(item);
-          });
-        }
-      });
-    } else {
-      $(".download-item").each((_, el) => {
-        itemsToProcess.push(el);
-      });
-    }
-    console.log(`[4KHDHub] Processing ${itemsToProcess.length} items`);
-    const streamPromises = itemsToProcess.map((item) => __async(this, null, function* () {
-      try {
-        const sourceResult = yield extractSourceResults($, item);
-        if (sourceResult && sourceResult.url) {
-          console.log(`[4KHDHub] Extracting from HubCloud: ${sourceResult.url}`);
-          const extractedLinks = yield extractHubCloud(sourceResult.url, sourceResult.meta);
-          return extractedLinks.map((link) => {
-            const metaText = link.meta.title || sourceResult.meta.title || "";
-            let qualityNum = sourceResult.meta.height || 1080;
-            const qM = metaText.match(/\b(2160|1080|720|480)p?\b/i);
-            if (qM)
-              qualityNum = parseInt(qM[1]);
-            const qualityStr = qualityNum >= 2160 ? "4K" : `${qualityNum}P`;
-            const sizeStr = formatBytes(link.meta.bytes || 0);
-            const card = formatCholeCard({
-              provider: "4KHDHub",
-              title,
-              year: year || "",
-              season: isSeries ? season : null,
-              episode: isSeries ? episode : null,
-              filename: link.meta.title || sourceResult.meta.title || title,
-              server: link.source,
-              quality: qualityStr,
-              size: sizeStr,
-              url: link.url
-            });
-            return __spreadProps(__spreadValues({}, card), {
-              url: link.url,
-              provider: "4khdhub",
-              behaviorHints: {
-                bingeGroup: `4khdhub-${link.source}`
-              }
-            });
-          });
-        }
-        return [];
-      } catch (err) {
-        console.log(`[4KHDHub] Item processing error: ${err.message}`);
+      const isSeries = type === "series" || type === "tv";
+      const pageUrl = yield fetchPageUrl(title, year, isSeries);
+      if (!pageUrl) {
+        console.log("[4KHDHub] Page not found");
         return [];
       }
-    }));
+      console.log(`[4KHDHub] Found page: ${pageUrl}`);
+      const html = yield fetchText(pageUrl);
+      if (!html)
+        return [];
+      const $ = cheerio3.load(html);
+      const itemsToProcess = [];
+      if (isSeries && season && episode) {
+        const seasonStr = "S" + String(season).padStart(2, "0");
+        const episodeStr = "Episode-" + String(episode).padStart(2, "0");
+        $(".episode-item").each((_, el) => {
+          if ($(".episode-title", el).text().includes(seasonStr)) {
+            const downloadItems = $(".episode-download-item", el).filter((_2, item) => $(item).text().includes(episodeStr));
+            downloadItems.each((_2, item) => {
+              itemsToProcess.push(item);
+            });
+          }
+        });
+      } else {
+        $(".download-item").each((_, el) => {
+          itemsToProcess.push(el);
+        });
+      }
+      console.log(`[4KHDHub] Processing ${itemsToProcess.length} items`);
+      const streamPromises = itemsToProcess.map((item) => __async(this, null, function* () {
+        try {
+          const sourceResult = yield extractSourceResults($, item);
+          if (sourceResult && sourceResult.url) {
+            console.log(`[4KHDHub] Extracting from HubCloud: ${sourceResult.url}`);
+            const extractedLinks = yield extractHubCloud(sourceResult.url, sourceResult.meta);
+            return extractedLinks.map((link) => {
+              const metaText = link.meta.title || sourceResult.meta.title || "";
+              let qualityNum = sourceResult.meta.height || 1080;
+              const qM = metaText.match(/\b(2160|1080|720|480)p?\b/i);
+              if (qM)
+                qualityNum = parseInt(qM[1]);
+              const qualityStr = qualityNum >= 2160 ? "4K" : `${qualityNum}P`;
+              const sizeStr = formatBytes(link.meta.bytes || 0);
+              const card = formatCholeCard({
+                provider: "4KHDHub",
+                title,
+                year: year || "",
+                season: isSeries ? season : null,
+                episode: isSeries ? episode : null,
+                filename: link.meta.title || sourceResult.meta.title || title,
+                server: link.source,
+                quality: qualityStr,
+                size: sizeStr,
+                url: link.url
+              });
+              return __spreadProps(__spreadValues({}, card), {
+                url: link.url,
+                provider: "4khdhub",
+                behaviorHints: {
+                  bingeGroup: `4khdhub-${link.source}`
+                }
+              });
+            });
+          }
+          return [];
+        } catch (err) {
+          console.log(`[4KHDHub] Item processing error: ${err.message}`);
+          return [];
+        }
+      }));
       const results = yield Promise.all(streamPromises);
       const flattened = results.reduce((acc, val) => acc.concat(val), []);
       const verified = yield Promise.all(flattened.map((s) => __async(this, null, function* () {
-        if (!s || !s.url) return null;
+        if (!s || !s.url)
+          return null;
         if (s.url.includes("workers.dev")) {
           try {
             const checkRes = yield fetch(s.url, {
@@ -660,7 +661,7 @@ function getStreams(tmdbId, type, season, episode) {
               headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", "Range": "bytes=0-100" },
               signal: AbortSignal.timeout(2500)
             });
-            if (checkRes.status === 403 || (!checkRes.ok && checkRes.status !== 206)) {
+            if (checkRes.status === 403 || !checkRes.ok && checkRes.status !== 206) {
               return null;
             }
           } catch (_) {

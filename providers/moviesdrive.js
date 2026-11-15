@@ -253,7 +253,7 @@ function getMainUrl() {
     if (cachedMainUrl)
       return cachedMainUrl;
     try {
-      const response = yield fetch("https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json", { headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(3000) });
+      const response = yield fetch("https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json", { headers: { "User-Agent": "Mozilla/5.0" }, signal: AbortSignal.timeout(3e3) });
       const data = yield response.json();
       let d = data.moviesdrive || "https://new1.moviesdrive.cyou";
       if (d.includes(".beer") || !d.includes("moviesdrive")) {
@@ -373,7 +373,7 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
       let match = null;
       console.log(`[MoviesDrive] Searching at: ${mainUrl}/search.php?q=${imdbId}`);
       try {
-        const searchRes = yield fetch(`${mainUrl}/search.php?q=${imdbId}`, { headers: HEADERS, signal: AbortSignal.timeout(4000) });
+        const searchRes = yield fetch(`${mainUrl}/search.php?q=${imdbId}`, { headers: HEADERS, signal: AbortSignal.timeout(4e3) });
         if (searchRes.ok) {
           const ct = searchRes.headers.get("content-type") || "";
           if (ct.includes("json")) {
@@ -381,12 +381,13 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
             match = (_a2 = searchData == null ? void 0 : searchData.hits) == null ? void 0 : _a2.map((h) => h.document).find((d) => d.imdb_id === imdbId);
           }
         }
-      } catch (_) {}
+      } catch (_) {
+      }
       const mediaTitle = tmdbData.title || tmdbData.name;
       if (!match && mediaTitle) {
         console.log(`[MoviesDrive] IMDb search failed, falling back to title search: ${mediaTitle}`);
         try {
-          const titleRes = yield fetch(`${mainUrl}/search.php?q=${encodeURIComponent(mediaTitle)}`, { headers: HEADERS, signal: AbortSignal.timeout(4000) });
+          const titleRes = yield fetch(`${mainUrl}/search.php?q=${encodeURIComponent(mediaTitle)}`, { headers: HEADERS, signal: AbortSignal.timeout(4e3) });
           if (titleRes.ok) {
             const ct = titleRes.headers.get("content-type") || "";
             if (ct.includes("json")) {
@@ -394,7 +395,8 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
               match = ((_b = titleData == null ? void 0 : titleData.hits) == null ? void 0 : _b.map((h) => h.document).find((d) => d.imdb_id === imdbId || d.post_title && d.post_title.toLowerCase().includes(mediaTitle.toLowerCase()))) || ((_d = (_c = titleData == null ? void 0 : titleData.hits) == null ? void 0 : _c[0]) == null ? void 0 : _d.document);
             }
           }
-        } catch (_) {}
+        } catch (_) {
+        }
       }
       if (!match) {
         console.log("[MoviesDrive] No match found on MoviesDrive");

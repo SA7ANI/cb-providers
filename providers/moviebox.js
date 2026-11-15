@@ -73,7 +73,6 @@ function formatCholeCard(opt) {
     res = "480p SD";
   else
     res = qCheck ? qCheck.toUpperCase() : "1080p FHD";
-
   var source = "WEB-DL";
   if (/\bremux\b/i.test(text))
     source = "REMUX";
@@ -83,7 +82,6 @@ function formatCholeCard(opt) {
     source = "WEB-DL";
   else if (/\bhdtv\b/i.test(text))
     source = "HDTV";
-
   var codecs = [];
   if (/\b(?:hevc|x265|h\.?265)\b/i.test(text))
     codecs.push("HEVC");
@@ -91,7 +89,6 @@ function formatCholeCard(opt) {
     codecs.push("AVC");
   else
     codecs.push(res.includes("4K") ? "HEVC" : "AVC");
-
   var hdr = [];
   if (/\b(?:dolby\s*vision|dv)\b/i.test(text))
     hdr.push("Dolby Vision");
@@ -99,7 +96,6 @@ function formatCholeCard(opt) {
     hdr.push("HDR10+");
   else if (/\b(?:hdr10|hdr)\b/i.test(text))
     hdr.push("HDR");
-
   var audio = [];
   var hasAtmos = /\b(?:atmos|ddpa)\b/i.test(text);
   var hasTrueHD = /\btruehd\b/i.test(text);
@@ -123,7 +119,6 @@ function formatCholeCard(opt) {
     audio.push("DD 5.1");
   else
     audio.push("AAC");
-
   var langs = [];
   if (/\b(?:hindi|hin)\b/i.test(text))
     langs.push("\u{1F1EE}\u{1F1F3} Hindi");
@@ -144,14 +139,11 @@ function formatCholeCard(opt) {
   if (langs.length === 0)
     langs.push(opt.defaultLang || "\u{1F310} Multi-Audio");
   var uniqueLangs = Array.from(new Set(langs));
-
   var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
   var rawSize = opt.size || (sizeMatch ? sizeMatch[1] : "");
   var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "Direct";
-
   var server = opt.server || "MovieBox";
   var provider = opt.provider || "MovieBox";
-
   var baseTitle = (opt.title || "Video").replace(/[^a-zA-Z0-9]+/g, ".");
   var yr = opt.year ? "." + opt.year : "";
   var se = opt.season && opt.episode ? ".S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : "";
@@ -160,10 +152,7 @@ function formatCholeCard(opt) {
   var c = codecs.length ? "." + codecs.join(".") : "";
   var a = audio.length ? "." + audio[0].replace(/[^a-zA-Z0-9]+/g, ".") : "";
   var g = "-" + provider;
-  var filename = (opt.filename && opt.filename.endsWith(".mkv") && !opt.filename.includes(" "))
-    ? opt.filename
-    : (baseTitle + yr + se + r + s + c + a + g + ".mkv");
-
+  var filename = opt.filename && opt.filename.endsWith(".mkv") && !opt.filename.includes(" ") ? opt.filename : baseTitle + yr + se + r + s + c + a + g + ".mkv";
   var specTags = [res, source].concat(codecs).filter(Boolean);
   var seasonEp = opt.season && opt.episode ? " \u2022 S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : "";
   var line1 = "\u{1F3AC} " + (opt.title || "Unknown") + (opt.year ? " (" + opt.year + ")" : "") + seasonEp + (specTags.length ? " [" + specTags.join(" \u2022 ") + "]" : "");
@@ -181,7 +170,6 @@ function formatCholeCard(opt) {
   meta.push("\u{1F517} " + provider);
   var line5 = meta.join(" \u2022 ");
   var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
-
   var qualitySlug = "1080p";
   if (res.indexOf("4K") !== -1 || res.indexOf("2160") !== -1)
     qualitySlug = "4k";
@@ -191,7 +179,6 @@ function formatCholeCard(opt) {
     qualitySlug = "720p";
   else if (res.indexOf("480") !== -1)
     qualitySlug = "480p";
-
   return {
     name: body,
     description: body,
@@ -939,4 +926,3 @@ if (typeof globalThis !== "undefined") {
 if (typeof global !== "undefined") {
   global.getStreams = getStreams;
 }
-

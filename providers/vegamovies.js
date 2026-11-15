@@ -80,7 +80,10 @@ if (typeof AbortSignal !== "undefined" && !AbortSignal.timeout) {
   AbortSignal.timeout = function(ms) {
     var controller = new AbortController();
     setTimeout(function() {
-      try { controller.abort(); } catch (_) {}
+      try {
+        controller.abort();
+      } catch (_) {
+      }
     }, ms);
     return controller.signal;
   };
@@ -98,7 +101,8 @@ var HEADERS = {
 function fetchAndUpdateDomain() {
   return __async2(this, null, function* () {
     const now = Date.now();
-    if (now - domainCacheTimestamp < DOMAIN_CACHE_TTL) return;
+    if (now - domainCacheTimestamp < DOMAIN_CACHE_TTL)
+      return;
     try {
       const response = yield fetch(DOMAINS_URL, {
         method: "GET",
@@ -112,7 +116,8 @@ function fetchAndUpdateDomain() {
           domainCacheTimestamp = now;
         }
       }
-    } catch (_) {}
+    } catch (_) {
+    }
   });
 }
 function getTMDBDetails(tmdbId, mediaType) {
@@ -180,8 +185,8 @@ function searchVega(imdbId, title) {
             }).filter((item) => item.url && item.title);
           }
         }
-      } catch (e) {}
-
+      } catch (e) {
+      }
       try {
         const params = new URLSearchParams();
         params.append("do", "search");
@@ -193,17 +198,18 @@ function searchVega(imdbId, title) {
           headers: __spreadProps(__spreadValues({}, HEADERS), { "Content-Type": "application/x-www-form-urlencoded" }),
           body: params.toString()
         });
-        if (!response.ok) continue;
+        if (!response.ok)
+          continue;
         const html = yield response.text();
         const articleMatches = [...html.matchAll(/<a\s+[^>]*href=["']([^"']+\.html)["'][^>]*title=["']([^"']+)["']/gi)];
         if (articleMatches.length > 0) {
-          const qWords = q.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter(w => w.length > 2);
-          const matched = articleMatches.filter(m => {
+          const qWords = q.toLowerCase().replace(/[^a-z0-9 ]/g, " ").split(/\s+/).filter((w) => w.length > 2);
+          const matched = articleMatches.filter((m) => {
             const t = (m[2] || "").toLowerCase();
-            return qWords.some(w => t.includes(w));
+            return qWords.some((w) => t.includes(w));
           });
           const chosen = matched.length > 0 ? matched : articleMatches;
-          return chosen.map(m => ({
+          return chosen.map((m) => ({
             url: m[1].startsWith("http") ? m[1] : `${MAIN_URL}${m[1]}`,
             title: m[2]
           }));
@@ -230,7 +236,6 @@ function formatCholeCard(opt) {
     res = "480p SD";
   else
     res = qCheck ? qCheck.toUpperCase() : "1080p FHD";
-
   var source = "WEB-DL";
   if (/\bremux\b/i.test(text))
     source = "REMUX";
@@ -240,7 +245,6 @@ function formatCholeCard(opt) {
     source = "WEB-DL";
   else if (/\bhdtv\b/i.test(text))
     source = "HDTV";
-
   var codecs = [];
   if (/\b(?:hevc|x265|h\.?265)\b/i.test(text))
     codecs.push("HEVC");
@@ -248,7 +252,6 @@ function formatCholeCard(opt) {
     codecs.push("AVC");
   else
     codecs.push(res.includes("4K") ? "HEVC" : "AVC");
-
   var hdr = [];
   if (/\b(?:dolby\s*vision|dv)\b/i.test(text))
     hdr.push("Dolby Vision");
@@ -256,7 +259,6 @@ function formatCholeCard(opt) {
     hdr.push("HDR10+");
   else if (/\b(?:hdr10|hdr)\b/i.test(text))
     hdr.push("HDR");
-
   var audio = [];
   var hasAtmos = /\b(?:atmos|ddpa)\b/i.test(text);
   var hasTrueHD = /\btruehd\b/i.test(text);
@@ -280,7 +282,6 @@ function formatCholeCard(opt) {
     audio.push("DD 5.1");
   else
     audio.push("AAC");
-
   var langs = [];
   if (/\b(?:hindi|hin)\b/i.test(text))
     langs.push("\u{1F1EE}\u{1F1F3} Hindi");
@@ -301,14 +302,11 @@ function formatCholeCard(opt) {
   if (langs.length === 0)
     langs.push(opt.defaultLang || "\u{1F310} Multi-Audio");
   var uniqueLangs = Array.from(new Set(langs));
-
   var sizeMatch = text.match(/(?:💾\s*|\[|\b)([0-9.]+\s*[GM]B)(?:\]|\b)/i);
   var rawSize = opt.size || (sizeMatch ? sizeMatch[1] : "");
   var size = rawSize ? rawSize.replace(/([0-9.]+)\s*([GM]B)/i, "$1 $2").toUpperCase() : "Direct";
-
   var server = opt.server || "VegaMovies";
   var provider = opt.provider || "VegaMovies";
-
   var baseTitle = (opt.title || "Video").replace(/[^a-zA-Z0-9]+/g, ".");
   var yr = opt.year ? "." + opt.year : "";
   var se = opt.season && opt.episode ? ".S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : "";
@@ -317,10 +315,7 @@ function formatCholeCard(opt) {
   var c = codecs.length ? "." + codecs.join(".") : "";
   var a = audio.length ? "." + audio[0].replace(/[^a-zA-Z0-9]+/g, ".") : "";
   var g = "-" + provider;
-  var filename = (opt.filename && opt.filename.endsWith(".mkv") && !opt.filename.includes(" "))
-    ? opt.filename
-    : (baseTitle + yr + se + r + s + c + a + g + ".mkv");
-
+  var filename = opt.filename && opt.filename.endsWith(".mkv") && !opt.filename.includes(" ") ? opt.filename : baseTitle + yr + se + r + s + c + a + g + ".mkv";
   var specTags = [res, source].concat(codecs).filter(Boolean);
   var seasonEp = opt.season && opt.episode ? " \u2022 S" + String(opt.season).padStart(2, "0") + "E" + String(opt.episode).padStart(2, "0") : "";
   var line1 = "\u{1F3AC} " + (opt.title || "Unknown") + (opt.year ? " (" + opt.year + ")" : "") + seasonEp + (specTags.length ? " [" + specTags.join(" \u2022 ") + "]" : "");
@@ -338,7 +333,6 @@ function formatCholeCard(opt) {
   meta.push("\u{1F517} " + provider);
   var line5 = meta.join(" \u2022 ");
   var body = [line1, line2, line3, line4, line5].filter(Boolean).join(" ");
-
   var qualitySlug = "1080p";
   if (res.indexOf("4K") !== -1 || res.indexOf("2160") !== -1)
     qualitySlug = "4k";
@@ -348,7 +342,6 @@ function formatCholeCard(opt) {
     qualitySlug = "720p";
   else if (res.indexOf("480") !== -1)
     qualitySlug = "480p";
-
   return {
     name: body,
     description: body,
@@ -372,10 +365,10 @@ function resolveVegaLink(linkUrl, referer) {
             const finalDlUrl = `https://fast-dl.one/dl/${dlBtnMatch[1]}`;
             const finalRes = yield fetch(finalDlUrl, {
               headers: __spreadProps(__spreadValues({}, HEADERS), { Referer: linkUrl }),
-              redirect: 'manual'
+              redirect: "manual"
             });
-            const loc = finalRes.headers.get('location');
-            if (loc && loc.startsWith('http')) {
+            const loc = finalRes.headers.get("location");
+            if (loc && loc.startsWith("http")) {
               return loc;
             }
           }
@@ -560,7 +553,7 @@ function getStreams(tmdbId, mediaType = "movie", season = null, episode = null) 
       const streams = yield getDownloadLinks(bestMatch.url, bestMatch.title, mediaInfo, mediaType, season, episode);
       return streams.map((s) => Object.assign({}, s, { type: mediaType }));
     } catch (e) {
-      console.error('[VegaMovies] Error in getStreams:', e.message);
+      console.error("[VegaMovies] Error in getStreams:", e.message);
       return [];
     }
   });

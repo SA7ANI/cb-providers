@@ -18,23 +18,23 @@ var __async = (__this, __arguments, generator) => {
     step((generator = generator.apply(__this, __arguments)).next());
   });
 };
-
 const TMDB_API_KEYS = [
   "1865f43a0549ca50d341dd9ab8b29f49",
   "439c478a771f35c05022f9feabcca01c",
   "8265bd1679663a7ea12ac168da84d2e8"
 ];
-
 if (typeof AbortSignal !== "undefined" && !AbortSignal.timeout) {
   AbortSignal.timeout = function(ms) {
     var controller = new AbortController();
     setTimeout(function() {
-      try { controller.abort(); } catch (_) {}
+      try {
+        controller.abort();
+      } catch (_) {
+      }
     }, ms);
     return controller.signal;
   };
 }
-
 const DOMAINS_URL = "https://cdn.jsdelivr.net/gh/phisher98/TVVVV@main/domains.json";
 let BASE_URL = "https://m1.multimovies.courses";
 let domainCacheTimestamp = 0;
@@ -43,14 +43,14 @@ const HEADERS = {
   "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/131.0.0.0 Safari/537.36",
   "Referer": `${BASE_URL}/`
 };
-
 function fetchAndUpdateDomain() {
   return __async(this, null, function* () {
     const now = Date.now();
-    if (now - domainCacheTimestamp < DOMAIN_CACHE_TTL) return;
+    if (now - domainCacheTimestamp < DOMAIN_CACHE_TTL)
+      return;
     try {
       if (typeof fetch === "function") {
-        const res = yield fetch(DOMAINS_URL, { signal: AbortSignal.timeout(4000) });
+        const res = yield fetch(DOMAINS_URL, { signal: AbortSignal.timeout(4e3) });
         if (res.ok) {
           const data = yield res.json();
           if (data && data.MultiMovies) {
@@ -60,10 +60,10 @@ function fetchAndUpdateDomain() {
           }
         }
       }
-    } catch (_) {}
+    } catch (_) {
+    }
   });
 }
-
 function httpGet(_0) {
   return __async(this, arguments, function* (url, options = {}) {
     const headers = options.headers || {};
@@ -72,7 +72,8 @@ function httpGet(_0) {
       try {
         const res = yield axios.get(url, { headers, timeout });
         return res.data;
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     if (typeof require === "function") {
       try {
@@ -81,7 +82,8 @@ function httpGet(_0) {
           const res = yield ax.get(url, { headers, timeout });
           return res.data;
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     if (typeof fetch === "function") {
       const controller = typeof AbortController !== "undefined" ? new AbortController() : null;
@@ -92,7 +94,8 @@ function httpGet(_0) {
           headers,
           signal: controller ? controller.signal : void 0
         });
-        if (timer) clearTimeout(timer);
+        if (timer)
+          clearTimeout(timer);
         const text = yield res.text();
         try {
           return JSON.parse(text);
@@ -100,14 +103,14 @@ function httpGet(_0) {
           return text;
         }
       } catch (e) {
-        if (timer) clearTimeout(timer);
+        if (timer)
+          clearTimeout(timer);
         throw e;
       }
     }
     throw new Error("No HTTP client available");
   });
 }
-
 function getMediaMeta(id, mediaType = "movie") {
   return __async(this, null, function* () {
     const isImdb = typeof id === "string" && id.startsWith("tt");
@@ -122,7 +125,8 @@ function getMediaMeta(id, mediaType = "movie") {
             year: d.meta.year || ""
           };
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     const endpoint = mediaType === "tv" || mediaType === "series" ? "tv" : "movie";
     for (const key of TMDB_API_KEYS) {
@@ -133,19 +137,19 @@ function getMediaMeta(id, mediaType = "movie") {
           timeout: 8e3
         });
         if (data) {
-          const imdbId = (data.external_ids && data.external_ids.imdb_id) || (String(id).startsWith("tt") ? id : null);
+          const imdbId = data.external_ids && data.external_ids.imdb_id || (String(id).startsWith("tt") ? id : null);
           const title = data.title || data.name || data.original_title || data.original_name || "";
           const year = (data.release_date || data.first_air_date || "").split("-")[0];
           if (title) {
             return { imdbId, title, year };
           }
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
     return { imdbId: isImdb ? id : null, title: "", year: "" };
   });
 }
-
 function formatCholeCard(opt) {
   var raw = [opt.filename || "", opt.rawText || "", opt.server || "", opt.quality || "", opt.size || "", opt.title || ""].join(" ");
   var text = raw.trim();
@@ -267,31 +271,29 @@ function formatCholeCard(opt) {
     provider: provider.toLowerCase()
   };
 }
-
 function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
   return __async(this, null, function* () {
     yield fetchAndUpdateDomain();
     const isTv = mediaType === "tv" || mediaType === "series";
     const sNum = parseInt(season, 10) || 1;
     const epNum = parseInt(episode, 10) || 1;
-
     let activeBase = BASE_URL;
     try {
       if (typeof fetch === "function") {
         const check = yield fetch(BASE_URL, {
           headers: HEADERS,
           redirect: "follow",
-          signal: AbortSignal.timeout(4000)
+          signal: AbortSignal.timeout(4e3)
         });
         if (check && check.url) {
           activeBase = new URL(check.url).origin;
         }
       }
-    } catch (_) {}
-
+    } catch (_) {
+    }
     const meta = yield getMediaMeta(tmdbId, isTv ? "tv" : "movie");
-    if (!meta || !meta.title) return [];
-
+    if (!meta || !meta.title)
+      return [];
     const searchUrl = `${activeBase}/search?q=${encodeURIComponent(meta.title.toLowerCase())}`;
     let html = "";
     try {
@@ -299,45 +301,41 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
     } catch (_) {
       return [];
     }
-
-    if (!html || typeof html !== "string") return [];
-
+    if (!html || typeof html !== "string")
+      return [];
     const targetType = isTv ? "tv" : "movie";
     const matches = [...html.matchAll(/data-save-title="([^"]+)"/gi)];
     let selected = null;
-
     for (const m of matches) {
       try {
         const data = JSON.parse(m[1].replace(/&quot;/g, '"'));
         if (data.type === targetType) {
-          if (!selected) selected = data;
+          if (!selected)
+            selected = data;
           if (data.year && meta.year && String(data.year) === String(meta.year)) {
             selected = data;
             break;
           }
         }
-      } catch (_) {}
+      } catch (_) {
+      }
     }
-
-    if (!selected || !selected.url) return [];
-
+    if (!selected || !selected.url)
+      return [];
     let watchUrl = `${activeBase}${selected.url}`;
     if (isTv) {
       watchUrl = `${activeBase}${selected.url}/season/${sNum}/episode/${epNum}`;
     }
-
     let pageHtml = "";
     try {
       pageHtml = yield httpGet(watchUrl, { headers: Object.assign({}, HEADERS, { Referer: activeBase + "/" }), timeout: 8e3 });
     } catch (_) {
       return [];
     }
-
-    if (!pageHtml || typeof pageHtml !== "string") return [];
-
+    if (!pageHtml || typeof pageHtml !== "string")
+      return [];
     const chipRegex = /<button[^>]+class="server-chip[^"]*"[^>]*data-url="([^"]+)"[^>]*>([\s\S]*?)<\/button>/gi;
     const chipMatches = [...pageHtml.matchAll(chipRegex)];
-
     const streams = [];
     for (const c of chipMatches) {
       let streamUrl = c[1];
@@ -346,22 +344,21 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
       }
       if (streamUrl.includes("src=") || streamUrl.includes("SRC=")) {
         const srcMatch = streamUrl.match(/src=["']?([^"'\s>]+)/i);
-        if (srcMatch) streamUrl = srcMatch[1];
+        if (srcMatch)
+          streamUrl = srcMatch[1];
       }
       streamUrl = streamUrl.trim();
-      if (!streamUrl.startsWith("http")) continue;
+      if (!streamUrl.startsWith("http"))
+        continue;
       const isEmbed = streamUrl.includes("/embed/") || streamUrl.includes("/e/") || streamUrl.includes("iqsmartgames.com") || streamUrl.includes("modiplay.xyz") || streamUrl.includes("moviesnexus.fun") || streamUrl.includes("vidrift.net") || streamUrl.includes("vidout.pages.dev") || streamUrl.includes("vidbolt.xyz");
       if (isEmbed && !/\.(?:m3u8|mp4|mkv)(?:[?#]|$)/i.test(streamUrl)) {
         continue;
       }
-
       const chipContent = c[2];
       const serverNameMatch = chipContent.match(/class="server-name">([^<]+)<\/span>/i);
       const badgeMatch = chipContent.match(/class="server-badge">([^<]+)<\/span>/i);
-
       const serverName = serverNameMatch ? serverNameMatch[1].trim() : "Server";
       const badge = badgeMatch ? badgeMatch[1].trim() : "HD";
-
       let quality = "1080p";
       const badgeLower = badge.toLowerCase();
       if (badgeLower.includes("4k") || badgeLower.includes("2160")) {
@@ -371,18 +368,16 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
       } else if (badgeLower.includes("480")) {
         quality = "480p";
       }
-
       const card = formatCholeCard({
         title: meta.title,
         year: meta.year,
         season: isTv ? sNum : null,
         episode: isTv ? epNum : null,
-        quality: quality,
+        quality,
         server: serverName,
         rawText: `${meta.title} ${badge} ${serverName} Multi-Audio Dual-Audio Hindi`,
         provider: "MultiMovies"
       });
-
       streams.push(Object.assign({}, card, {
         url: streamUrl,
         headers: {
@@ -391,11 +386,9 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
         }
       }));
     }
-
     return streams;
   });
 }
-
 if (typeof module !== "undefined" && module.exports) {
   module.exports = { getStreams };
 }
@@ -405,4 +398,3 @@ if (typeof globalThis !== "undefined") {
 if (typeof global !== "undefined") {
   global.getStreams = getStreams;
 }
-
