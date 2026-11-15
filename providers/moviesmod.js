@@ -674,7 +674,26 @@ function getStreams(tmdbId, mediaType, seasonNum = 1, episodeNum = 1) {
           allStreams.push(...streams);
         }
       }
-      return allStreams;
+      const validStreams = [];
+      for (const s of allStreams) {
+        if (!s || !s.url) continue;
+        if (s.url.includes("workers.dev") || s.url.includes("driveseed.org/zfile") || s.url.includes("driveseed.org/file") || s.url.includes("driveseed.org/wfile")) {
+          try {
+            const probe = yield fetch(s.url, {
+              headers: { "User-Agent": "Mozilla/5.0", "Range": "bytes=0-100" },
+              signal: AbortSignal.timeout(2000)
+            });
+            const ct = (probe.headers.get("content-type") || "").toLowerCase();
+            if (probe.status === 403 || ct.includes("text/html") || (!probe.ok && probe.status !== 206)) {
+              continue;
+            }
+          } catch (_) {
+            continue;
+          }
+        }
+        validStreams.push(s);
+      }
+      return validStreams;
     } catch (e) {
       console.error("[MoviesMod] Error:", e.message);
       return [];

@@ -369,6 +369,10 @@ function extractMovieStreams(pageUrl, mediaInfo) {
       const name = $(el).attr("data-name") || $(el).text().trim() || `Server ${i + 1}`;
       if (url && url.startsWith("http")) {
         const isEmbed = url.includes("/embed/") || url.includes("/e/") || url.includes("primesrc.") || url.includes("xpass.") || url.includes("vidrock.") || url.includes("moviesapi.") || url.includes("vaplayer.");
+        if (isEmbed) {
+          // Never push raw HTML embed webpages as video streams
+          return;
+        }
         const card = formatCholeCard({
           provider: "RedFlix",
           title: mediaInfo.title,
@@ -378,17 +382,20 @@ function extractMovieStreams(pageUrl, mediaInfo) {
           quality: "1080p",
           url
         });
+        const streamHeaders = {
+          "Referer": pageUrl,
+          "User-Agent": DEFAULT_HEADERS["User-Agent"]
+        };
         const streamItem = __spreadProps(__spreadValues({}, card), {
-          headers: {
-            "Referer": pageUrl,
-            "User-Agent": DEFAULT_HEADERS["User-Agent"]
+          url,
+          headers: streamHeaders,
+          behaviorHints: {
+            proxyHeaders: {
+              request: streamHeaders
+            }
           },
           provider: "redflix"
         });
-        streamItem.url = url;
-        if (isEmbed) {
-          streamItem.externalUrl = url;
-        }
         streams.push(streamItem);
       }
     });
@@ -419,6 +426,9 @@ function extractTVStreams(baseUrl, pageUrl, season, episode, mediaInfo) {
           if (src.url && src.url.startsWith("http")) {
             const serverName = src.name || `Server ${idx + 1}`;
             const isEmbed = src.url.includes("/embed/") || src.url.includes("/e/") || src.url.includes("primesrc.") || src.url.includes("xpass.") || src.url.includes("vidrock.") || src.url.includes("moviesapi.") || src.url.includes("vaplayer.");
+            if (isEmbed) {
+              return;
+            }
             const card = formatCholeCard({
               provider: "RedFlix",
               title: mediaInfo.title,
@@ -430,17 +440,20 @@ function extractTVStreams(baseUrl, pageUrl, season, episode, mediaInfo) {
               quality: "1080p",
               url: src.url
             });
+            const streamHeaders = {
+              "Referer": pageUrl,
+              "User-Agent": DEFAULT_HEADERS["User-Agent"]
+            };
             const streamItem = __spreadProps(__spreadValues({}, card), {
-              headers: {
-                "Referer": pageUrl,
-                "User-Agent": DEFAULT_HEADERS["User-Agent"]
+              url: src.url,
+              headers: streamHeaders,
+              behaviorHints: {
+                proxyHeaders: {
+                  request: streamHeaders
+                }
               },
               provider: "redflix"
             });
-            streamItem.url = src.url;
-            if (isEmbed) {
-              streamItem.externalUrl = src.url;
-            }
             streams.push(streamItem);
           }
         });

@@ -389,7 +389,8 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
         const iframes = [...destHtml.matchAll(/<iframe[^>]+(?:src|data-src)="([^"]+)"/gi)];
         for (const ifr of iframes) {
           const u = ifr[1].trim();
-          if (!u.startsWith("http") || u.includes("youtube.com")) continue;
+          if (!u.startsWith("http") || u.includes("youtube.com") || u.includes("/embed/") || u.includes("/e/") || u.includes("filesforever.link")) continue;
+          if (!/\.(?:m3u8|mp4|mkv)(?:[?#]|$)/i.test(u)) continue;
           let sName = "Server";
           try {
             sName = new URL(u).hostname.replace(/^www\./, "");
@@ -408,7 +409,12 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
 
           streams.push(Object.assign({}, card, {
             url: u,
-            headers: HEADERS
+            headers: HEADERS,
+            behaviorHints: {
+              proxyHeaders: {
+                request: HEADERS
+              }
+            }
           }));
         }
       }

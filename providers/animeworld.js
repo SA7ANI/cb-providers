@@ -455,77 +455,27 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
                   size: ds.size ? ds.size / (1024 * 1024) > 1024 ? (ds.size / (1024 * 1024 * 1024)).toFixed(2) + " GB" : (ds.size / (1024 * 1024)).toFixed(0) + " MB" : "",
                   defaultLang: src.lang
                 });
+                const sHeaders = {
+                  "Referer": "https://playhydrax.com/",
+                  "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+                };
                 finalStreams.push({
                   name: card.name,
                   title: card.title,
                   quality: card.quality,
                   url: ds.url,
-                  headers: {
-                    "Referer": "https://playhydrax.com/",
-                    "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
+                  headers: sHeaders,
+                  behaviorHints: {
+                    proxyHeaders: {
+                      request: sHeaders
+                    }
                   },
                   type: ds.url.includes(".m3u8") ? "m3u8" : "mp4",
                   provider: "animeworld"
                 });
               }
             }
-          } else if (!seen.has(src.url)) {
-            seen.add(src.url);
-            const card = formatCholeCard({
-              provider: "AnimeWorld",
-              title: mediaInfo.title,
-              year: mediaInfo.year,
-              season: isSeries ? s : null,
-              episode: isSeries ? e : null,
-              server: src.server,
-              quality: "1080p",
-              defaultLang: src.lang
-            });
-            const isAbyssStream = src.url.includes("sssrr.org") || src.url.includes("abyss");
-            finalStreams.push({
-              name: card.name,
-              title: card.title,
-              quality: card.quality,
-              url: src.url,
-              headers: isAbyssStream ? {
-                "Referer": "https://playhydrax.com/",
-                "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
-              } : {
-                "Referer": `${BASE_URL}/`,
-                "User-Agent": DEFAULT_HEADERS["User-Agent"]
-              },
-              type: src.url.includes(".m3u8") ? "m3u8" : "mp4",
-              provider: "animeworld"
-            });
           }
-        } else if (src.url && !seen.has(src.url)) {
-          seen.add(src.url);
-          const card = formatCholeCard({
-            provider: "AnimeWorld",
-            title: mediaInfo.title,
-            year: mediaInfo.year,
-            season: isSeries ? s : null,
-            episode: isSeries ? e : null,
-            server: src.server,
-            quality: "1080p",
-            defaultLang: src.lang
-          });
-          const isAbyssStream = src.url.includes("sssrr.org") || src.url.includes("abyss");
-          finalStreams.push({
-            name: card.name,
-            title: card.title,
-            quality: card.quality,
-            url: src.url,
-            headers: isAbyssStream ? {
-              "Referer": "https://playhydrax.com/",
-              "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/137.0.0.0 Safari/537.36"
-            } : {
-              "Referer": `${BASE_URL}/`,
-              "User-Agent": DEFAULT_HEADERS["User-Agent"]
-            },
-            type: src.url.includes(".m3u8") ? "m3u8" : "mp4",
-            provider: "animeworld"
-          });
         }
       }
       return finalStreams;

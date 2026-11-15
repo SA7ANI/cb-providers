@@ -15,7 +15,7 @@
         "tv"
       ],
       "filename": "providers/moviesdrive.js",
-      "enabled": true,
+      "enabled": false,
       "formats": [
         "mp4",
         "m3u8"
@@ -125,7 +125,7 @@
         "tv"
       ],
       "filename": "providers/redflix.js",
-      "enabled": true,
+      "enabled": false,
       "formats": [
         "mp4",
         "m3u8"
@@ -319,7 +319,7 @@
         "tv"
       ],
       "filename": "providers/playimdb.js",
-      "enabled": true,
+      "enabled": false,
       "formats": [
         "mp4",
         "m3u8"
@@ -538,7 +538,7 @@
         "tv"
       ],
       "filename": "providers/multimovies.js",
-      "enabled": true,
+      "enabled": false,
       "formats": [
         "m3u8",
         "mp4"

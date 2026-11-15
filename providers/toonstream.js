@@ -439,7 +439,7 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
 
       if (rawUrl.includes("rubystm.com") || rawUrl.includes("streamruby.net")) {
         const m3u8 = yield extractRubyM3u8(rawUrl);
-        if (m3u8) {
+        if (m3u8 && typeof m3u8 === "string" && (m3u8.includes(".m3u8") || m3u8.includes(".mp4"))) {
           const cardHls = formatCholeCard({
             title: meta.title,
             year: meta.year,
@@ -450,48 +450,20 @@ function getStreams(tmdbId, mediaType = "tv", season = 1, episode = 1) {
             rawText: `${meta.title} 1080p Ruby Direct HLS Hindi Dubbed Multi-Audio`,
             provider: "ToonStream"
           });
+          const streamHeaders = {
+            "User-Agent": HEADERS["User-Agent"],
+            "Referer": "https://rubystm.com/"
+          };
           streams.push(Object.assign({}, cardHls, {
             url: m3u8,
-            headers: {
-              "User-Agent": HEADERS["User-Agent"],
-              "Referer": "https://rubystm.com/"
+            headers: streamHeaders,
+            behaviorHints: {
+              proxyHeaders: {
+                request: streamHeaders
+              }
             }
           }));
         }
-        const cardEmbed = formatCholeCard({
-          title: meta.title,
-          year: meta.year,
-          season: isTv ? sNum : null,
-          episode: isTv ? epNum : null,
-          quality: "1080p",
-          server: "Ruby Stream [Embed]",
-          rawText: `${meta.title} 1080p Ruby Embed Hindi Dubbed Multi-Audio`,
-          provider: "ToonStream"
-        });
-        streams.push(Object.assign({}, cardEmbed, {
-          url: rawUrl,
-          headers: HEADERS
-        }));
-      } else {
-        let serverName = "Server";
-        try {
-          serverName = new URL(rawUrl).hostname.replace(/^www\./, "");
-        } catch (_) {}
-
-        const cardServer = formatCholeCard({
-          title: meta.title,
-          year: meta.year,
-          season: isTv ? sNum : null,
-          episode: isTv ? epNum : null,
-          quality: "1080p",
-          server: serverName,
-          rawText: `${meta.title} 1080p ${serverName} Hindi Dubbed Multi-Audio`,
-          provider: "ToonStream"
-        });
-        streams.push(Object.assign({}, cardServer, {
-          url: rawUrl,
-          headers: HEADERS
-        }));
       }
     }
 

@@ -650,7 +650,26 @@ function getStreams(tmdbId, type, season, episode) {
       }
     }));
       const results = yield Promise.all(streamPromises);
-      return results.reduce((acc, val) => acc.concat(val), []);
+      const flattened = results.reduce((acc, val) => acc.concat(val), []);
+      const verified = yield Promise.all(flattened.map((s) => __async(this, null, function* () {
+        if (!s || !s.url) return null;
+        if (s.url.includes("workers.dev")) {
+          try {
+            const checkRes = yield fetch(s.url, {
+              method: "GET",
+              headers: { "User-Agent": "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36", "Range": "bytes=0-100" },
+              signal: AbortSignal.timeout(2500)
+            });
+            if (checkRes.status === 403 || (!checkRes.ok && checkRes.status !== 206)) {
+              return null;
+            }
+          } catch (_) {
+            return null;
+          }
+        }
+        return s;
+      })));
+      return verified.filter(Boolean);
     } catch (e) {
       console.log(`[4KHDHub] Error: ${e.message}`);
       return [];

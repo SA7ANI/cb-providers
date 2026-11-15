@@ -805,9 +805,15 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
                 quality,
                 url: finalStreamUrl
               });
+              const finalHeaders = __spreadValues(__spreadValues({}, playbackHeaders), signCookie ? { [signHeaderKey]: signCookie } : {});
               allStreams.push(__spreadProps(__spreadValues({}, card), {
                 url: finalStreamUrl,
-                headers: __spreadValues(__spreadValues({}, playbackHeaders), signCookie ? { [signHeaderKey]: signCookie } : {}),
+                headers: finalHeaders,
+                behaviorHints: {
+                  proxyHeaders: {
+                    request: finalHeaders
+                  }
+                },
                 subtitles,
                 provider: "moviebox"
               }));
@@ -843,9 +849,15 @@ function getStreamLinks(subjectId, season = 0, episode = 0, mediaTitle = "", med
                       quality,
                       url: video.resourceLink
                     });
+                    const fallbackHeaders = __spreadValues({}, playbackHeaders);
                     allStreams.push(__spreadProps(__spreadValues({}, card), {
                       url: video.resourceLink,
-                      headers: __spreadValues({}, playbackHeaders),
+                      headers: fallbackHeaders,
+                      behaviorHints: {
+                        proxyHeaders: {
+                          request: fallbackHeaders
+                        }
+                      },
                       provider: "moviebox"
                     }));
                   }

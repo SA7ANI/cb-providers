@@ -350,6 +350,10 @@ function getStreams(tmdbId, mediaType = "movie", season = 1, episode = 1) {
       }
       streamUrl = streamUrl.trim();
       if (!streamUrl.startsWith("http")) continue;
+      const isEmbed = streamUrl.includes("/embed/") || streamUrl.includes("/e/") || streamUrl.includes("iqsmartgames.com") || streamUrl.includes("modiplay.xyz") || streamUrl.includes("moviesnexus.fun") || streamUrl.includes("vidrift.net") || streamUrl.includes("vidout.pages.dev") || streamUrl.includes("vidbolt.xyz");
+      if (isEmbed && !/\.(?:m3u8|mp4|mkv)(?:[?#]|$)/i.test(streamUrl)) {
+        continue;
+      }
 
       const chipContent = c[2];
       const serverNameMatch = chipContent.match(/class="server-name">([^<]+)<\/span>/i);

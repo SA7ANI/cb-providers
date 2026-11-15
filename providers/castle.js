@@ -610,6 +610,11 @@ function processVideoResponse(videoData, mediaInfo, seasonNum, episodeNum, resol
       streams.push(__spreadProps(__spreadValues({}, card), {
         url: video.url || videoUrl,
         headers: PLAYBACK_HEADERS,
+        behaviorHints: {
+          proxyHeaders: {
+            request: PLAYBACK_HEADERS
+          }
+        },
         provider: "castle",
         subtitles
       }));
@@ -631,6 +636,11 @@ function processVideoResponse(videoData, mediaInfo, seasonNum, episodeNum, resol
     streams.push(__spreadProps(__spreadValues({}, card), {
       url: videoUrl,
       headers: PLAYBACK_HEADERS,
+      behaviorHints: {
+        proxyHeaders: {
+          request: PLAYBACK_HEADERS
+        }
+      },
       provider: "castle",
       subtitles
     }));
